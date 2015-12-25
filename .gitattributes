@@ -1,0 +1,2 @@
+# Ignore external dependencies for the purpose of GitHub's language statistics.
+External/* linguist-vendored
