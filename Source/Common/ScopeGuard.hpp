@@ -65,6 +65,30 @@ public:
         m_function();
     }
 
+public:
+    // Helper boolean wrapper.
+    class Condition
+    {
+    public:
+        Condition() :
+            m_value(true)
+        {
+        }
+
+        Condition(bool value) :
+            m_value(value)
+        {
+        }
+
+        explicit operator bool()
+        {
+            return m_value;
+        }
+
+    private:
+        bool m_value;
+    };
+
 private:
     Type m_function;
 };
@@ -76,31 +100,8 @@ ScopeGuard<Type> MakeScopeGuard(Type function)
     return ScopeGuard<Type>(function);
 }
 
-// Scope guard condition.
-class ScopeGuardCondition
-{
-public:
-    ScopeGuardCondition() :
-        m_condition(true)
-    {
-    }
-
-    ScopeGuardCondition(bool condition) :
-        m_condition(condition)
-    {
-    }
-
-    explicit operator bool()
-    {
-        return m_condition;
-    }
-
-private:
-    bool m_condition;
-};
-
 // Utility macros.
-#define SCOPE_GUARD_BEGIN(...) auto SCOPE_GUARD_NAME(__LINE__) = MakeScopeGuard([&]() { if(ScopeGuardCondition(__VA_ARGS__)) { 
+#define SCOPE_GUARD_BEGIN(...) auto SCOPE_GUARD_NAME(__LINE__) = MakeScopeGuard([&]() { if(ScopeGuard<void>::Condition(__VA_ARGS__)) { 
 #define SCOPE_GUARD_END() } });
 
 #define SCOPE_GUARD(code) auto SCOPE_GUARD_NAME(__LINE__) = SCOPE_GUARD_MAKE(code)
