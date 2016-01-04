@@ -157,3 +157,22 @@ If("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # Enable C++11 support.
     List(APPEND CMAKE_CXX_FLAGS "-std=c++11")
 EndIf()
+
+#
+# LuaJIT
+#
+
+# Add library directory.
+Add_Subdirectory("../External/LuaJIT-2.0.4" "LuaJIT" EXCLUDE_FROM_ALL)
+
+# Add include directory.
+Include_Directories("../External/LuaJIT-2.0.4/src")
+
+# Move library targets to dependencies.
+Set_Property(TARGET "LuaJIT" PROPERTY FOLDER "External")
+Set_Property(TARGET "LuaJIT-BuildVM" PROPERTY FOLDER "External")
+Set_Property(TARGET "LuaJIT-MiniLua" PROPERTY FOLDER "External")
+
+# Link library target.
+Add_Dependencies(${TargetName} "LuaJIT")
+Target_Link_Libraries(${TargetName} "LuaJIT")
