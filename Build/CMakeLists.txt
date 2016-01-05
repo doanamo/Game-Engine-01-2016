@@ -13,7 +13,6 @@ Set(ProjectName "Project")
 Set(TargetName "Application")
 
 # Application settings.
-Set(WorkingDir "../Deploy")
 Set(ShowConsole "Yes")
 
 #
@@ -103,6 +102,9 @@ Set_Property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
 #
 # Debug
 #
+
+# Working directory path.
+Set(WorkingDir "../Deploy")
 
 # Write a file in the build directory that will point to the working directory.
 Get_Filename_Component(WorkingDirPath "${CMAKE_CURRENT_LIST_DIR}/${WorkingDir}" ABSOLUTE)
