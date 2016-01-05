@@ -168,6 +168,30 @@ EndIf()
 Include_Directories("../External/GLM-0.9.7.2")
 
 #
+# GLFW
+#
+
+# Set build options.
+Set(GLFW_BUILD_EXAMPLES OFF)
+Set(GLFW_BUILD_TESTS OFF)
+Set(GLFW_BUILD_DOCS OFF)
+Set(GLFW_INSTALL OFF)
+
+# Add library directory.
+Add_Subdirectory("../External/GLFW-3.1.2" "GLFW" EXCLUDE_FROM_ALL)
+
+# Add include directory.
+Include_Directories("../External/GLFW-3.1.2/include")
+
+# Set target properties.
+Set_Property(TARGET "glfw" PROPERTY PROJECT_LABEL "GLFW")
+Set_Property(TARGET "glfw" PROPERTY FOLDER "External")
+
+# Link library target.
+Add_Dependencies(${TargetName} "glfw")
+Target_Link_Libraries(${TargetName} "glfw")
+
+#
 # LuaJIT
 #
 

@@ -16,6 +16,9 @@
 // GLM
 #include <glm/glm.hpp>
 
+// GLFW
+#include <glfw/glfw3.h>
+
 // LuaJIT
 #include <lua.hpp>
 
