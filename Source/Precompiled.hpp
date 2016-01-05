@@ -13,6 +13,10 @@
 // External
 //
 
+// GLM
+#include <glm/glm.hpp>
+
+// LuaJIT
 #include <lua.hpp>
 
 //

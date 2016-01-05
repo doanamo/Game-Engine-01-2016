@@ -159,6 +159,13 @@ If("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 EndIf()
 
 #
+# GLM
+#
+
+# Add include directory.
+Include_Directories("../External/GLM-0.9.7.2")
+
+#
 # LuaJIT
 #
 
