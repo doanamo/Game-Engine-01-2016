@@ -35,5 +35,6 @@
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"
 #include "Common/Utility.hpp"
+#include "Common/NonCopyable.hpp"
 #include "Common/ScopeGuard.hpp"
 #include "Common/Context.hpp"
