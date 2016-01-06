@@ -29,6 +29,14 @@ int main(int argc, char* argv[])
 
     glfwMakeContextCurrent(window);
 
+    glewExperimental = GL_TRUE;
+    GLenum error = glewInit();
+
+    if(error != GLEW_OK)
+    {
+        return -1;
+    }
+
     while(!glfwWindowShouldClose(window))
     {
         glClearColor(1.0f, 0.0f, 0.0f, 1.0f);

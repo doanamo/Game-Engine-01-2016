@@ -16,6 +16,10 @@
 // GLM
 #include <glm/glm.hpp>
 
+// GLEW
+#define GLEW_STATIC
+#include <gl/glew.h>
+
 // GLFW
 #include <glfw/glfw3.h>
 

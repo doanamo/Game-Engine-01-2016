@@ -168,6 +168,33 @@ EndIf()
 Include_Directories("../External/GLM-0.9.7.2")
 
 #
+# OpenGL
+#
+
+# Find library.
+Find_Package(OpenGL REQUIRED)
+
+# Link library.
+Target_Link_Libraries(${TargetName} ${OPENGL_gl_LIBRARY})
+
+#
+# GLEW
+#
+
+# Add library directory.
+Add_Subdirectory("../External/GLEW-1.13.0" "GLEW" EXCLUDE_FROM_ALL)
+
+# Add include directory.
+Include_Directories("../External/GLEW-1.13.0/include")
+
+# Move library target to dependencies.
+Set_Property(TARGET "GLEW" PROPERTY FOLDER "External")
+
+# Link library target.
+Add_Dependencies(${TargetName} "GLEW")
+Target_Link_Libraries(${TargetName} "GLEW")
+
+#
 # GLFW
 #
 
@@ -190,16 +217,6 @@ Set_Property(TARGET "glfw" PROPERTY FOLDER "External")
 # Link library target.
 Add_Dependencies(${TargetName} "glfw")
 Target_Link_Libraries(${TargetName} "glfw")
-
-#
-# OpenGL
-#
-
-# Find library.
-Find_Package(OpenGL REQUIRED)
-
-# Link library.
-Target_Link_Libraries(${TargetName} ${OPENGL_gl_LIBRARY})
 
 #
 # LuaJIT
