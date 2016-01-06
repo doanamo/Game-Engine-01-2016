@@ -52,6 +52,9 @@ bool State::Load(std::string filename)
             return false;
     }
 
+    // Empty the stack just in case.
+    lua_settop(m_state, 0);
+
     // Parse the file.
     if(luaL_dofile(m_state, (Build::GetWorkingDir() + filename).c_str()) != 0)
     {
