@@ -38,4 +38,6 @@
 #include "Common/NonCopyable.hpp"
 #include "Common/ScopeGuard.hpp"
 #include "Common/Delegate.hpp"
+#include "Common/Dispatcher.hpp"
+#include "Common/Receiver.hpp"
 #include "Common/Context.hpp"
