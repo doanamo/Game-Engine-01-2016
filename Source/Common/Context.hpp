@@ -28,7 +28,7 @@ public:
 
     // Search function definition.
     template<typename Type>
-    static bool SearchInstance(const InstancePtr& instance)
+    static bool FindInstance(const InstancePtr& instance)
     {
         return instance.first == typeid(Type*);
     }
@@ -59,7 +59,7 @@ public:
         }
 
         // Find instance by type.
-        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>);
+        auto it = std::find_if(m_instances.begin(), m_instances.end(), FindInstance<Type>);
 
         // Set the instance value.
         if(it != m_instances.end())
@@ -81,7 +81,7 @@ public:
     Type* Get() const
     {
         // Find instance by type.
-        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>);
+        auto it = std::find_if(m_instances.begin(), m_instances.end(), FindInstance<Type>);
 
         // Return instance reference.
         if(it != m_instances.end())
@@ -99,7 +99,7 @@ public:
     bool Has() const
     {
         // Find instance by type.
-        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>);
+        auto it = std::find_if(m_instances.begin(), m_instances.end(), FindInstance<Type>);
         return it != m_instances.end();
     }
 
@@ -108,7 +108,7 @@ public:
     void Clear()
     {
         // Find and erase an instance.
-        m_instances.erase(std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>));
+        m_instances.erase(std::find_if(m_instances.begin(), m_instances.end(), FindInstance<Type>));
     }
 
     // Gets a subcontext.
