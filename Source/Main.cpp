@@ -1,4 +1,5 @@
 #include "Precompiled.hpp"
+#include "System/Config.hpp"
 
 //
 // Main
@@ -10,6 +11,21 @@ int main(int argc, char* argv[])
     Build::Initialize();
     Logger::Initialize();
 
+    // Create main context.
+    Context context;
+
+    // Load config file.
+    System::Config config;
+    config.Load("Game.cfg");
+
+    context.Set(&config);
+
+    // Read config settings.
+    int windowWidth = config.Get<int>("Graphics.Width", 1024);
+    int windowHeight = config.Get<int>("Graphics.Height", 576);
+    bool verticalSync = config.Get<bool>("Graphics.VSync", true);
+
+    //
     if(!glfwInit())
     {
         return -1;
