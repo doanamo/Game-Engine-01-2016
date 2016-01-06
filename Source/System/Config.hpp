@@ -34,11 +34,8 @@ namespace System
         Type Get(std::string name, const Type& default);
 
     private:
-        // Resolves variable name and pushes a table/key pair that referes to it on the stack.
-        void PushReference(std::string name);
-
-        // Pushes a value and consumes the table/key pair in the process.
-        void PushValue();
+        // Pushes a value on the stack.
+        void PushValue(std::string name);
 
         // Casts a value and consumes it in the process.
         template<typename Type>
@@ -53,6 +50,36 @@ namespace System
     };
 
     // Template implementation.
+    template<typename Type>
+    void Config::Set(std::string name, const Type& value)
+    {
+        if(!m_initialized)
+            return;
+
+        assert("Not implemented!");
+
+        /*
+        // Push value reference.
+        this->PushReference(name);
+
+        // Set new value.
+        reference = value;
+        */
+    }
+
+    template<typename Type>
+    Type Config::Get(std::string name, const Type& default)
+    {
+        if(!m_initialized)
+            return default;
+
+        // Push value by name.
+        this->PushValue(name);
+
+        // Cast and return the value.
+        return this->CastValue(default);
+    }
+
     template<>
     inline bool Config::CastValue<bool>(const bool& default)
     {
@@ -87,38 +114,5 @@ namespace System
 
         // Return the value.
         return value;
-    }
-
-    template<typename Type>
-    void Config::Set(std::string name, const Type& value)
-    {
-        if(!m_initialized)
-            return;
-
-        assert("Not implemented!");
-
-        /*
-        // Push value reference.
-        this->PushReference(name);
-
-        // Set new value.
-        reference = value;
-        */
-    }
-
-    template<typename Type>
-    Type Config::Get(std::string name, const Type& default)
-    {
-        if(!m_initialized)
-            return default;
-
-        // Push value reference.
-        this->PushReference(name);
-
-        // Push value itself.
-        this->PushValue();
-
-        // Cast and return the value.
-        return this->CastValue(default);
     }
 };

@@ -87,7 +87,7 @@ bool Config::Load(std::string filename)
     return success = true;
 }
 
-void Config::PushReference(std::string name)
+void Config::PushValue(std::string name)
 {
     assert(m_initialized);
 
@@ -97,46 +97,38 @@ void Config::PushReference(std::string name)
 
     if(tokens.empty())
     {
-        // Push a nil pair.
-        lua_pushnil(m_lua);
+        // Return a nil value.
         lua_pushnil(m_lua);
         return;
     }
 
-    // Push config table pair.
+    // Push config table.
     lua_pushvalue(m_lua, LUA_GLOBALSINDEX);
     lua_pushstring(m_lua, "Config");
+
+    lua_gettable(m_lua, -2);
+    lua_remove(m_lua, -2);
 
     // Traverse the table chain.
     for(const std::string& token : tokens)
     {
-        // Get table element.
-        lua_gettable(m_lua, -2);
-
-        // Remove previous table.
-        lua_remove(m_lua, -2);
-
         // Check if we got a table.
         if(!lua_istable(m_lua, -1))
         {
             lua_pop(m_lua, 1);
 
-            // Push a nil pair.
-            lua_pushnil(m_lua);
+            // Return a nil value.
             lua_pushnil(m_lua);
             return;
         }
 
         // Push token key.
         lua_pushstring(m_lua, token.c_str());
+
+        // Get table element.
+        lua_gettable(m_lua, -2);
+
+        // Remove previous table.
+        lua_remove(m_lua, -2);
     }
-}
-
-void Config::PushValue()
-{
-    assert(m_initialized);
-
-    // Push value and remove table.
-    lua_gettable(m_lua, -2);
-    lua_remove(m_lua, -2);
 }
