@@ -192,6 +192,16 @@ Add_Dependencies(${TargetName} "glfw")
 Target_Link_Libraries(${TargetName} "glfw")
 
 #
+# OpenGL
+#
+
+# Find library.
+Find_Package(OpenGL REQUIRED)
+
+# Link library.
+Target_Link_Libraries(${TargetName} ${OPENGL_gl_LIBRARY})
+
+#
 # LuaJIT
 #
 
