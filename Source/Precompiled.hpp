@@ -4,6 +4,8 @@
 // Standard
 //
 
+#include <cassert>
+#include <typeindex>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -34,3 +36,4 @@
 #include "Common/Build.hpp"
 #include "Common/Utility.hpp"
 #include "Common/ScopeGuard.hpp"
+#include "Common/Context.hpp"

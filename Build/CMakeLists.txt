@@ -36,6 +36,7 @@ Set(SourceFiles
     "Common/Utility.hpp"
     "Common/Utility.cpp"
     "Common/ScopeGuard.hpp"
+    "Common/Context.hpp"
 )
 
 # Append source directory path to each source file.
