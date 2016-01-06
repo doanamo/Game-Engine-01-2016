@@ -56,6 +56,9 @@ Set(SourceFiles
     "Logger/ConsoleOutput.cpp"
     "Logger/DebuggerOutput.hpp"
     "Logger/DebuggerOutput.cpp"
+
+    "Lua/State.hpp"
+    "Lua/State.cpp"
 )
 
 # Append source directory path to each source file.
