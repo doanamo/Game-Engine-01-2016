@@ -5,8 +5,12 @@
 //
 
 #include <cassert>
+#include <cctype>
 #include <typeindex>
+#include <algorithm>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -14,6 +18,13 @@
 //
 // External
 //
+
+// Windows
+#ifdef WIN32
+    #define WIN32_LEAN_AND_MEAN
+    #define NOMINMAX
+    #include <windows.h>
+#endif
 
 // GLM
 #include <glm/glm.hpp>
@@ -41,3 +52,4 @@
 #include "Common/Dispatcher.hpp"
 #include "Common/Receiver.hpp"
 #include "Common/Context.hpp"
+#include "Logger/Logger.hpp"

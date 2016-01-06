@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
 {
     Debug::Initialize();
     Build::Initialize();
+    Logger::Initialize();
 
     if(!glfwInit())
     {

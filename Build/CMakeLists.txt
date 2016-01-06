@@ -42,6 +42,20 @@ Set(SourceFiles
     "Common/Dispatcher.hpp"
     "Common/Receiver.hpp"
     "Common/Context.hpp"
+
+    "Logger/Logger.hpp"
+    "Logger/Logger.cpp"
+    "Logger/Output.hpp"
+    "Logger/Message.hpp"
+    "Logger/Message.cpp"
+    "Logger/Sink.hpp"
+    "Logger/Sink.cpp"
+    "Logger/FileOutput.hpp"
+    "Logger/FileOutput.cpp"
+    "Logger/ConsoleOutput.hpp"
+    "Logger/ConsoleOutput.cpp"
+    "Logger/DebuggerOutput.hpp"
+    "Logger/DebuggerOutput.cpp"
 )
 
 # Append source directory path to each source file.
