@@ -1,6 +1,34 @@
 #include "Precompiled.hpp"
 #include "Utility.hpp"
 
+std::vector<std::string> Utility::SplitString(std::string text, char character)
+{
+    std::vector<std::string> result;
+
+    auto begin = text.begin();
+    auto it = text.begin();
+
+    while(it != text.end())
+    {
+        if(*it == character)
+        {
+            result.push_back(std::string(begin, it));
+            begin = ++it;
+        }
+        else
+        {
+            ++it;
+        }
+
+        if(it == text.end())
+        {
+            result.push_back(std::string(begin, it));
+        }
+    }
+
+    return result;
+}
+
 std::string Utility::GetFileExtension(std::string filename)
 {
     std::string extension;
@@ -13,7 +41,6 @@ std::string Utility::GetFileExtension(std::string filename)
 
     return extension;
 }
-
 
 std::string Utility::GetTextFileContent(std::string filename)
 {

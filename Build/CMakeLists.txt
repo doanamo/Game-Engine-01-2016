@@ -59,6 +59,9 @@ Set(SourceFiles
 
     "Lua/State.hpp"
     "Lua/State.cpp"
+
+    "System/Config.hpp"
+    "System/Config.cpp"
 )
 
 # Append source directory path to each source file.
