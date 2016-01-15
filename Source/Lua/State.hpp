@@ -53,6 +53,9 @@ namespace Lua
     template<typename Type>
     inline Type State::CastValue(const Type& default)
     {
+        // Remove from the stack.
+        lua_pop(m_state, 1);
+
         return default;
     }
 
