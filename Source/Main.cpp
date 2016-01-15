@@ -2,6 +2,7 @@
 #include "System/Config.hpp"
 #include "System/Timer.hpp"
 #include "System/Window.hpp"
+#include "System/InputState.hpp"
 
 //
 // Main
@@ -34,7 +35,10 @@ int main(int argc, char* argv[])
     if(!window.Initialize(context))
         return -1;
 
-    context.Set(&window);
+    // Initialize the input state.
+    System::InputState inputState;
+    if(!inputState.Initialize(context))
+        return -1;
 
     // Tick timer once after the initialization to avoid big
     // time delta value right at the start of the first frame.
@@ -45,6 +49,9 @@ int main(int argc, char* argv[])
 
     while(window.IsOpen())
     {
+        // Update input state before processing events.
+        inputState.Update();
+
         // Process window events.
         window.ProcessEvents();
 

@@ -237,14 +237,12 @@ bool Window::Initialize(Context& context)
             this->Cleanup();
     );
 
-    // Add instance to the context.
+    // Check if an instance already exists.
     if(context.Has<System::Window>())
     {
         Log() << LogInitializeError() << "Context is invalid.";
         return false;
     }
-
-    context.Set(this);
 
     // Get required instances.
     Config* config = context.Get<System::Config>();
@@ -326,6 +324,9 @@ bool Window::Initialize(Context& context)
     int glMinor = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_VERSION_MINOR);
 
     Log() << "Created OpenGL " << glMajor << "." << glMinor << " context.";
+
+    // Add instance to the context.
+    context.Set(this);
 
     // Success!
     return m_initialized = true;
