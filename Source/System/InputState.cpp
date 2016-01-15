@@ -50,7 +50,7 @@ bool InputState::Initialize(Context& context)
             this->Cleanup();
     );
 
-    // Check if an instance already exists.
+    // Check if the instance already exists.
     if(context.Has<System::InputState>())
     {
         Log() << LogInitializeError() << "Context is invalid.";

@@ -3,6 +3,7 @@
 #include "System/Timer.hpp"
 #include "System/Window.hpp"
 #include "System/InputState.hpp"
+#include "System/ResourceManager.hpp"
 
 //
 // Main
@@ -40,6 +41,11 @@ int main(int argc, char* argv[])
     if(!inputState.Initialize(context))
         return -1;
 
+    // Initialize the resource manager.
+    System::ResourceManager resourceManager;
+    if(!resourceManager.Initialize(context))
+        return -1;
+
     // Tick timer once after the initialization to avoid big
     // time delta value right at the start of the first frame.
     timer.Tick();
@@ -49,6 +55,9 @@ int main(int argc, char* argv[])
 
     while(window.IsOpen())
     {
+        // Release unused resources.
+        resourceManager.ReleaseUnused();
+
         // Update input state before processing events.
         inputState.Update();
 

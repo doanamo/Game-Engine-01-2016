@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cctype>
 #include <typeindex>
+#include <memory>
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -15,6 +16,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
+#include <unordered_map>
 
 //
 // External
