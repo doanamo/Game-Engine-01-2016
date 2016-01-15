@@ -17,6 +17,7 @@ int main(int argc, char* argv[])
     // Load config file.
     System::Config config;
     config.Load("Game.cfg");
+    config.SetTable("Config");
 
     context.Set(&config);
 

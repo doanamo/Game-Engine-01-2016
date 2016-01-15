@@ -25,6 +25,9 @@ void Config::Cleanup()
     // Cleanup Lua state.
     m_lua.Cleanup();
 
+    // Reset table name.
+    m_table.empty();
+
     // Reset initialization state.
     m_initialized = false;
 }
@@ -70,19 +73,16 @@ bool Config::Load(std::string filename)
         return false;
     }
 
-    // Validate state.
-    lua_getglobal(m_lua, "Config");
-
-    if(!lua_istable(m_lua, -1))
-    {
-        Log() << LogLoadError(filename) << "Missing \"Config\" table.";
-        return false;
-    }
-
-    lua_pop(m_lua, 1);
-    
     // Success!
     Log() << "Loaded a config from \"" << filename << "\" file.";
 
     return success = true;
+}
+
+void Config::SetTable(std::string name)
+{
+    if(!m_initialized)
+        return;
+
+    m_table = name;
 }

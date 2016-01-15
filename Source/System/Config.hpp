@@ -25,6 +25,9 @@ namespace System
         // Loads the config from a file.
         bool Load(std::string filename);
 
+        // Sets the table namespace.
+        void SetTable(std::string name);
+
         // Sets a config variable.
         template<typename Type>
         void Set(std::string name, const Type& value);
@@ -36,6 +39,9 @@ namespace System
     private:
         // Lua state.
         Lua::State m_lua;
+
+        // Config table name.
+        std::string m_table;
         
         // Initialization state.
         bool m_initialized;
@@ -69,7 +75,7 @@ namespace System
         m_lua.PushGlobal();
 
         // Push the variable value.
-        m_lua.PushValue("Config." + name);
+        m_lua.PushValue(m_table + "." + name);
 
         // Cast and return the value.
         return m_lua.CastValue(default);
