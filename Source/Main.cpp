@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "System/Config.hpp"
+#include "System/Timer.hpp"
 
 //
 // Main
@@ -11,15 +12,21 @@ int main(int argc, char* argv[])
     Build::Initialize();
     Logger::Initialize();
 
-    // Create main context.
+    // Create the main context.
     Context context;
 
-    // Load config file.
+    // Initialize the config.
     System::Config config;
     config.Load("Game.cfg");
     config.SetTable("Config");
 
     context.Set(&config);
+
+    // Initialize the timer.
+    System::Timer timer;
+    timer.SetMaxDelta(1.0f / 10.0f);
+
+    context.Set(&timer);
 
     // Read config settings.
     int windowWidth = config.Get<int>("Graphics.Width", 1024);
