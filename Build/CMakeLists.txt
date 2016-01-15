@@ -64,6 +64,8 @@ Set(SourceFiles
     "System/Config.cpp"
     "System/Timer.hpp"
     "System/Timer.cpp"
+    "System/Window.hpp"
+    "System/Window.cpp"
 )
 
 # Append source directory path to each source file.
