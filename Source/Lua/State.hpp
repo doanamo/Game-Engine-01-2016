@@ -23,12 +23,23 @@ namespace Lua
 
         // Loads a script file.
         bool Load(std::string filename);
-        
-        // Conversion operator.
-        operator lua_State*();
+
+        // Pushes global table on the stack.
+        void PushGlobal();
+       
+        // Pushes value on the stack.
+        // Consumes a table from which value will be pushed.
+        void PushValue(std::string name);
+
+        // Casts a value and consumes it in the process.
+        template<typename Type>
+        Type CastValue(const Type& default);
 
         // Prints the stack for debugging.
         void PrintStack() const;
+
+        // Conversion operator.
+        operator lua_State*();
 
     private:
         // Virtual machine state.
@@ -37,4 +48,47 @@ namespace Lua
         // Initialization state.
         bool m_initialized;
     };
+
+    // Template definitions.
+    template<typename Type>
+    inline Type State::CastValue(const Type& default)
+    {
+        return default;
+    }
+
+    template<>
+    inline bool State::CastValue<bool>(const bool& default)
+    {
+        bool value = default;
+
+        // Cast the value.
+        if(lua_isboolean(m_state, -1))
+        {
+            value = lua_toboolean(m_state, -1) != 0;
+        }
+
+        // Remove from the stack.
+        lua_pop(m_state, 1);
+
+        // Return the value.
+        return value;
+    }
+
+    template<>
+    inline int State::CastValue<int>(const int& default)
+    {
+        int value = default;
+
+        // Cast the value.
+        if(lua_isnumber(m_state, -1))
+        {
+            value = (int)std::round(lua_tonumber(m_state, -1));
+        }
+
+        // Remove from the stack.
+        lua_pop(m_state, 1);
+
+        // Return the value.
+        return value;
+    }
 }

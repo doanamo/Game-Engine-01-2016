@@ -66,9 +66,49 @@ bool State::Load(std::string filename)
     return true;
 }
 
-State::operator lua_State*()
+void State::PushGlobal()
 {
-    return m_state;
+    if(!m_initialized)
+        return;
+
+    lua_pushvalue(m_state, LUA_GLOBALSINDEX);
+}
+
+void State::PushValue(std::string name)
+{
+    if(!m_initialized)
+        return;
+
+    // Parse name tokens.
+    auto tokens = Utility::SplitString(name, '.');
+
+    if(tokens.empty())
+    {
+        lua_pop(m_state, -1);
+        lua_pushnil(m_state);
+        return;
+    }
+
+    // Traverse the table chain.
+    for(const std::string& token : tokens)
+    {
+        // Check if we got a table.
+        if(!lua_istable(m_state, -1))
+        {
+            lua_pop(m_state, 1);
+            lua_pushnil(m_state);
+            return;
+        }
+
+        // Push token key.
+        lua_pushstring(m_state, token.c_str());
+
+        // Get table element.
+        lua_gettable(m_state, -2);
+
+        // Remove the table.
+        lua_remove(m_state, -2);
+    }
 }
 
 void State::PrintStack() const
@@ -110,4 +150,9 @@ void State::PrintStack() const
             break;
         }
     }
+}
+
+State::operator lua_State*()
+{
+    return m_state;
 }

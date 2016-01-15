@@ -34,14 +34,6 @@ namespace System
         Type Get(std::string name, const Type& default);
 
     private:
-        // Pushes a value on the stack.
-        void PushValue(std::string name);
-
-        // Casts a value and consumes it in the process.
-        template<typename Type>
-        Type CastValue(const Type& default);
-
-    private:
         // Lua state.
         Lua::State m_lua;
         
@@ -73,46 +65,13 @@ namespace System
         if(!m_initialized)
             return default;
 
-        // Push value by name.
-        this->PushValue(name);
+        // Push the global table.
+        m_lua.PushGlobal();
+
+        // Push the variable value.
+        m_lua.PushValue("Config." + name);
 
         // Cast and return the value.
-        return this->CastValue(default);
-    }
-
-    template<>
-    inline bool Config::CastValue<bool>(const bool& default)
-    {
-        bool value = default;
-
-        // Cast the value.
-        if(lua_isboolean(m_lua, -1))
-        {
-            value = lua_toboolean(m_lua, -1) != 0;
-        }
-
-        // Remove from the stack.
-        lua_pop(m_lua, 1);
-
-        // Return the value.
-        return value;
-    }
-
-    template<>
-    inline int Config::CastValue<int>(const int& default)
-    {
-        int value = default;
-
-        // Cast the value.
-        if(lua_isnumber(m_lua, -1))
-        {
-            value = (int)std::round(lua_tonumber(m_lua, -1));
-        }
-
-        // Remove from the stack.
-        lua_pop(m_lua, 1);
-
-        // Return the value.
-        return value;
+        return m_lua.CastValue(default);
     }
 };
