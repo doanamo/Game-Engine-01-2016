@@ -94,4 +94,22 @@ namespace Lua
         // Return the value.
         return value;
     }
+
+    template<>
+    inline std::string State::CastValue<std::string>(const std::string& default)
+    {
+        std::string value = default;
+
+        // Cast the value.
+        if(lua_isstring(m_state, -1))
+        {
+            value = lua_tostring(m_state, -1);
+        }
+
+        // Remove from the stack.
+        lua_pop(m_state, 1);
+
+        // Return the value.
+        return value;
+    }
 }
