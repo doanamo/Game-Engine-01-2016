@@ -5,6 +5,31 @@
 //
 // Window
 //
+//  Creates and manages an application window, including the OpenGL context.
+//  Supports multiple windows and contexts.
+//
+//  Example usage:
+//      System::Window window;
+//      window.Initialize(/* ... */);
+//      
+//      while(window.IsOpen())
+//      {
+//          window.ProcessEvents();
+//          
+//          /* ... */
+//          
+//          window.Present();
+//      }
+//
+//  Binding events:
+//      Class instance;
+//      void Class::OnKeyboardKey(const Window::Events::KeyboardKey& event) { /*...*/ }
+//      
+//      Receiver<void(const Window::Events::KeyboardKey&)> receiver;
+//      receiver.Bind<InputState, &InputState::OnKeyboardKey>(&instance);
+//      
+//      window.events.keyboardKey.Subscribe(receiver);
+//
 
 namespace System
 {

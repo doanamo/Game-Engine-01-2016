@@ -6,6 +6,23 @@
 //
 // Input State
 //
+//  Caches input state between frames and handles repeating keys.
+//
+//  Example usage:
+//      System::InputState inputState;
+//      inputState.Initialize(/* ... */);
+//      
+//      while(true)
+//      {
+//          inputState.Update();
+//          window.ProcessEvents();
+//      
+//          if(window.IsKeyDown(GLFW_KEY_ESCAPE, false))
+//          {
+//              /* ... */
+//          }
+//      }
+//
 
 namespace System
 {

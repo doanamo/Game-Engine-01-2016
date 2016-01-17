@@ -6,6 +6,29 @@
 //
 // Resource Manager
 //
+//  Tracks resource references and releases them when no longer needed.
+//
+//  Example usage:
+//      System::ResourceManager resourceManager;
+//      resourceManager.Initialize(/* ... */);
+//      
+//      auto instanceDefault = std::make_shared<Class>();
+//      resourceManager->SetDefault<Class>(instanceDefault);
+//      
+//      {
+//          auto instanceA = resourceManager->Load<Class>("Resources/InstanceA");
+//          auto instanceB = resourceManager->Load<Class>("Resources/InstanceB");
+//      }
+//      
+//      resourceManager.ReleaseUnused();
+//
+//  Declaring a resource type:
+//      class Class : public System::Resource
+//      {
+//      public:
+//          bool Load(std::string filename) { /* ... */ }
+//      };
+//
 
 namespace System
 {

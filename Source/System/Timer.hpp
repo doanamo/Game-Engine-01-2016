@@ -3,6 +3,24 @@
 //
 // Timer
 //
+//  Tracks time and calculates the delta between frames.
+//
+//  Example usage:
+//      System::Timer timer;
+//      timer.SetMaxDelta(1.0f / 10.0f);
+//      
+//      while(true)
+//      {
+//          float dt = timer.GetDelta();
+//          
+//          /* ... */
+//          
+//          timer.tick();
+//      }
+//
+//  Todo:
+//  - Implement frame rate calculation.
+//
 
 namespace System
 {

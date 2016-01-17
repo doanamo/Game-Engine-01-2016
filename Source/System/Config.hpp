@@ -6,6 +6,16 @@
 //
 // Config
 //
+//  Loads a Lua file and gives an easy access to it's values.
+//
+//  Example usage:
+//      System::Config config;
+//      config.Load("Game.cfg");
+//      config.SetTable("Config");
+//      
+//      int width = config->Get<int>("Window.Width", 1024);
+//      int height = config->Get<int>("Window.Height", 576);
+//
 
 namespace System
 {
