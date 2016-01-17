@@ -46,13 +46,10 @@ int main(int argc, char* argv[])
     if(!resourceManager.Initialize(context))
         return -1;
 
-    // Tick timer once after the initialization to avoid big
-    // time delta value right at the start of the first frame.
+    // Tick timer once after the initialization.
     timer.Tick();
 
     // Main loop.
-    window.MakeContextCurrent();
-
     while(window.IsOpen())
     {
         // Release unused resources.
