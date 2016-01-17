@@ -69,6 +69,7 @@ Set(SourceFiles
     "System/InputState.hpp"
     "System/InputState.cpp"
     "System/Resource.hpp"
+    "System/ResourcePool.hpp"
     "System/ResourceManager.hpp"
     "System/ResourceManager.cpp"
 )
