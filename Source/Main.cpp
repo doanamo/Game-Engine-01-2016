@@ -46,8 +46,8 @@ int main(int argc, char* argv[])
     if(!resourceManager.Initialize(context))
         return -1;
 
-    // Tick timer once after the initialization.
-    timer.Tick();
+    // Reset the timer.
+    timer.Reset();
 
     // Main loop.
     while(window.IsOpen())

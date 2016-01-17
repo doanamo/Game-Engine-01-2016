@@ -16,6 +16,9 @@ namespace System
         // Restores instance to it's original state.
         void Cleanup();
 
+        // Resets the timer.
+        void Reset();
+
         // Advances the timer forward.
         // Calculates the frame's delta time.
         void Tick();

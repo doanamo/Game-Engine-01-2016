@@ -3,8 +3,8 @@
 using namespace System;
 
 Timer::Timer() :
-    m_previousTime(0.0),
-    m_deltaTime(0.0),
+    m_previousTime(glfwGetTime()),
+    m_deltaTime(0.0f),
     m_deltaTimeMax(std::numeric_limits<float>::max())
 {
 }
@@ -16,6 +16,12 @@ Timer::~Timer()
 void Timer::Cleanup()
 {
     *this = Timer();
+}
+
+void Timer::Reset()
+{
+    m_previousTime = glfwGetTime();
+    m_deltaTime = 0.0f;
 }
 
 void Timer::Tick()
