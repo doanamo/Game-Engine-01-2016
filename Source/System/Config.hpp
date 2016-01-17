@@ -74,8 +74,19 @@ namespace System
         // Push the global table.
         m_lua.PushGlobal();
 
+        // Expand string value.
+        std::string expanded;
+
+        if(!m_table.empty())
+        {
+            expanded += m_table;
+            expanded += ".";
+        }
+
+        expanded += name;
+
         // Push the variable value.
-        m_lua.PushValue(m_table + "." + name);
+        m_lua.PushValue(expanded);
 
         // Cast and return the value.
         return m_lua.CastValue(default);

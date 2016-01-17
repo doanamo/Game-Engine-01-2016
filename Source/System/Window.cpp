@@ -269,9 +269,9 @@ bool Window::Initialize(Context& context)
 
     // Read config variables.
     std::string name = config->Get<std::string>("Window.Name", "Game");
-    int width = config->Get<int>("Graphics.Width", 1024);
-    int height = config->Get<int>("Graphics.Height", 576);
-    bool vsync = config->Get<bool>("Graphics.VSync", true);
+    int width = config->Get<int>("Window.Width", 1024);
+    int height = config->Get<int>("Window.Height", 576);
+    bool vsync = config->Get<bool>("Window.VSync", true);
 
     // Create the window.
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
