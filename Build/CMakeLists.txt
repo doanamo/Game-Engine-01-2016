@@ -81,6 +81,8 @@ Set(SourceFiles
     "Graphics/VertexInput.cpp"
     "Graphics/Sampler.hpp"
     "Graphics/Sampler.cpp"
+    "Graphics/Texture.hpp"
+    "Graphics/Texture.cpp"
     "Graphics/Shader.hpp"
     "Graphics/Shader.cpp"
 )
