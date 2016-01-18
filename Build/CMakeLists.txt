@@ -73,6 +73,8 @@ Set(SourceFiles
     "System/ResourceManager.hpp"
     "System/ResourceManager.cpp"
 
+    "Graphics/ScreenSpace.hpp"
+    "Graphics/ScreenSpace.cpp"
     "Graphics/Buffer.hpp"
     "Graphics/Buffer.cpp"
     "Graphics/VertexInput.hpp"
