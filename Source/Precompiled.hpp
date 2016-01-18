@@ -46,6 +46,9 @@
 // LuaJIT
 #include <lua.hpp>
 
+// ZLib
+#include <zlib.h>
+
 //
 // Project
 //
