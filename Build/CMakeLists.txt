@@ -72,6 +72,9 @@ Set(SourceFiles
     "System/ResourcePool.hpp"
     "System/ResourceManager.hpp"
     "System/ResourceManager.cpp"
+
+    "Graphics/Buffer.hpp"
+    "Graphics/Buffer.cpp"
 )
 
 # Append source directory path to each source file.
