@@ -310,3 +310,28 @@ Target_Link_Libraries(${TargetName} "zlibstatic")
 Set(ZLIB_ROOT "../External/ZLib-1.2.8")
 Set(ZLIB_INCLUDE_DIR "../External/ZLib-1.2.8")
 Set(ZLIB_LIBRARY "zlibstatic")
+
+#
+# PNG
+#
+
+# Set build options.
+Set(PNG_SHARED OFF)
+Set(PNG_STATIC ON)
+Set(PNG_TESTS OFF)
+Set(SKIP_INSTALL_ALL ON)
+
+# Add library directory.
+Add_Subdirectory("../External/PNG-1.6.21" "PNG" EXCLUDE_FROM_ALL)
+
+# Add include directory.
+Include_Directories("../External/PNG-1.6.21")
+Include_Directories("${CMAKE_BINARY_DIR}/PNG")
+
+# Move library target to dependencies.
+Set_Property(TARGET "png16_static" PROPERTY PROJECT_LABEL "PNG")
+Set_Property(TARGET "png16_static" PROPERTY FOLDER "External")
+
+# Link library target.
+Add_Dependencies(${TargetName} "png16_static")
+Target_Link_Libraries(${TargetName} "png16_static")
