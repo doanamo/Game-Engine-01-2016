@@ -79,6 +79,8 @@ Set(SourceFiles
     "Graphics/Buffer.cpp"
     "Graphics/VertexInput.hpp"
     "Graphics/VertexInput.cpp"
+    "Graphics/Sampler.hpp"
+    "Graphics/Sampler.cpp"
     "Graphics/Shader.hpp"
     "Graphics/Shader.cpp"
 )
