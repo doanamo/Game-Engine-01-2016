@@ -4,6 +4,7 @@
 #include "System/Window.hpp"
 #include "System/InputState.hpp"
 #include "System/ResourceManager.hpp"
+#include "Graphics/BasicRenderer.hpp"
 
 //
 // Main
@@ -46,6 +47,11 @@ int main(int argc, char* argv[])
     if(!resourceManager.Initialize(context))
         return -1;
 
+    // Initialize the basic renderer.
+    Graphics::BasicRenderer basicRenderer;
+    if(!basicRenderer.Initialize(context))
+        return -1;
+
     // Reset the timer.
     timer.Reset();
 
@@ -61,9 +67,10 @@ int main(int argc, char* argv[])
         // Process window events.
         window.ProcessEvents();
 
-        //
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Draw stuff.
+        basicRenderer.SetClearColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        basicRenderer.SetClearDepth(1.0f);
+        basicRenderer.Clear();
 
         // Present the backbuffer to the window.
         window.Present();
