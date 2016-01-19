@@ -37,6 +37,9 @@ namespace Game
         System::Window*          m_window;
         Graphics::BasicRenderer* m_basicRenderer;
 
+        // Screen space transform.
+        Graphics::ScreenSpace m_screenSpace;
+
         // Initialization state.
         bool m_initialized;
     };
