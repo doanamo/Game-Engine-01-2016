@@ -89,6 +89,7 @@ Set(SourceFiles
     "Graphics/BasicRenderer.cpp"
 
     "Game/EntityHandle.hpp"
+    "Game/Component.hpp"
     "Game/RenderSystem.hpp"
     "Game/RenderSystem.cpp"
 )
