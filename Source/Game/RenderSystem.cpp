@@ -23,9 +23,11 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::Cleanup()
 {
+    // Reset context references.
     m_window = nullptr;
     m_basicRenderer = nullptr;
 
+    // Reset initialization state.
     m_initialized = false;
 }
 
@@ -77,7 +79,7 @@ void RenderSystem::Draw()
     if(!m_initialized)
         return;
 
-    m_basicRenderer->SetClearColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    m_basicRenderer->SetClearColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     m_basicRenderer->SetClearDepth(1.0f);
     m_basicRenderer->Clear();
 }
