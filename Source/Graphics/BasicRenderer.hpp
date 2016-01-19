@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "ScreenSpace.hpp"
 #include "Buffer.hpp"
 #include "VertexInput.hpp"
 #include "Sampler.hpp"
+#include "Texture.hpp"
 #include "Shader.hpp"
 
 //
@@ -79,6 +81,9 @@ namespace Graphics
 
         // Clears the frame buffer.
         void Clear(uint32_t flags = ClearFlags::All);
+
+        // Draws a sprite.
+        void DrawSprite(const Sprite& sprite, const glm::mat4& transform);
 
         // Draws sprites.
         void DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDataList& spriteData, const glm::mat4& transform);

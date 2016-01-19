@@ -178,6 +178,92 @@ void BasicRenderer::Clear(uint32_t flags)
     glClear(mask);
 }
 
+void BasicRenderer::DrawSprite(const Sprite& sprite, const::glm::mat4& transform)
+{
+    if(!m_initialized)
+        return;
+
+    // Bind the vertex input.
+    glBindVertexArray(m_vertexInput.GetHandle());
+
+    SCOPE_GUARD
+    (
+        glBindVertexArray(0);
+    );
+
+    // Bind shader program.
+    glUseProgram(m_shader->GetHandle());
+
+    SCOPE_GUARD
+    (
+        glUseProgram(0);
+    );
+
+    glUniformMatrix4fv(m_shader->GetUniform("viewTransform"), 1, GL_FALSE, glm::value_ptr(transform));
+
+    // Setup transparency.
+    if(sprite.info.transparent)
+    {
+        // Enable alpha blending.
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Disable depth writing.
+        glDepthMask(GL_FALSE);
+    }
+
+    SCOPE_GUARD
+    (
+        if(sprite.info.transparent)
+        {
+            glDisable(GL_BLEND);
+            glDepthMask(GL_TRUE);
+        }
+    );
+
+    // Setup texture.
+    if(sprite.info.texture != nullptr)
+    {
+        // Calculate inversed texture size.
+        glm::vec2 textureInvSize;
+        textureInvSize.x = 1.0f / sprite.info.texture->GetWidth();
+        textureInvSize.y = 1.0f / sprite.info.texture->GetHeight();
+
+        glUniform2fv(m_shader->GetUniform("textureSizeInv"), 1, glm::value_ptr(textureInvSize));
+
+        // Bind texture unit.
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, sprite.info.texture->GetHandle());
+
+        // Bind texture sampler.
+        if(sprite.info.filter)
+        {
+            glBindSampler(0, m_linearSampler.GetHandle());
+        }
+        else
+        {
+            glBindSampler(0, m_nearestSampler.GetHandle());
+        }
+    }
+
+    SCOPE_GUARD
+    (
+        if(sprite.info.texture != nullptr)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+    );
+
+    glUniform1i(m_shader->GetUniform("textureDiffuse"), 0);
+
+    // Update the instance buffer with sprite data.
+    m_instanceBuffer.Update(&sprite.data, 1);
+
+    // Draw instanced sprite.
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 1);
+}
+
 void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDataList& spriteData, const glm::mat4& transform)
 {
     if(!m_initialized)
@@ -305,10 +391,11 @@ void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDa
 
                 glUniform2fv(m_shader->GetUniform("textureSizeInv"), 1, glm::value_ptr(textureInvSize));
 
-                // Enable texture unit.
+                // Bind texture unit.
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, info.texture->GetHandle());
                 
+                // Bind texture sampler.
                 if(info.filter)
                 {
                     glBindSampler(0, m_linearSampler.GetHandle());
