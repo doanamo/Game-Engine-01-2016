@@ -13,6 +13,8 @@ namespace System
 //
 // Render System
 //
+//  Draws the game world on the screen.
+//
 
 namespace Game
 {
