@@ -5,6 +5,7 @@
 #include "System/InputState.hpp"
 #include "System/ResourceManager.hpp"
 #include "Graphics/BasicRenderer.hpp"
+#include "Game/RenderSystem.hpp"
 
 //
 // Main
@@ -52,6 +53,11 @@ int main(int argc, char* argv[])
     if(!basicRenderer.Initialize(context))
         return -1;
 
+    // Initialize the render system.
+    Game::RenderSystem renderSystem;
+    if(!renderSystem.Initialize(context))
+        return -1;
+
     // Reset the timer.
     timer.Reset();
 
@@ -67,10 +73,8 @@ int main(int argc, char* argv[])
         // Process window events.
         window.ProcessEvents();
 
-        // Draw stuff.
-        basicRenderer.SetClearColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-        basicRenderer.SetClearDepth(1.0f);
-        basicRenderer.Clear();
+        // Draw the scene.
+        renderSystem.Draw();
 
         // Present the backbuffer to the window.
         window.Present();

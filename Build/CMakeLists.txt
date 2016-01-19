@@ -87,6 +87,9 @@ Set(SourceFiles
     "Graphics/Shader.cpp"
     "Graphics/BasicRenderer.hpp"
     "Graphics/BasicRenderer.cpp"
+
+    "Game/RenderSystem.hpp"
+    "Game/RenderSystem.cpp"
 )
 
 # Append source directory path to each source file.
