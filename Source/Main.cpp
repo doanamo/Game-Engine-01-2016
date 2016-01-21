@@ -9,6 +9,7 @@
 #include "Game/ComponentSystem.hpp"
 #include "Game/IdentitySystem.hpp"
 #include "Game/RenderSystem.hpp"
+#include "Game/Components/Transform.hpp"
 
 //
 // Main
@@ -75,6 +76,15 @@ int main(int argc, char* argv[])
     Game::RenderSystem renderSystem;
     if(!renderSystem.Initialize(context))
         return -1;
+
+    //
+    {
+        auto entity = entitySystem.CreateEntity();
+        identitySystem.SetEntityName(entity, "Player");
+
+        auto transform = componentSystem.Create<Game::Components::Transform>(entity);
+        transform->SetPosition(glm::vec2(0.0f, 0.0f));
+    }
 
     // Reset the timer.
     timer.Reset();
