@@ -131,17 +131,17 @@ namespace Game
         {
             Events(EventDispatchers& dispatchers);
 
-            DispatcherBase<bool(const EntityHandle&)>& entityFinalize;
-            DispatcherBase<void(const EntityHandle&)>& entityCreated;
-            DispatcherBase<void(const EntityHandle&)>& entityDestroyed;
+            DispatcherBase<bool(EntityHandle)>& entityFinalize;
+            DispatcherBase<void(EntityHandle)>& entityCreated;
+            DispatcherBase<void(EntityHandle)>& entityDestroyed;
         } events;
 
         // Private event dispatchers.
         struct EventDispatchers
         {
-            Dispatcher<bool(const EntityHandle&), CollectWhileTrue<bool>> entityFinalize;
-            Dispatcher<void(const EntityHandle&)> entityCreated;
-            Dispatcher<void(const EntityHandle&)> entityDestroyed;
+            Dispatcher<bool(EntityHandle), CollectWhileTrue<bool>> entityFinalize;
+            Dispatcher<void(EntityHandle)> entityCreated;
+            Dispatcher<void(EntityHandle)> entityDestroyed;
         };
 
     private:

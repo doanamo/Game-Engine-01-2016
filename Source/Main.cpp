@@ -6,6 +6,7 @@
 #include "System/ResourceManager.hpp"
 #include "Graphics/BasicRenderer.hpp"
 #include "Game/EntitySystem.hpp"
+#include "Game/ComponentSystem.hpp"
 #include "Game/RenderSystem.hpp"
 
 //
@@ -57,6 +58,11 @@ int main(int argc, char* argv[])
     // Initialize the entity system.
     Game::EntitySystem entitySystem;
     if(!entitySystem.Initialize(context))
+        return -1;
+
+    // Initialize the component system.
+    Game::ComponentSystem componentSystem;
+    if(!componentSystem.Initialize(context))
         return -1;
 
     // Initialize the render system.
