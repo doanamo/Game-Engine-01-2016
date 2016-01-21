@@ -9,6 +9,8 @@
 #include "Game/ComponentSystem.hpp"
 #include "Game/IdentitySystem.hpp"
 #include "Game/RenderSystem.hpp"
+
+#include "Graphics/SpriteSheet.hpp"
 #include "Game/Components/Transform.hpp"
 
 //
@@ -79,6 +81,8 @@ int main(int argc, char* argv[])
 
     //
     {
+        auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
+
         auto entity = entitySystem.CreateEntity();
         identitySystem.SetEntityName(entity, "Player");
 

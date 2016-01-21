@@ -1,0 +1,23 @@
+SpriteSheet =
+{
+    Texture = "Data/Textures/Character.png",
+    Sprites =
+    {
+        ["standing_left"] = { 0, 16, 16, 16 },
+        ["standing_right"] = { 16, 16, -16, 16 },
+        ["standing_down"] = { 16, 16, 16, 16 },
+        ["standing_up"] = { 32, 16, 16, 16 },
+
+        ["moving_left_1"] = { 48, 16, 16, 16 },
+        ["moving_left_2"] = { 64, 16, 16, 16 },
+        ["moving_right_1"] = { 64, 16, -16, 16 },
+        ["moving_right_2"] = { 80, 16, -16, 16 },
+        ["moving_down_1"] = { 80, 16, 16, 16 },
+        ["moving_down_2"] = { 96, 16, -16, 16 },
+        ["moving_up_1"] = { 96, 16, 16, 16 },
+        ["moving_up_2"] = { 112, 16, -16, 16 },
+
+        ["friendly"] = { 0, 32, 16, 16 },
+        ["shadow"] = { 16, 32, 16, 16 },
+    }
+}
