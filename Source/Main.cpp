@@ -7,6 +7,7 @@
 #include "Graphics/BasicRenderer.hpp"
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
+#include "Game/IdentitySystem.hpp"
 #include "Game/RenderSystem.hpp"
 
 //
@@ -63,6 +64,11 @@ int main(int argc, char* argv[])
     // Initialize the component system.
     Game::ComponentSystem componentSystem;
     if(!componentSystem.Initialize(context))
+        return -1;
+
+    // Initialize the identity system.
+    Game::IdentitySystem identitySystem;
+    if(!identitySystem.Initialize(context))
         return -1;
 
     // Initialize the render system.

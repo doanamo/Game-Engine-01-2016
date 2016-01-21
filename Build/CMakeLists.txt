@@ -95,6 +95,8 @@ Set(SourceFiles
     "Game/ComponentPool.hpp"
     "Game/ComponentSystem.hpp"
     "Game/ComponentSystem.cpp"
+    "Game/IdentitySystem.hpp"
+    "Game/IdentitySystem.cpp"
     "Game/RenderSystem.hpp"
     "Game/RenderSystem.cpp"
 )
