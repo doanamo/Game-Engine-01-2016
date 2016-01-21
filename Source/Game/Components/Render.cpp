@@ -1,10 +1,10 @@
 #include "Precompiled.hpp"
 #include "Render.hpp"
 #include "Transform.hpp"
-using namespace Game::Components;
-
 #include "Game/ComponentSystem.hpp"
 #include "Graphics/Texture.hpp"
+using namespace Game;
+using namespace Components;
 
 Render::Render() :
     m_offset(0.0f, 0.0f),
