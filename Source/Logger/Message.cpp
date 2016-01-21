@@ -60,6 +60,13 @@ Message& Message::SetSource(const char* source)
         {
             m_source.erase(it, it + sourceDir.size());
         }
+
+        // Workaround for the first letter being lower case.
+        // Happenes when __FILE__ macro is used inside inlined function.
+        if(!m_source.empty())
+        {
+            m_source[0] = std::toupper(m_source[0]);
+        }
     }
 
     return *this;
