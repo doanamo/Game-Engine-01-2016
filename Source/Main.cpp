@@ -79,6 +79,9 @@ int main(int argc, char* argv[])
         // Process window events.
         window.ProcessEvents();
 
+        // Process entity commands.
+        entitySystem.ProcessCommands();
+
         // Draw the scene.
         renderSystem.Draw();
 
