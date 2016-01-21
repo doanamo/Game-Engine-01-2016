@@ -8,6 +8,7 @@
 #include <cctype>
 #include <typeindex>
 #include <memory>
+#include <numeric>
 #include <algorithm>
 #include <functional>
 #include <iostream>

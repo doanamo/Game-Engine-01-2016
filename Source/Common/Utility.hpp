@@ -29,6 +29,33 @@ namespace Utility
         container.swap(Type());
     }
 
+    // Reorders a vector using given indices.
+    template<typename Type>
+    void Reorder(std::vector<Type>& values, const std::vector<std::size_t>& order)
+    {
+        assert(values.size() == order.size());
+
+        // Create an array of indices.
+        std::vector<std::size_t> indices(order.size());
+        std::iota(indices.begin(), indices.end(), 0);
+
+        // Rearange the values.
+        for(std::size_t i = 0; i < values.size() - 1; ++i)
+        {
+            std::size_t desired = order[i];
+
+            for(std::size_t j = i; j < values.size(); ++j)
+            {
+                if(desired == indices[j])
+                {
+                    std::swap(values[i], values[j]);
+                    std::swap(indices[i], indices[j]);
+                    break;
+                }
+            }
+        }
+    }
+
     // Splits a string into tokens.
     std::vector<std::string> SplitString(std::string text, char character = ' ');
     
