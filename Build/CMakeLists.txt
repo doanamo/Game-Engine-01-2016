@@ -104,6 +104,8 @@ Set(SourceFiles
 
     "Game/Components/Transform.hpp"
     "Game/Components/Transform.cpp"
+    "Game/Components/Render.hpp"
+    "Game/Components/Render.cpp"
 )
 
 # Append source directory path to each source file.
