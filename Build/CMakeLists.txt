@@ -85,6 +85,8 @@ Set(SourceFiles
     "Graphics/Texture.cpp"
     "Graphics/Shader.hpp"
     "Graphics/Shader.cpp"
+    "Graphics/SpriteSheet.hpp"
+    "Graphics/SpriteSheet.cpp"
     "Graphics/BasicRenderer.hpp"
     "Graphics/BasicRenderer.cpp"
 
