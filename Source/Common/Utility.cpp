@@ -29,11 +29,24 @@ std::vector<std::string> Utility::SplitString(std::string text, char character)
     return result;
 }
 
+std::string Utility::GetFilePath(std::string filename)
+{
+    std::string path;
+
+    std::size_t it = filename.find_last_of("/\\");
+    if(it != std::string::npos)
+    {
+        path = filename.substr(0, it + 1);
+    }
+
+    return path;
+}
+
 std::string Utility::GetFileExtension(std::string filename)
 {
     std::string extension;
 
-    size_t it = filename.rfind('.');
+    std::size_t it = filename.find_last_of(".");
     if(it != std::string::npos)
     {
         extension = filename.substr(it + 1);
