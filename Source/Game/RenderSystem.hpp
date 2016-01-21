@@ -18,9 +18,18 @@ namespace System
 
 namespace Game
 {
+    // Forward declarations.
+    class ComponentSystem;
+
     // Render system class.
     class RenderSystem
     {
+    public:
+        // Type delcarations.
+        typedef std::vector<Graphics::BasicRenderer::Sprite::Info> SpriteInfoList;
+        typedef std::vector<Graphics::BasicRenderer::Sprite::Data> SpriteDataList;
+        typedef std::vector<std::size_t> SpriteSortList;
+
     public:
         RenderSystem();
         ~RenderSystem();
@@ -38,9 +47,15 @@ namespace Game
         // Context references.
         System::Window*          m_window;
         Graphics::BasicRenderer* m_basicRenderer;
+        ComponentSystem*         m_componentSystem;
 
         // Screen space transform.
         Graphics::ScreenSpace m_screenSpace;
+
+        // Sprite drawing lists.
+        SpriteInfoList m_spriteInfo;
+        SpriteDataList m_spriteData;
+        SpriteSortList m_spriteSort;
 
         // Initialization state.
         bool m_initialized;
