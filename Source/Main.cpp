@@ -8,6 +8,7 @@
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
 #include "Game/IdentitySystem.hpp"
+#include "Game/ScriptSystem.hpp"
 #include "Game/RenderSystem.hpp"
 
 #include "Graphics/SpriteSheet.hpp"
@@ -73,6 +74,11 @@ int main(int argc, char* argv[])
     // Initialize the identity system.
     Game::IdentitySystem identitySystem;
     if(!identitySystem.Initialize(context))
+        return -1;
+
+    // Initialize the script system.
+    Game::ScriptSystem scriptSystem;
+    if(!scriptSystem.Initialize(context))
         return -1;
 
     // Initialize the render system.
@@ -158,6 +164,9 @@ int main(int argc, char* argv[])
     // Main loop.
     while(window.IsOpen())
     {
+        // Get elapsed time since the last frame.
+        float timeDelta = timer.GetDelta();
+
         // Release unused resources.
         resourceManager.ReleaseUnused();
 
@@ -169,6 +178,9 @@ int main(int argc, char* argv[])
 
         // Process entity commands.
         entitySystem.ProcessCommands();
+
+        // Update script system.
+        scriptSystem.Update(timeDelta);
 
         // Draw the scene.
         renderSystem.Draw();
