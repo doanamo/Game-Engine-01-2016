@@ -111,6 +111,34 @@ void State::PushValue(std::string name)
     }
 }
 
+void State::CollectGarbage()
+{
+    if(!m_initialized)
+        return;
+
+    // Collect all garbage at once.
+    lua_gc(m_state, LUA_GCCOLLECT, 0);
+}
+
+void State::CollectGarbage(float maxTime)
+{
+    if(!m_initialized)
+        return;
+
+    if(maxTime <= 0.0f)
+        return;
+
+    // Run garbage collector for a specified time.
+    double startTime = glfwGetTime();
+
+    do
+    {
+        if(lua_gc(m_state, LUA_GCSTEP, 0))
+            break;
+    }
+    while((glfwGetTime() - startTime) < maxTime);
+}
+
 void State::PrintStack() const
 {
     if(!m_initialized)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "Lua/State.hpp"
 
 //
 // Script System
@@ -27,6 +28,9 @@ namespace Game
         void Update(float timeDelta);
 
     private:
+        // Main scripting state.
+        Lua::State m_lua;
+
         // Initialization state.
         bool m_initialized;
     };

@@ -21,6 +21,9 @@ ScriptSystem::~ScriptSystem()
 
 void ScriptSystem::Cleanup()
 {
+    // Cleanup Lua state.
+    m_lua.Cleanup();
+
     // Reset initialization state.
     m_initialized = false;
 }
@@ -44,6 +47,13 @@ bool ScriptSystem::Initialize(Context& context)
         return false;
     }
 
+    // Initialize Lua state.
+    if(!m_lua.Initialize())
+    {
+        Log() << LogInitializeError() << "Couldn't initialize Lua state.";
+        return false;
+    }
+
     // Add instance to the context.
     context.Set(this);
 
@@ -55,4 +65,7 @@ void ScriptSystem::Update(float timeDelta)
 {
     if(!m_initialized)
         return;
+
+    // Collect script garbage.
+    m_lua.CollectGarbage(0.002f);
 }

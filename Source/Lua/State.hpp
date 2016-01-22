@@ -35,6 +35,12 @@ namespace Lua
         template<typename Type>
         Type CastValue(const Type& default);
 
+        // Collects all memory garbage.
+        void CollectGarbage();
+
+        // Collects memory garbage for a specified time.
+        void CollectGarbage(float maxTime);
+
         // Prints the stack for debugging.
         void PrintStack() const;
 
