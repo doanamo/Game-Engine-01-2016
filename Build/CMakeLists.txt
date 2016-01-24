@@ -99,6 +99,8 @@ Set(SourceFiles
     "Game/ComponentSystem.cpp"
     "Game/IdentitySystem.hpp"
     "Game/IdentitySystem.cpp"
+    "Game/Script.hpp"
+    "Game/Script.cpp"
     "Game/ScriptSystem.hpp"
     "Game/ScriptSystem.cpp"
     "Game/RenderSystem.hpp"
