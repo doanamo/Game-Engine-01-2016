@@ -11,6 +11,9 @@ namespace System
 //
 // Resource
 //
+//  Base class for resource types.
+//  See ResourceManager for more context.
+//
 
 namespace System
 {
