@@ -27,6 +27,9 @@ namespace Game
         // Updates the system.
         void Update(float timeDelta);
 
+        // Gets the Lua state.
+        Lua::State& GetState();
+
     private:
         // Main scripting state.
         Lua::State m_lua;

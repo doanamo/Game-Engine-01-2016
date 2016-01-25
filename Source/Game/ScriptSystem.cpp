@@ -69,3 +69,8 @@ void ScriptSystem::Update(float timeDelta)
     // Collect script garbage.
     m_lua.CollectGarbage(0.002f);
 }
+
+Lua::State& ScriptSystem::GetState()
+{
+    return m_lua;
+}
