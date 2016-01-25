@@ -8,7 +8,8 @@ namespace
     #define LogInitializeError() "Failed to initialize the resource manager! "
 }
 
-ResourceManager::ResourceManager()
+ResourceManager::ResourceManager() :
+    m_initialized(false)
 {
 }
 
