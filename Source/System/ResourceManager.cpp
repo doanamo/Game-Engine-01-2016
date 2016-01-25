@@ -9,6 +9,7 @@ namespace
 }
 
 ResourceManager::ResourceManager() :
+    m_context(nullptr),
     m_initialized(false)
 {
 }
@@ -23,6 +24,9 @@ void ResourceManager::Cleanup()
 {
     // Remove all resource pools.
     Utility::ClearContainer(m_pools);
+
+    // Reset context reference.
+    m_context = nullptr;
 
     // Reset initialization state.
     m_initialized = false;
@@ -50,6 +54,9 @@ bool ResourceManager::Initialize(Context& context)
     // Add instance to the context.
     context.Set(this);
 
+    // Save context reference.
+    m_context = &context;
+
     // Success!
     return m_initialized = true;
 }
@@ -65,4 +72,9 @@ void ResourceManager::ReleaseUnused()
         auto& pool = pair.second;
         pool->ReleaseUnused();
     }
+}
+
+Context* ResourceManager::GetContext()
+{
+    return m_context;
 }

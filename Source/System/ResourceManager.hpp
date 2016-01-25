@@ -70,6 +70,9 @@ namespace System
         template<typename Type>
         ResourcePool<Type>* GetPool();
 
+        // Gets the context.
+        Context* GetContext();
+
     private:
         // Creates a resource pool.
         template<typename Type>
@@ -78,6 +81,9 @@ namespace System
     private:
         // Resource pools.
         ResourcePoolList m_pools;
+
+        // Context reference.
+        Context* m_context;
 
         // Initialization state.
         bool m_initialized;
