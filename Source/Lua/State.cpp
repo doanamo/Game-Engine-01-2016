@@ -58,8 +58,7 @@ bool State::Load(std::string filename)
     // Parse the file.
     if(luaL_dofile(m_state, (Build::GetWorkingDir() + filename).c_str()) != 0)
     {
-        Log() << "Lua Error: " << lua_tostring(m_state, -1);
-        lua_pop(m_state, 1);
+        this->PrintError();
         return false;
     }
 
@@ -141,7 +140,7 @@ void State::CollectGarbage(float maxTime)
 
 void State::PrintStack() const
 {
-    if(!m_initialized)
+    if(m_state == nullptr)
         return;
 
     Log() << "Lua stack:";
@@ -177,6 +176,18 @@ void State::PrintStack() const
             Log() << "  " << i << ": n/a (" << lua_typename(m_state, type) << ")";
             break;
         }
+    }
+}
+
+void State::PrintError()
+{
+    if(m_state == nullptr)
+        return;
+
+    if(lua_isstring(m_state, -1))
+    {
+        Log() << "Lua Error: " << lua_tostring(m_state, -1);
+        lua_pop(m_state, 1);
     }
 }
 

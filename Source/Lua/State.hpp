@@ -44,6 +44,9 @@ namespace Lua
         // Prints the stack for debugging.
         void PrintStack() const;
 
+        // Prints the error and pops it.
+        void PrintError();
+
         // Conversion operator.
         operator lua_State*();
 
