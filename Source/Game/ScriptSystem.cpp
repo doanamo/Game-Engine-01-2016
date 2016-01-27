@@ -21,8 +21,8 @@ ScriptSystem::~ScriptSystem()
 
 void ScriptSystem::Cleanup()
 {
-    // Cleanup Lua state.
-    m_lua.Cleanup();
+    // Reset Lua state.
+    m_lua = nullptr;
 
     // Reset initialization state.
     m_initialized = false;
@@ -48,7 +48,9 @@ bool ScriptSystem::Initialize(Context& context)
     }
 
     // Initialize Lua state.
-    if(!m_lua.Initialize())
+    m_lua = std::make_shared<Lua::State>();
+
+    if(!m_lua->Initialize())
     {
         Log() << LogInitializeError() << "Couldn't initialize Lua state.";
         return false;
@@ -67,10 +69,13 @@ void ScriptSystem::Update(float timeDelta)
         return;
 
     // Collect script garbage.
-    m_lua.CollectGarbage(0.002f);
+    m_lua->CollectGarbage(0.002f);
 }
 
-Lua::State& ScriptSystem::GetState()
+std::shared_ptr<Lua::State> ScriptSystem::GetState()
 {
+    if(!m_initialized)
+        return nullptr;
+
     return m_lua;
 }

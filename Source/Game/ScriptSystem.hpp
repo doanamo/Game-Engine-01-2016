@@ -28,11 +28,11 @@ namespace Game
         void Update(float timeDelta);
 
         // Gets the Lua state.
-        Lua::State& GetState();
+        std::shared_ptr<Lua::State> GetState();
 
     private:
         // Main scripting state.
-        Lua::State m_lua;
+        std::shared_ptr<Lua::State> m_lua;
 
         // Initialization state.
         bool m_initialized;
