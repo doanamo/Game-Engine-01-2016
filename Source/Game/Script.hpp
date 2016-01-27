@@ -2,6 +2,7 @@
 
 #include "Precompiled.hpp"
 #include "System/Resource.hpp"
+#include "Lua/State.hpp"
 
 //
 // Script
@@ -16,7 +17,7 @@ namespace Game
     class Script : public System::Resource
     {
     public:
-        Script(System::ResourceManager* resourceManager = nullptr);
+        Script(System::ResourceManager* resourceManager);
         ~Script();
 
         // Restores instance to it's original state.
@@ -26,6 +27,12 @@ namespace Game
         bool Load(std::string filename);
 
     private:
+        // Script state reference.
+        std::shared_ptr<Lua::State> m_state;
+
+        // Script class reference.
+        int m_reference;
+
         // Initialization state.
         bool m_initialized;
     };

@@ -11,6 +11,7 @@
 #include "Game/ScriptSystem.hpp"
 #include "Game/RenderSystem.hpp"
 
+#include "Game/Script.hpp"
 #include "Graphics/SpriteSheet.hpp"
 #include "Game/Components/Transform.hpp"
 #include "Game/Components/Render.hpp"
@@ -88,6 +89,8 @@ int main(int argc, char* argv[])
 
     // Create entities.
     {
+        auto playerScript = resourceManager.Load<Game::Script>("Data/Scripts/Player.lua");
+
         auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
 
         auto entity = entitySystem.CreateEntity();
