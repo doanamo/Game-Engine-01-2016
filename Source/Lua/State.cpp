@@ -8,6 +8,19 @@ namespace
     #define LogInitializeError() "Failed to initialize Lua state! "
 }
 
+extern "C"
+{
+    static int LuaLog(lua_State* lua)
+    {
+        if(lua_isstring(lua, -1))
+        {
+            Log() << lua_tostring(lua, -1);
+        }
+
+        return 0;
+    }
+}
+
 State::State() :
     m_state(nullptr),
     m_initialized(false)
@@ -61,6 +74,10 @@ bool State::Initialize()
         this->PrintError();
         return false;
     }
+
+    // Register the logging function.
+    lua_pushcfunction(m_state, LuaLog);
+    lua_setglobal(m_state, "Log");
 
     // Success!
     return m_initialized = true;
