@@ -2,6 +2,12 @@
 #include "State.hpp"
 using namespace Lua;
 
+namespace
+{
+    // Log error messages.
+    #define LogInitializeError() "Failed to initialize Lua state! "
+}
+
 State::State() :
     m_state(nullptr),
     m_initialized(false)
@@ -38,6 +44,23 @@ bool State::Initialize()
 
     // Create Lua state.
     m_state = luaL_newstate();
+
+    if(m_state == nullptr)
+    {
+        Log() << LogInitializeError() << "Couldn't create a new state.";
+        return false;
+    }
+
+    // Load the base library.
+    lua_pushcfunction(m_state, luaopen_base);
+    lua_pushstring(m_state, "");
+
+    if(lua_pcall(m_state, 1, 0, 0) != 0)
+    {
+        Log() << LogInitializeError() << "Couldn't load the base library.";
+        this->PrintError();
+        return false;
+    }
 
     // Success!
     return m_initialized = true;
