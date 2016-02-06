@@ -11,7 +11,10 @@ end
 setmetatable(Player, { __call = Player.New })
 
 function Player:Update(entitySelf, timeDelta)
-    Log(self.text)
+    if self.text then
+        Log(self.text)
+        self.text = nil
+    end
 end
 
 return Player

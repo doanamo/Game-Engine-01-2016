@@ -43,7 +43,7 @@ void Script::AddScript(std::shared_ptr<const Game::Script> script)
         }
     }
 
-    // Get the script class.
+    // Push the script class.
     lua_rawgeti(*m_state, LUA_REGISTRYINDEX, script->GetReference());
 
     SCOPE_GUARD(lua_pop(*m_state, -1));
@@ -79,4 +79,39 @@ void Script::AddScript(std::shared_ptr<const Game::Script> script)
 
     // Add script to the list.
     m_scripts.push_back(reference);
+}
+
+void Script::Call(std::string function)
+{
+    assert(m_state != nullptr);
+
+    for(auto script : m_scripts)
+    {
+        // Stack guard.
+        int stack = lua_gettop(*m_state);
+        SCOPE_GUARD(lua_settop(*m_state, stack));
+
+        // Push a script instance.
+        lua_rawgeti(*m_state, LUA_REGISTRYINDEX, script);
+
+        if(!lua_istable(*m_state, -1))
+            continue;
+
+        // Get the script method.
+        lua_getfield(*m_state, -1, function.c_str());
+
+        if(!lua_isfunction(*m_state, -1))
+            continue;
+
+        // Swap the function with the
+        // script instance on the stack.
+        lua_insert(*m_state, -2);
+
+        // Call the script method.
+        if(lua_pcall(*m_state, 1, 0, 0) != 0)
+        {
+            m_state->PrintError();
+            continue;
+        }
+    }
 }

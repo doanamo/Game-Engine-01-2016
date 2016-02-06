@@ -1,5 +1,8 @@
 #include "Precompiled.hpp"
 #include "ScriptSystem.hpp"
+#include "EntitySystem.hpp"
+#include "ComponentSystem.hpp"
+#include "Components/Script.hpp"
 using namespace Game;
 
 namespace
@@ -9,6 +12,8 @@ namespace
 }
 
 ScriptSystem::ScriptSystem() :
+    m_entitySystem(nullptr),
+    m_componentSystem(nullptr),
     m_initialized(false)
 {
 }
@@ -21,6 +26,10 @@ ScriptSystem::~ScriptSystem()
 
 void ScriptSystem::Cleanup()
 {
+    // Reset context references.
+    m_entitySystem = nullptr;
+    m_componentSystem = nullptr;
+
     // Reset Lua state.
     m_lua = nullptr;
 
@@ -47,6 +56,23 @@ bool ScriptSystem::Initialize(Context& context)
         return false;
     }
 
+    // Get required context references.
+    m_entitySystem = context.Get<Game::EntitySystem>();
+
+    if(m_entitySystem == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing EntitySystem instance.";
+        return false;
+    }
+
+    m_componentSystem = context.Get<Game::ComponentSystem>();
+
+    if(m_componentSystem == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing ComponentSystem instance.";
+        return false;
+    }
+
     // Initialize Lua state.
     m_lua = std::make_shared<Lua::State>();
 
@@ -70,6 +96,23 @@ void ScriptSystem::Update(float timeDelta)
 
     // Collect script garbage.
     m_lua->CollectGarbage(0.002f);
+
+    // Update all script components.
+    auto componentsBegin = m_componentSystem->Begin<Components::Script>();
+    auto componentsEnd = m_componentSystem->End<Components::Script>();
+
+    for(auto it = componentsBegin; it != componentsEnd; ++it)
+    {
+        const EntityHandle& entity = it->first;
+        Components::Script& script = it->second;
+
+        // Check if entity is active.
+        if(!m_entitySystem->IsHandleValid(it->first))
+            continue;
+
+        // Update script component.
+        script.Call("Update");
+    }
 }
 
 std::shared_ptr<Lua::State> ScriptSystem::GetState()
