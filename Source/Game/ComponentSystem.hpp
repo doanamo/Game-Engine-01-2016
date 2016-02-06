@@ -21,6 +21,18 @@
 //          /* ... */
 //      };
 //
+//  Iterate over all components of a type:
+//      auto componentsBegin = m_componentSystem->Begin<Components::Class>();
+//      auto componentsEnd = m_componentSystem->End<Components::Class>();
+//      
+//      for(auto it = componentsBegin; it != componentsEnd; ++it)
+//      {
+//          const EntityHandle& entity = it->first;
+//          Components::Class& component = it->second;
+//          
+//          /* ... */
+//      }
+//
 
 namespace Game
 {
