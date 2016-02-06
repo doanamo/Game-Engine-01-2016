@@ -126,3 +126,8 @@ Script::ScriptReference Script::GetReference() const
 {
     return m_reference;
 }
+
+bool Script::IsValid() const
+{
+    return m_state != nullptr;
+}

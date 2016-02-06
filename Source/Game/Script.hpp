@@ -36,6 +36,9 @@ namespace Game
         // Gets the script reference.
         ScriptReference GetReference() const;
 
+        // Checks if the script is valid.
+        bool IsValid() const;
+
     private:
         // Scripting state.
         std::shared_ptr<Lua::State> m_state;
