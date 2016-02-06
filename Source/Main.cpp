@@ -14,6 +14,7 @@
 #include "Game/Script.hpp"
 #include "Graphics/SpriteSheet.hpp"
 #include "Game/Components/Transform.hpp"
+#include "Game/Components/Script.hpp"
 #include "Game/Components/Render.hpp"
 
 //
@@ -98,6 +99,9 @@ int main(int argc, char* argv[])
 
         auto transform = componentSystem.Create<Game::Components::Transform>(entity);
         transform->SetPosition(glm::vec2(0.0f, 0.0f));
+
+        auto script = componentSystem.Create<Game::Components::Script>(entity);
+        script->AddScript(playerScript);
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
         render->SetTexture(spriteSheet->GetTexture());
