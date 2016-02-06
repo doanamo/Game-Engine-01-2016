@@ -229,6 +229,10 @@ void State::PrintError()
         Log() << "Lua Error: " << lua_tostring(m_state, -1);
         lua_pop(m_state, 1);
     }
+    else
+    {
+        assert("Lua::State::PrintError() called but there's no string on top of the stack!");
+    }
 }
 
 State::operator lua_State*()
