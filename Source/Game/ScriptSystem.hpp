@@ -42,7 +42,7 @@ namespace Game
         ComponentSystem* m_componentSystem;
 
         // Main scripting state.
-        std::shared_ptr<Lua::State> m_lua;
+        std::shared_ptr<Lua::State> m_state;
 
         // Initialization state.
         bool m_initialized;
