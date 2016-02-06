@@ -17,6 +17,10 @@ namespace Game
     class Script : public System::Resource
     {
     public:
+        // Type declarations.
+        typedef int ScriptReference;
+
+    public:
         Script(System::ResourceManager* resourceManager);
         ~Script();
 
@@ -26,12 +30,18 @@ namespace Game
         // Loads the script from a file.
         bool Load(std::string filename);
 
+        // Gets the scripting state.
+        std::shared_ptr<Lua::State> GetState() const;
+
+        // Gets the script reference.
+        ScriptReference GetReference() const;
+
     private:
-        // Script state reference.
+        // Scripting state.
         std::shared_ptr<Lua::State> m_state;
 
-        // Script class reference.
-        int m_reference;
+        // Script reference.
+        ScriptReference m_reference;
 
         // Initialization state.
         bool m_initialized;

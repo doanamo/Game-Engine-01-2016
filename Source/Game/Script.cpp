@@ -32,7 +32,7 @@ void Script::Cleanup()
         m_reference = LUA_REFNIL;
     }
 
-    // Reset script state reference.
+    // Release script state reference.
     m_state = nullptr;
 
     // Reset initialization state.
@@ -115,4 +115,14 @@ bool Script::Load(std::string filename)
     Log() << "Loaded a script from \"" << filename << "\" file.";
 
     return m_initialized = true;
+}
+
+std::shared_ptr<Lua::State> Script::GetState() const
+{
+    return m_state;
+}
+
+Script::ScriptReference Script::GetReference() const
+{
+    return m_reference;
 }
