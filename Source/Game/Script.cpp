@@ -83,7 +83,7 @@ bool Script::Load(std::string filename)
 
     if(m_state == nullptr)
     {
-        Log() << LogLoadError(filename) << "Context is missing ScriptSystem instance.";
+        Log() << LogLoadError(filename) << "Lua state is invalid.";
         return false;
     }
 
