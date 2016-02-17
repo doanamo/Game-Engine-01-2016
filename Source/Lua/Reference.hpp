@@ -22,10 +22,19 @@ namespace Lua
 
     public:
         Reference(System::ResourceManager* resourceManager);
+        Reference(const std::shared_ptr<Lua::State>& state);
+        Reference(const Reference& other);
         ~Reference();
 
-        // Restores instance to it's original state.
-        void Cleanup();
+        // Creates a reference for an object on top of the stack.
+        // Pops the object from the stack in the process.
+        void Create();
+
+        // Pushes the referenced value.
+        void Push() const;
+
+        // Releases the referenced value.
+        void Release();
 
         // Loads the reference from a file.
         bool Load(std::string filename);

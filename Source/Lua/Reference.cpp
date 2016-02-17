@@ -17,12 +17,45 @@ Reference::Reference(System::ResourceManager* resourceManager) :
 {
 }
 
-Reference::~Reference()
+Reference::Reference(const std::shared_ptr<Lua::State>& state) :
+    System::Resource(nullptr),
+    m_state(state),
+    m_reference(LUA_REFNIL)
 {
-    this->Cleanup();
 }
 
-void Reference::Cleanup()
+Reference::Reference(const Reference& other) :
+    System::Resource(nullptr),
+    m_state(other.m_state),
+    m_reference(LUA_REFNIL)
+{
+    // Create a new reference.
+    other.Push();
+    this->Create();
+}
+
+Reference::~Reference()
+{
+    this->Release();
+}
+
+void Reference::Create()
+{
+    if(!this->IsValid())
+        return;
+
+    m_reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
+}
+
+void Reference::Push() const
+{
+    if(!this->IsValid())
+        return;
+
+    lua_rawgeti(*m_state, LUA_REGISTRYINDEX, m_reference);
+}
+
+void Reference::Release()
 {
     // Release registered reference.
     if(m_reference != LUA_REFNIL)
@@ -35,7 +68,7 @@ void Reference::Cleanup()
 
 bool Reference::Load(std::string filename)
 {
-    this->Cleanup();
+    this->Release();
 
     // Acquire state reference if missing.
     if(m_state == nullptr)
