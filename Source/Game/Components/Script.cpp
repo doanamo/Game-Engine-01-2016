@@ -1,6 +1,5 @@
 #include "Precompiled.hpp"
 #include "Script.hpp"
-#include "Game/Script.hpp"
 using namespace Game::Components;
 
 Script::Script()
@@ -21,12 +20,9 @@ Script::~Script()
     m_state = nullptr;
 }
 
-void Script::AddScript(std::shared_ptr<const Game::Script> script)
+void Script::AddScript(std::shared_ptr<const Lua::Reference> script)
 {
-    if(script == nullptr)
-        return;
-
-    if(!script->IsValid())
+    if(script == nullptr || !script->IsValid())
         return;
 
     // Save state reference from the first script we add.
@@ -69,7 +65,7 @@ void Script::AddScript(std::shared_ptr<const Game::Script> script)
     SCOPE_GUARD(lua_pop(*m_state, -1));
 
     // Create a reference to newly created script instance.
-    ScriptReference reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
+    ReferenceID reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
 
     if(reference == LUA_REFNIL)
     {

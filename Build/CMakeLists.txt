@@ -59,6 +59,8 @@ Set(SourceFiles
 
     "Lua/State.hpp"
     "Lua/State.cpp"
+    "Lua/Reference.hpp"
+    "Lua/Reference.cpp"
 
     "System/Config.hpp"
     "System/Config.cpp"
@@ -99,8 +101,6 @@ Set(SourceFiles
     "Game/ComponentSystem.cpp"
     "Game/IdentitySystem.hpp"
     "Game/IdentitySystem.cpp"
-    "Game/Script.hpp"
-    "Game/Script.cpp"
     "Game/ScriptSystem.hpp"
     "Game/ScriptSystem.cpp"
     "Game/RenderSystem.hpp"

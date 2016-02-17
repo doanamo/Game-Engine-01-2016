@@ -3,12 +3,7 @@
 #include "Precompiled.hpp"
 #include "Game/Component.hpp"
 #include "Lua/State.hpp"
-
-// Forward declarations.
-namespace Game
-{
-    class Script;
-}
+#include "Lua/Reference.hpp"
 
 //
 // Script Component
@@ -23,14 +18,14 @@ namespace Game
         {
         public:
             // Type decalarations.
-            typedef int ScriptReference;
+            typedef int ReferenceID;
 
         public:
             Script();
             ~Script();
 
             // Adds a script instance.
-            void AddScript(std::shared_ptr<const Game::Script> script);
+            void AddScript(std::shared_ptr<const Lua::Reference> script);
 
             // Calls added scripts.
             void Call(std::string function);
@@ -40,7 +35,7 @@ namespace Game
             std::shared_ptr<Lua::State> m_state;
 
             // List of script references.
-            std::vector<ScriptReference> m_scripts;
+            std::vector<ReferenceID> m_scripts;
         };
     }
 }

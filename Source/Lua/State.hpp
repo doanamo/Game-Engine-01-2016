@@ -50,6 +50,9 @@ namespace Lua
         // Conversion operator.
         operator lua_State*();
 
+        // Checks if the instance is valid.
+        bool IsValid() const;
+
     private:
         // Virtual machine state.
         lua_State* m_state;

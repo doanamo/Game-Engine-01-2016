@@ -239,3 +239,8 @@ State::operator lua_State*()
 {
     return m_state;
 }
+
+bool State::IsValid() const
+{
+    return m_state != nullptr;
+}
