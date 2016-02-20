@@ -24,6 +24,7 @@ namespace Lua
         Reference(System::ResourceManager* resourceManager);
         Reference(const std::shared_ptr<Lua::State>& state);
         Reference(const Reference& other);
+        Reference(Reference&& other);
         ~Reference();
 
         // Creates a reference for an object on top of the stack.

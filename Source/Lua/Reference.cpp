@@ -31,6 +31,12 @@ Reference::Reference(const Reference& other) :
     other.PushOntoStack();
     this->CreateFromStack();
 }
+
+Reference::Reference(Reference&& other) :
+    m_state(std::move(other.m_state)),
+    m_reference(other.m_reference)
+{
+    other.m_reference = LUA_REFNIL;
 }
 
 Reference::~Reference()

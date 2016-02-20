@@ -54,8 +54,8 @@ void Script::AddScript(std::shared_ptr<const Lua::Reference> script)
     Lua::Reference reference(script->GetState());
     reference.CreateFromStack();
 
-    // Add script to the list.
-    m_scripts.push_back(reference);
+    // Add new script to the list.
+    m_scripts.push_back(std::move(reference));
 }
 
 void Script::Call(std::string function)
