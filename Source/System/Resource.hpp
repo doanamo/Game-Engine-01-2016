@@ -21,7 +21,7 @@ namespace System
     class Resource : private NonCopyable
     {
     protected:
-        Resource(ResourceManager* resourceManager) :
+        Resource(ResourceManager* resourceManager = nullptr) :
             m_resourceManager(resourceManager)
         {
         }

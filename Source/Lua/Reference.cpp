@@ -18,14 +18,12 @@ Reference::Reference(System::ResourceManager* resourceManager) :
 }
 
 Reference::Reference(const std::shared_ptr<Lua::State>& state) :
-    System::Resource(nullptr),
     m_state(state),
     m_reference(LUA_REFNIL)
 {
 }
 
 Reference::Reference(const Reference& other) :
-    System::Resource(nullptr),
     m_state(other.m_state),
     m_reference(LUA_REFNIL)
 {
