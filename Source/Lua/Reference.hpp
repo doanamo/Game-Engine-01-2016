@@ -28,10 +28,10 @@ namespace Lua
 
         // Creates a reference for an object on top of the stack.
         // Pops the object from the stack in the process.
-        void Create();
+        void CreateFromStack();
 
-        // Pushes the referenced value.
-        void Push() const;
+        // Pushes the referenced value on top of the stack.
+        void PushOntoStack() const;
 
         // Releases the referenced value.
         void Release();

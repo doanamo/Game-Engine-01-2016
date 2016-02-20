@@ -28,8 +28,9 @@ Reference::Reference(const Reference& other) :
     m_reference(LUA_REFNIL)
 {
     // Create a new reference.
-    other.Push();
-    this->Create();
+    other.PushOntoStack();
+    this->CreateFromStack();
+}
 }
 
 Reference::~Reference()
@@ -37,7 +38,7 @@ Reference::~Reference()
     this->Release();
 }
 
-void Reference::Create()
+void Reference::CreateFromStack()
 {
     if(!this->IsValid())
         return;
@@ -45,7 +46,7 @@ void Reference::Create()
     m_reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
 }
 
-void Reference::Push() const
+void Reference::PushOntoStack() const
 {
     if(!this->IsValid())
         return;

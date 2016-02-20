@@ -27,7 +27,7 @@ void Script::AddScript(std::shared_ptr<const Lua::Reference> script)
     Lua::State& state = *script->GetState();
 
     // Push the script class.
-    script->Push();
+    script->PushOntoStack();
 
     SCOPE_GUARD(lua_pop(state, -1));
 
@@ -52,7 +52,7 @@ void Script::AddScript(std::shared_ptr<const Lua::Reference> script)
 
     // Create a reference to newly created script instance.
     Lua::Reference reference(script->GetState());
-    reference.Create();
+    reference.CreateFromStack();
 
     // Add script to the list.
     m_scripts.push_back(reference);
@@ -70,7 +70,7 @@ void Script::Call(std::string function)
         SCOPE_GUARD(lua_settop(state, stack));
 
         // Push a script instance.
-        script.Push();
+        script.PushOntoStack();
 
         if(!lua_istable(state, -1))
             continue;
