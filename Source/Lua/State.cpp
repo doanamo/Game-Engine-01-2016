@@ -235,12 +235,25 @@ void State::PrintError()
     }
 }
 
-State::operator lua_State*()
+bool State::IsValid() const
+{
+    return m_state != nullptr;
+}
+
+int State::GetStackSize() const
+{
+    if(m_state == nullptr)
+        return 0;
+
+    return lua_gettop(m_state);
+}
+
+lua_State* State::GetPrivate()
 {
     return m_state;
 }
 
-bool State::IsValid() const
+State::operator lua_State*()
 {
-    return m_state != nullptr;
+    return m_state;
 }

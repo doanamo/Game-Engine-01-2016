@@ -59,6 +59,8 @@ Set(SourceFiles
 
     "Lua/State.hpp"
     "Lua/State.cpp"
+    "Lua/StackGuard.hpp"
+    "Lua/StackGuard.cpp"
     "Lua/Reference.hpp"
     "Lua/Reference.cpp"
 

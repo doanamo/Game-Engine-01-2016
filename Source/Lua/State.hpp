@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "StackGuard.hpp"
 
 //
 // Lua State
@@ -47,11 +48,17 @@ namespace Lua
         // Prints the error and pops it.
         void PrintError();
 
-        // Conversion operator.
-        operator lua_State*();
-
         // Checks if the instance is valid.
         bool IsValid() const;
+
+        // Gets the size of the stack.
+        int GetStackSize() const;
+
+        // Gets the private implementation.
+        lua_State* GetPrivate();
+
+        // Conversion operator.
+        operator lua_State*();
 
     private:
         // Virtual machine state.

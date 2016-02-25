@@ -28,7 +28,7 @@ namespace Game
             bool Finalize(EntityHandle self, const Context& context);
 
             // Calls added scripts.
-            void Call(std::string function);
+            void Call(std::string method);
 
         private:
             // List of script references.
