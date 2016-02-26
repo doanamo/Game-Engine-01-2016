@@ -100,21 +100,19 @@ void FileOutput::Write(const Logger::Message& message)
     m_file << message.GetText();
 
     // Write message source.
-    #ifndef NDEBUG
-        if(!message.GetSource().empty())
+    if(!message.GetSource().empty())
+    {
+        m_file << " {";
+        m_file << message.GetSource();
+
+        if(message.GetLine() != 0)
         {
-            m_file << " {";
-            m_file << message.GetSource();
-
-            if(message.GetLine() != 0)
-            {
-                m_file << ":";
-                m_file << message.GetLine();
-            }
-
-            m_file << "}";
+            m_file << ":";
+            m_file << message.GetLine();
         }
-    #endif
+
+        m_file << "}";
+    }
 
     // Write message suffix.
     m_file << "\n";

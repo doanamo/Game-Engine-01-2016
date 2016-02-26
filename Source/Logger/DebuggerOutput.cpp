@@ -12,10 +12,9 @@ DebuggerOutput::~DebuggerOutput()
 
 void DebuggerOutput::Write(const Logger::Message& message)
 {
-    // Don't do anything if not in debug mode.
-    #ifdef NDEBUG
+    // Check if debugger is attached.
+    if(!IsDebuggerPresent())
         return;
-    #endif
 
     // Clear string stream.
     m_stream.str("");
@@ -35,21 +34,19 @@ void DebuggerOutput::Write(const Logger::Message& message)
     m_stream << message.GetText();
 
     // Write message source.
-    #ifndef NDEBUG
-        if(!message.GetSource().empty())
+    if(!message.GetSource().empty())
+    {
+        m_stream << " {";
+        m_stream << message.GetSource();
+
+        if(message.GetLine() != 0)
         {
-            m_stream << " {";
-            m_stream << message.GetSource();
-
-            if(message.GetLine() != 0)
-            {
-                m_stream << ":";
-                m_stream << message.GetLine();
-            }
-
-            m_stream << "}";
+            m_stream << ":";
+            m_stream << message.GetLine();
         }
-    #endif
+
+        m_stream << "}";
+    }
 
     // Write message suffix.
     m_stream << "\n";

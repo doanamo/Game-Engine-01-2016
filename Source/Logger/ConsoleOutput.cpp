@@ -27,21 +27,19 @@ void ConsoleOutput::Write(const Logger::Message& message)
     std::cout << message.GetText();
 
     // Write message source.
-    #ifndef NDEBUG
-        if(!message.GetSource().empty())
+    if(!message.GetSource().empty())
+    {
+        std::cout << " {";
+        std::cout << message.GetSource();
+
+        if(message.GetLine() != 0)
         {
-            std::cout << " {";
-            std::cout << message.GetSource();
-
-            if(message.GetLine() != 0)
-            {
-                std::cout << ":";
-                std::cout << message.GetLine();
-            }
-
-            std::cout << "}";
+            std::cout << ":";
+            std::cout << message.GetLine();
         }
-    #endif
+
+        std::cout << "}";
+    }
 
     // Write message suffix.
     std::cout << "\n";

@@ -28,9 +28,7 @@ void Logger::Initialize()
     sink.AddOutput(&consoleOutput);
 
     // Add the debugger output.
-    #ifndef NDEBUG
-        sink.AddOutput(&debuggerOutput);
-    #endif
+    sink.AddOutput(&debuggerOutput);
 }
 
 void Logger::Write(const Logger::Message& message)
