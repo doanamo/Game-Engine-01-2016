@@ -40,29 +40,38 @@ Message& Message::SetText(const char* text)
 
 Message& Message::SetSource(const char* source)
 {
-    if(source != nullptr)
-    {
-        // Set source string.
-        m_source = source;
+    m_source = source;
 
+    // Truncate the source file path.
+    if(!m_source.empty())
+    {
         // Normalize source path separators.
         std::replace(m_source.begin(), m_source.end(), '\\', '/');
 
-        // Remove base path to source directory.
+        // Get the source directory path.
         std::string sourceDir = Build::GetSourceDir();
 
-        auto it = std::search(m_source.begin(), m_source.end(), sourceDir.begin(), sourceDir.end(), [](char a, char b)
+        if(sourceDir.empty())
         {
-            return std::toupper(a) == std::toupper(b);
-        });
+            // Workaround in case source directory isn't specified.
+            sourceDir = "Source/";
+        }
+
+        // Remove base path to source directory.
+        auto it = std::search(m_source.begin(), m_source.end(), sourceDir.begin(), sourceDir.end(),
+            [](char a, char b)
+            {
+                return std::toupper(a) == std::toupper(b);
+            }
+        );
 
         if(it != m_source.end())
         {
-            m_source.erase(it, it + sourceDir.size());
+            m_source.erase(m_source.begin(), it + sourceDir.size());
         }
 
-        // Workaround for the first letter being lower case.
-        // Happenes when __FILE__ macro is used inside inlined function.
+        // Workaround for the first letter being lower case. Happenes
+        // whenever __FILE__ macro is used inside an inlined function.
         if(!m_source.empty())
         {
             m_source[0] = std::toupper(m_source[0]);
