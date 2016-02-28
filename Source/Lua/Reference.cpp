@@ -28,8 +28,11 @@ Reference::Reference(const Reference& other) :
     m_reference(LUA_REFNIL)
 {
     // Create a new reference.
-    other.PushOntoStack();
-    this->CreateFromStack();
+    if(other.IsValid())
+    {
+        other.PushOntoStack();
+        this->CreateFromStack();
+    }
 }
 
 Reference::Reference(Reference&& other) :

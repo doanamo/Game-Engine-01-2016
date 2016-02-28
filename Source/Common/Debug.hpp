@@ -65,7 +65,7 @@ namespace Debug
 
     #define VERIFY_MESSAGE(expression, message)                                 \
         if(!(expression))                                                       \
-        { \                                                                     \
+        {                                                                       \
             DBEUG_PRINT_ASSERT_MESSAGE(#expression, message);                   \
             __debugbreak();                                                     \
         }
