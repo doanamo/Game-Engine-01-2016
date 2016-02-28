@@ -38,13 +38,13 @@ namespace Debug
 
 #define DEBUG_EXPAND_MACRO(x) x
 
-#define DEBUG_PRINT_ASSERT_SIMPLE(type, expression) \
+#define DEBUG_PRINT_ASSERT_SIMPLE(expression) \
     Logger::ScopedMessage(Logger::GetGlobal()).SetSource(__FILE__).SetLine(__LINE__) \
-        << type << ": \"" << expression << "\"";
+        << "Assertion failed: \"" << expression << "\"";
 
-#define DBEUG_PRINT_MESSAGE(type, expression, message) \
+#define DBEUG_PRINT_ASSERT_MESSAGE(expression, message) \
     Logger::ScopedMessage(Logger::GetGlobal()).SetSource(__FILE__).SetLine(__LINE__) \
-        << type << ": \"" << expression << "\" - " << message;
+        << "Assertion failed: \"" << expression << "\" - " << message;
 
 //
 // Verify Macro
@@ -55,34 +55,32 @@ namespace Debug
 //  - Release: Triggers a breakpoint
 //
 
-#define VERIFY_STRING "Assertion failed"
-
 #ifndef NDEBUG
     #define VERIFY_SIMPLE(expression)                                           \
         if(!(expression))                                                       \
         {                                                                       \
-            DEBUG_PRINT_SIMPLE(VERIFY_STRING, #expression);                     \
+            DEBUG_PRINT_ASSERT_SIMPLE(#expression);                             \
             __debugbreak();                                                     \
         }
 
     #define VERIFY_MESSAGE(expression, message)                                 \
         if(!(expression))                                                       \
         { \                                                                     \
-            DBEUG_PRINT_MESSAGE(VERIFY_STRING, #expression, message);           \
+            DBEUG_PRINT_ASSERT_MESSAGE(#expression, message);                   \
             __debugbreak();                                                     \
         }
 #else
     #define VERIFY_SIMPLE(expression)                                           \
         if(!(expression))                                                       \
         {                                                                       \
-            DEBUG_PRINT_SIMPLE(VERIFY_STRING, #expression);                     \
+            DEBUG_PRINT_ASSERT_SIMPLE(#expression);                             \
             __debugbreak();                                                     \
         }
 
     #define VERIFY_MESSAGE(expression, message)                                 \
         if(!(expression))                                                       \
         {                                                                       \
-            DBEUG_PRINT_MESSAGE(VERIFY_STRING, #expression, message);           \
+            DBEUG_PRINT_ASSERT_MESSAGE(#expression, message);                   \
             __debugbreak();                                                     \
         }
 #endif
@@ -101,20 +99,18 @@ namespace Debug
 //  - Release: Check is stripped
 //
 
-#define ASSERT_STRING "Assertion failed"
-
 #ifndef NDEBUG
     #define ASSERT_SIMPLE(expression)                                           \
         if(!(expression))                                                       \
         {                                                                       \
-            DEBUG_PRINT_SIMPLE(ASSERT_STRING, #expression);                     \
+            DEBUG_PRINT_ASSERT_SIMPLE(#expression);                             \
             __debugbreak();                                                     \
         }
 
     #define ASSERT_MESSAGE(expression, message)                                 \
         if(!(expression))                                                       \
         {                                                                       \
-            DBEUG_PRINT_MESSAGE(ASSERT_STRING, #expression, message);           \
+            DBEUG_PRINT_ASSERT_MESSAGE(#expression, message);                   \
             __debugbreak();                                                     \
         }
 #else

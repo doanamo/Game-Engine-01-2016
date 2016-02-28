@@ -149,7 +149,7 @@ bool InputState::IsKeyDown(int key, bool repeat)
 bool InputState::IsKeyUp(int key, bool repeat)
 {
     if(!m_initialized)
-        return false;
+        return true;
 
     if(key < 0 || key >= KeyboardKeyCount)
         return false;
