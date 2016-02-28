@@ -145,7 +145,7 @@ bool Reference::Load(std::string filename)
     m_reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
 
     // Success!
-    Log() << "Loaded a script from \"" << filename << "\" file.";
+    Log() << "Loaded a reference from \"" << filename << "\" file.";
 
     return true;
 }
