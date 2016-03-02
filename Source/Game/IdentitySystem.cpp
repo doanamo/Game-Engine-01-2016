@@ -21,12 +21,14 @@ IdentitySystem::IdentitySystem() :
 
 IdentitySystem::~IdentitySystem()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void IdentitySystem::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Clear entity registry.
     Utility::ClearContainer(m_entities);
 
@@ -43,14 +45,16 @@ void IdentitySystem::Cleanup()
 
 bool IdentitySystem::Initialize(Context& context)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Check if the instance already exists.

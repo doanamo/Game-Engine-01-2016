@@ -102,12 +102,14 @@ VertexInput::VertexInput() :
 
 VertexInput::~VertexInput()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void VertexInput::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Release the vertex array handle.
     if(m_handle != InvalidHandle)
     {
@@ -121,14 +123,16 @@ void VertexInput::Cleanup()
 
 bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attributes)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Validate arguments.

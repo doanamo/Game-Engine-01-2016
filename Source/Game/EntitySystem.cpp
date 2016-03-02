@@ -33,12 +33,14 @@ EntitySystem::Events::Events(EventDispatchers& dispatchers) :
 
 EntitySystem::~EntitySystem()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void EntitySystem::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Destroy all remaining entities.
     this->DestroyAllEntities();
     this->ProcessCommands();
@@ -68,14 +70,16 @@ void EntitySystem::Cleanup()
 
 bool EntitySystem::Initialize(Context& context)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
-    (
-        if(!m_initialized)
-            this->Cleanup();
+        (
+            if(!m_initialized)
+            {
+                m_initialized = true;
+                this->Cleanup();
+            }
     );
 
     // Check if the instance already exists.

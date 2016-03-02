@@ -16,12 +16,14 @@ ResourceManager::ResourceManager() :
 
 ResourceManager::~ResourceManager()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void ResourceManager::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Remove all resource pools.
     Utility::ClearContainer(m_pools);
 
@@ -34,14 +36,16 @@ void ResourceManager::Cleanup()
 
 bool ResourceManager::Initialize(Context& context)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Check if the instance already exists.

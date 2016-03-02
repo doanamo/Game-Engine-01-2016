@@ -19,12 +19,14 @@ Sampler::Sampler() :
 
 Sampler::~Sampler()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void Sampler::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Delete sampler handle.
     if(m_handle != InvalidHandle)
     {
@@ -38,14 +40,16 @@ void Sampler::Cleanup()
 
 bool Sampler::Initialize()
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Create a sampler handle.

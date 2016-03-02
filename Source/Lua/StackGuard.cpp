@@ -33,7 +33,7 @@ StackGuard::StackGuard(StackGuard&& other)
 
 StackGuard::~StackGuard()
 {
-    if(m_state)
+    if(m_state != nullptr)
     {
         lua_settop(m_state, m_size);
     }

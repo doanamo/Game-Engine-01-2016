@@ -10,12 +10,6 @@ Sink::Sink()
 
 Sink::~Sink()
 {
-    this->Cleanup();
-}
-
-void Sink::Cleanup()
-{
-    Utility::ClearContainer(m_outputs);
 }
 
 void Sink::AddOutput(Logger::Output* output)

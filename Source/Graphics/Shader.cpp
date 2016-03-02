@@ -38,12 +38,14 @@ Shader::Shader(System::ResourceManager* resourceManager) :
 
 Shader::~Shader()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void Shader::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Release the program handle.
     if(m_handle != InvalidHandle)
     {
@@ -81,14 +83,16 @@ bool Shader::Load(std::string filename)
 
 bool Shader::Initialize(std::string shaderCode)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Validate arguments.

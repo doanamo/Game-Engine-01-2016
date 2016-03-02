@@ -34,13 +34,14 @@ void SpriteSheet::Cleanup()
 
 bool SpriteSheet::Load(std::string filename)
 {
-    // Restore instance to it's original state.
     this->Cleanup();
 
-    // Setup the cleanup scope guard.
+    // Setup a cleanup guard.
     bool success = false;
 
-    SCOPE_GUARD_IF(!success, this->Cleanup());
+    SCOPE_GUARD_IF(!success,
+        this->Cleanup()
+    );
 
     // Get the resource manager.
     System::ResourceManager* resourceManager = this->GetResourceManager();

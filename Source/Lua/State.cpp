@@ -29,12 +29,14 @@ State::State() :
 
 State::~State()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void State::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Cleanup Lua state.
     if(m_state != nullptr)
     {
@@ -48,12 +50,17 @@ void State::Cleanup()
 
 bool State::Initialize()
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
-    SCOPE_GUARD_IF(!m_initialized, 
-        this->Cleanup());
+    // Setup a cleanup guard.
+    SCOPE_GUARD
+    (
+        if(!m_initialized)
+        {
+            m_initialized = true;
+            this->Cleanup();
+        }
+    );
 
     // Create Lua state.
     m_state = luaL_newstate();
@@ -239,7 +246,7 @@ bool State::IsValid() const
 
 int State::GetStackSize() const
 {
-    if(m_state == nullptr)
+    if(!m_initialized)
         return 0;
 
     return lua_gettop(m_state);

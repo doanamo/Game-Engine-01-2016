@@ -182,8 +182,7 @@ Window::Events::Events(Window::EventDispatchers& dispatchers) :
 Window::~Window()
 {
     // Cleanup instance.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
     // Decrease instance count.
     --InstanceCount;
@@ -194,7 +193,6 @@ Window::~Window()
         if(LibraryInitialized)
         {
             glfwTerminate();
-
             LibraryInitialized = false;
         }
     }
@@ -202,6 +200,9 @@ Window::~Window()
 
 void Window::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Destroy the window.
     if(m_window != nullptr)
     {
@@ -227,14 +228,16 @@ void Window::Cleanup()
 
 bool Window::Initialize(Context& context)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Check if the instance already exists.
@@ -260,7 +263,7 @@ bool Window::Initialize(Context& context)
 
         if(!glfwInit())
         {
-            Log() << LogInitializeError() << "Couldn't initialize GLFW library!";
+            Log() << LogInitializeError() << "Couldn't initialize GLFW library.";
             return false;
         }
 
@@ -290,7 +293,7 @@ bool Window::Initialize(Context& context)
 
     if(m_window == nullptr)
     {
-        Log() << LogInitializeError() << "Couldn't create the window!";
+        Log() << LogInitializeError() << "Couldn't create the window.";
         return false;
     }
 
@@ -322,7 +325,7 @@ bool Window::Initialize(Context& context)
     if(error != GLEW_OK)
     {
         Log() << "GLEW Error: " << glewGetErrorString(error);
-        Log() << LogInitializeError() << "Couldn't initialize GLEW library!";
+        Log() << LogInitializeError() << "Couldn't initialize GLEW library.";
         return false;
     }
 
@@ -392,7 +395,7 @@ int Window::GetWidth() const
     if(!m_initialized)
         return 0;
 
-    // Get frame buffer width.
+    // Get the framebuffer width.
     int width = 0;
     glfwGetFramebufferSize(m_window, &width, nullptr);
     return width;
@@ -403,7 +406,7 @@ int Window::GetHeight() const
     if(!m_initialized)
         return 0;
 
-    // Get frame buffer height.
+    // Get the framebuffer height.
     int height = 0;
     glfwGetFramebufferSize(m_window, nullptr, &height);
     return height;

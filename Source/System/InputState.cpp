@@ -21,12 +21,14 @@ InputState::InputState() :
 
 InputState::~InputState()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void InputState::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Reset input states.
     this->Reset();
 
@@ -40,14 +42,16 @@ void InputState::Cleanup()
 
 bool InputState::Initialize(Context& context)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Check if the instance already exists.
@@ -123,6 +127,9 @@ void InputState::Update()
 
 void InputState::Reset()
 {
+    if(!m_initialized)
+        return;
+
     for(int i = 0; i < KeyboardKeyCount; ++i)
     {
         m_keyboardState[i] = KeyboardKeyStates::ReleasedRepeat;

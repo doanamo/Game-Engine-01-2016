@@ -9,12 +9,14 @@ FileOutput::FileOutput() :
 
 FileOutput::~FileOutput()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void FileOutput::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Close the file.
     if(m_file.is_open())
     {
@@ -44,14 +46,16 @@ void FileOutput::Cleanup()
         
 bool FileOutput::Initialize(std::string filename)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Open the file for write.

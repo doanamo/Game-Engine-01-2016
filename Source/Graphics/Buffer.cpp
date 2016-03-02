@@ -23,12 +23,14 @@ Buffer::Buffer(GLenum type) :
 
 Buffer::~Buffer()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void Buffer::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Release the buffer handle.
     if(m_handle != InvalidHandle)
     {
@@ -46,14 +48,16 @@ void Buffer::Cleanup()
 
 bool Buffer::Initialize(unsigned int elementSize, unsigned int elementCount, const void* data, GLenum usage)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Validate arguments.

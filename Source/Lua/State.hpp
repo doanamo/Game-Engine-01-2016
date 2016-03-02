@@ -72,6 +72,9 @@ namespace Lua
     template<typename Type>
     inline Type State::CastValue(const Type& default)
     {
+        if(!m_initialized)
+            return default;
+
         // Remove from the stack.
         lua_pop(m_state, 1);
 
@@ -81,9 +84,12 @@ namespace Lua
     template<>
     inline bool State::CastValue<bool>(const bool& default)
     {
-        bool value = default;
+        if(!m_initialized)
+            return default;
 
         // Cast the value.
+        bool value = default;
+
         if(lua_isboolean(m_state, -1))
         {
             value = lua_toboolean(m_state, -1) != 0;
@@ -99,9 +105,12 @@ namespace Lua
     template<>
     inline int State::CastValue<int>(const int& default)
     {
-        int value = default;
+        if(!m_initialized)
+            return default;
 
         // Cast the value.
+        int value = default;
+
         if(lua_isnumber(m_state, -1))
         {
             value = (int)std::round(lua_tonumber(m_state, -1));
@@ -117,9 +126,12 @@ namespace Lua
     template<>
     inline std::string State::CastValue<std::string>(const std::string& default)
     {
-        std::string value = default;
+        if(!m_initialized)
+            return default;
 
         // Cast the value.
+        std::string value = default;
+
         if(lua_isstring(m_state, -1))
         {
             value = lua_tostring(m_state, -1);

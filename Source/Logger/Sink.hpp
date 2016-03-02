@@ -30,9 +30,6 @@ namespace Logger
         Sink();
         ~Sink();
 
-        // Restores instance to it's original state.
-        void Cleanup();
-
         // Adds an output.
         void AddOutput(Logger::Output* output);
 

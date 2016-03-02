@@ -25,12 +25,14 @@ Texture::Texture(System::ResourceManager* resourceManager) :
 
 Texture::~Texture()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void Texture::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Destroy the texture handle.
     if(m_handle != InvalidHandle)
     {
@@ -257,14 +259,16 @@ bool Texture::Load(std::string filename)
 
 bool Texture::Initialize(int width, int height, GLenum format, const void* data)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Validate arguments.

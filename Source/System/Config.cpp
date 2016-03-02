@@ -16,12 +16,14 @@ Config::Config() :
 
 Config::~Config()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void Config::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Cleanup Lua state.
     m_lua.Cleanup();
 
@@ -34,17 +36,24 @@ void Config::Cleanup()
 
 bool Config::Initialize()
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
-    SCOPE_GUARD_IF(!m_initialized, 
-        this->Cleanup()
+    // Setup a cleanup guard.
+    SCOPE_GUARD
+    (
+        if(!m_initialized)
+        {
+            m_initialized = true;
+            this->Cleanup();
+        }
     );
 
     // Initialize Lua state.
     if(!m_lua.Initialize())
+    {
+        Log() << LogInitializeError() << "Couldn't initialize a Lua state.";
         return false;
+    }
 
     // Success!
     return m_initialized = true;
@@ -59,7 +68,7 @@ bool Config::Load(std::string filename)
         return false;
     }
 
-    // Setup the cleanup scope guard.
+    // Setup a cleanup guard.
     bool success = false;
 
     SCOPE_GUARD_IF(!success,

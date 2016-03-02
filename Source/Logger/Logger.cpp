@@ -14,10 +14,16 @@ namespace
     Logger::FileOutput fileOutput;
     Logger::ConsoleOutput consoleOutput;
     Logger::DebuggerOutput debuggerOutput;
+
+    // Initialization state.
+    bool initialized = false;
 }
 
 void Logger::Initialize()
 {
+    if(initialized)
+        return;
+
     // Add the file output.
     if(fileOutput.Initialize("Log.txt"))
     {
@@ -29,6 +35,9 @@ void Logger::Initialize()
 
     // Add the debugger output.
     sink.AddOutput(&debuggerOutput);
+
+    // Set initialized state.
+    initialized = true;
 }
 
 void Logger::Write(const Logger::Message& message)

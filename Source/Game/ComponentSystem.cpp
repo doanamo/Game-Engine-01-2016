@@ -20,12 +20,14 @@ ComponentSystem::ComponentSystem() :
 
 ComponentSystem::~ComponentSystem()
 {
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 }
 
 void ComponentSystem::Cleanup()
 {
+    if(!m_initialized)
+        return;
+
     // Clear all component pools.
     Utility::ClearContainer(m_pools);
 
@@ -42,14 +44,16 @@ void ComponentSystem::Cleanup()
 
 bool ComponentSystem::Initialize(Context& context)
 {
-    // Setup initialization routine.
-    if(m_initialized)
-        this->Cleanup();
+    this->Cleanup();
 
+    // Setup a cleanup guard.
     SCOPE_GUARD
     (
         if(!m_initialized)
+        {
+            m_initialized = true;
             this->Cleanup();
+        }
     );
 
     // Check if the instance already exists.
