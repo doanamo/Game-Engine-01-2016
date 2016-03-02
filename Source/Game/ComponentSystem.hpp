@@ -118,7 +118,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-        assert(pool != nullptr);
+        Assert(pool != nullptr);
 
         // Create and return the component.
         return pool->Create(handle);
@@ -135,7 +135,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-        assert(pool != nullptr);
+        Assert(pool != nullptr);
 
         // Lookup and return the component.
         return pool->Lookup(handle);
@@ -152,7 +152,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-        assert(pool != nullptr);
+        Assert(pool != nullptr);
 
         // Remove a component.
         return pool->Remove(handle);
@@ -169,7 +169,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-        assert(pool != nullptr);
+        Assert(pool != nullptr);
 
         // Return the iterator.
         return pool->Begin();
@@ -186,7 +186,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-        assert(pool != nullptr);
+        Assert(pool != nullptr);
 
         // Return the iterator.
         return pool->End();
@@ -195,7 +195,7 @@ namespace Game
     template<typename Type>
     ComponentPool<Type>* ComponentSystem::CreatePool()
     {
-        assert(m_initialized);
+        Assert(m_initialized);
 
         // Validate component type.
         static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
@@ -205,7 +205,7 @@ namespace Game
         auto pair = ComponentPoolPair(typeid(Type), std::move(pool));
         auto result = m_pools.insert(std::move(pair));
 
-        assert(result.second == true);
+        Assert(result.second == true);
 
         // Return created pool.
         return reinterpret_cast<ComponentPool<Type>*>(result.first->second.get());

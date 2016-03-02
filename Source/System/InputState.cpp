@@ -83,7 +83,8 @@ bool InputState::Initialize(Context& context)
 
 void InputState::OnKeyboardKey(const Window::Events::KeyboardKey& event)
 {
-    assert(0 <= event.key && event.key < KeyboardKeyCount);
+    Assert(m_initialized);
+    Assert(0 <= event.key && event.key < KeyboardKeyCount);
 
     if(event.action == GLFW_PRESS)
     {
@@ -98,6 +99,8 @@ void InputState::OnKeyboardKey(const Window::Events::KeyboardKey& event)
 
 void InputState::OnWindowFocus(const Window::Events::Focus& event)
 {
+    Assert(m_initialized);
+
     if(!event.focused)
     {
         this->Reset();

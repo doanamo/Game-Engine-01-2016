@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "Logger/Logger.hpp"
 
 //
 // Context
@@ -114,7 +115,7 @@ public:
     // Gets a subcontext.
     Context& operator[](int index)
     {
-        assert(index >= 0);
+        Assert(index >= 0);
 
         // Return self at zero index.
         if(index == 0)
@@ -135,7 +136,7 @@ public:
 
     const Context& operator[](int index) const
     {
-        assert(index >= 0);
+        Assert(index >= 0);
 
         // Return self at zero index.
         if(index == 0)

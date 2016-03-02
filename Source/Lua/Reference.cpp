@@ -68,7 +68,8 @@ void Reference::Release()
     // Release registered reference.
     if(m_reference != LUA_REFNIL)
     {
-        assert(m_state->IsValid());
+        Assert(m_state->IsValid());
+
         luaL_unref(*m_state, LUA_REGISTRYINDEX, m_reference);
         m_reference = LUA_REFNIL;
     }

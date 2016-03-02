@@ -168,7 +168,7 @@ EntityHandle IdentitySystem::Lookup(std::string name) const
 
 void IdentitySystem::RemoveElement(std::size_t index)
 {
-    assert(m_initialized);
+    Assert(m_initialized);
 
     // Move registry element to the end of the queue before erasing it to 
     // avoid invalidating pointers/indices referencing the container.
@@ -186,7 +186,7 @@ void IdentitySystem::RemoveElement(std::size_t index)
 
 void IdentitySystem::OnEntityDestroyed(EntityHandle handle)
 {
-    assert(m_initialized);
+    Assert(m_initialized);
 
     // Remove entity if it was registered.
     // Pointer that's passed below will be dereferenced.

@@ -4,7 +4,6 @@
 // Standard
 //
 
-#include <cassert>
 #include <cctype>
 #include <typeindex>
 #include <memory>

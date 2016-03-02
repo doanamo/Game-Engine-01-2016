@@ -82,7 +82,6 @@ namespace System
     template<typename Type>
     ResourcePool<Type>::~ResourcePool()
     {
-        // Release all resources.
         this->ReleaseAll();
     }
 
@@ -116,7 +115,7 @@ namespace System
         // Add resource to the list.
         auto result = m_resources.emplace(filename, std::move(resource));
 
-        assert(result.second == true);
+        Assert(result.second == true);
 
         // Return resource pointer.
         return result.first->second;
@@ -166,6 +165,6 @@ namespace System
             Log() << "Released a resource loaded from \"" << filename << "\" file.";
         }
 
-        assert(m_resources.empty());
+        Assert(m_resources.empty());
     }
 }

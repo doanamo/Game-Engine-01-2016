@@ -101,7 +101,8 @@ namespace System
 
         // Get the resource pool.
         ResourcePool<Type>* pool = this->GetPool<Type>();
-        assert(pool != nullptr);
+
+        Assert(pool != nullptr);
 
         // Delegate to the resource pool.
         return pool->Load(filename);
@@ -118,7 +119,8 @@ namespace System
 
         // Get the resource pool.
         ResourcePool<Type>* pool = this->GetPool<Type>();
-        assert(pool != nullptr);
+
+        Assert(pool != nullptr);
 
         // Set the default resource.
         pool->SetDefault(default);
@@ -135,7 +137,8 @@ namespace System
 
         // Get the resource pool.
         ResourcePool<Type>* pool = this->GetPool<Type>();
-        assert(pool != nullptr);
+        
+        Assert(pool != nullptr);
 
         // Return the default resource.
         return pool->GetDefault();
@@ -144,7 +147,7 @@ namespace System
     template<typename Type>
     ResourcePool<Type>* ResourceManager::CreatePool()
     {
-        assert(m_initialized);
+        Assert(m_initialized);
 
         // Validate resource type.
         static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
@@ -154,7 +157,7 @@ namespace System
         auto pair = ResourcePoolPair(typeid(Type), std::move(pool));
         auto result = m_pools.insert(std::move(pair));
 
-        assert(result.second == true);
+        Assert(result.second == true);
 
         // Return created pool.
         return reinterpret_cast<ResourcePool<Type>*>(result.first->second.get());

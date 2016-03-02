@@ -16,7 +16,7 @@
 //          lua_pushnil(state);
 //      }
 //      
-//      assert(size == state.GetStackSize());
+//      Assert(size == state.GetStackSize());
 //
 
 namespace Lua

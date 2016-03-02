@@ -102,7 +102,7 @@ EntityHandle EntitySystem::CreateEntity()
         return EntityHandle();
 
     // Check if we reached the numerical limits.
-    assert(m_handles.size() != MaximumIdentifier);
+    Assert(m_handles.size() != MaximumIdentifier);
 
     // Create a new handle if the free list queue is empty.
     if(m_freeListIsEmpty)
@@ -258,7 +258,7 @@ void EntitySystem::ProcessCommands()
                 HandleEntry& handleEntry = m_handles[handleIndex];
 
                 // Make sure handles match.
-                assert(command.handle == handleEntry.handle);
+                Assert(command.handle == handleEntry.handle);
 
                 // Inform that we want this entity finalized.
                 if(!m_dispatchers.entityFinalize(handleEntry.handle))
@@ -269,7 +269,7 @@ void EntitySystem::ProcessCommands()
                 }
 
                 // Mark handle as active.
-                assert(!(handleEntry.flags & HandleFlags::Active));
+                Assert(!(handleEntry.flags & HandleFlags::Active));
 
                 handleEntry.flags |= HandleFlags::Active;
 
@@ -291,7 +291,7 @@ void EntitySystem::ProcessCommands()
                 if(command.handle != handleEntry.handle)
                 {
                     // Trying to destroy an entity twice.
-                    assert(false);
+                    Assert(false);
                     continue;
                 }
 
@@ -302,7 +302,7 @@ void EntitySystem::ProcessCommands()
                 m_entityCount -= 1;
 
                 // Free entity handle.
-                assert(handleEntry.flags & HandleFlags::Destroy);
+                Assert(handleEntry.flags & HandleFlags::Destroy);
 
                 this->FreeHandle(handleIndex, handleEntry);
             }
@@ -316,15 +316,14 @@ void EntitySystem::ProcessCommands()
 
 void EntitySystem::FreeHandle(int handleIndex, HandleEntry& handleEntry)
 {
-    if(!m_initialized)
-        return;
+    Assert(m_initialized);
 
     // Make sure we got the matching index.
-    assert(&m_handles[handleIndex] == &handleEntry);
+    Assert(&m_handles[handleIndex] == &handleEntry);
 
     // Mark handle as free.
-    assert(handleEntry.flags & HandleFlags::Valid);
-    assert(!(handleEntry.flags & HandleFlags::Free));
+    Assert(handleEntry.flags & HandleFlags::Valid);
+    Assert(!(handleEntry.flags & HandleFlags::Free));
 
     handleEntry.flags = HandleFlags::Free;
 
@@ -342,7 +341,7 @@ void EntitySystem::FreeHandle(int handleIndex, HandleEntry& handleEntry)
     }
     else
     {
-        assert(m_handles[m_freeListEnqueue].nextFree == InvalidNextFree);
+        Assert(m_handles[m_freeListEnqueue].nextFree == InvalidNextFree);
 
         // If there are already other elements in the queue,
         // add the element to the end of the queue chain.

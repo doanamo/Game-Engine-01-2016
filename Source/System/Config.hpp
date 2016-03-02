@@ -64,7 +64,7 @@ namespace System
         if(!m_initialized)
             return;
 
-        assert("Not implemented!");
+        Assert(false, "Not implemented!");
 
         /*
         // Push value reference.

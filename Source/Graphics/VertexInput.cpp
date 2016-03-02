@@ -27,6 +27,9 @@ namespace
 
             case VertexAttributeTypes::Float4x4:
                 return 4;
+
+            default:
+                Assert(false, "Unknown attribute type.");
         }
 
         return 0;
@@ -45,6 +48,9 @@ namespace
 
             case VertexAttributeTypes::Float4x4:
                 return 4;
+
+            default:
+                Assert(false, "Unknown attribute type.");
         }
 
         return 0;
@@ -69,6 +75,9 @@ namespace
 
             case VertexAttributeTypes::Float4x4:
                 return sizeof(float) * 4;
+
+            default:
+                Assert(false, "Unknown attribute type.");
         }
 
         return 0;
@@ -85,6 +94,9 @@ namespace
             case VertexAttributeTypes::Float4:
             case VertexAttributeTypes::Float4x4:
                 return GL_FLOAT;
+
+            default:
+                Assert(false, "Unknown attribute type.");
         }
 
         return GL_INVALID_ENUM;

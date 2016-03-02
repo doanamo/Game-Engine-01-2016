@@ -12,6 +12,8 @@ extern "C"
 {
     static int LuaLog(lua_State* lua)
     {
+        Assert(lua != nullptr);
+
         if(lua_isstring(lua, -1))
         {
             Log() << lua_tostring(lua, -1);
@@ -87,6 +89,8 @@ bool State::Initialize()
     lua_setglobal(m_state, "Log");
 
     // Success!
+    Assert(lua_gettop(m_state) == 0);
+
     return m_initialized = true;
 }
 
@@ -228,15 +232,10 @@ void State::PrintError()
     if(m_state == nullptr)
         return;
 
-    if(lua_isstring(m_state, -1))
-    {
-        Log() << "Lua Error: " << lua_tostring(m_state, -1);
-        lua_pop(m_state, 1);
-    }
-    else
-    {
-        assert("Lua::State::PrintError() called but there's no string on top of the stack!");
-    }
+    Verify(lua_isstring(m_state, -1), "Expected a string.");
+
+    Log() << "Lua Error: " << lua_tostring(m_state, -1);
+    lua_pop(m_state, 1);
 }
 
 bool State::IsValid() const

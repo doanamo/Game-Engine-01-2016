@@ -33,7 +33,7 @@ namespace Utility
     template<typename Type>
     void Reorder(std::vector<Type>& values, const std::vector<std::size_t>& order)
     {
-        assert(values.size() == order.size());
+        Assert(values.size() == order.size());
 
         // Create an array of indices.
         std::vector<std::size_t> indices(order.size());

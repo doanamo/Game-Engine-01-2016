@@ -144,10 +144,10 @@ void RenderSystem::Draw()
     {
         // Get entity components.
         Components::Render* render = &it->second;
-        assert(render != nullptr);
+        Assert(render != nullptr);
 
         Components::Transform* transform = render->GetTransform();
-        assert(transform != nullptr);
+        Assert(transform != nullptr);
 
         // Add sprite to render the list.
         Graphics::BasicRenderer::Sprite::Info info;
@@ -222,9 +222,9 @@ void RenderSystem::Draw()
     };
 
     // Create sort permutation.
-    assert(m_spriteInfo.size() == m_spriteData.size());
-    m_spriteSort.resize(m_spriteInfo.size());
+    Assert(m_spriteInfo.size() == m_spriteData.size());
 
+    m_spriteSort.resize(m_spriteInfo.size());
     std::iota(m_spriteSort.begin(), m_spriteSort.end(), 0);
     std::sort(m_spriteSort.begin(), m_spriteSort.end(), SpriteSort);
 

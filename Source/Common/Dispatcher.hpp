@@ -176,18 +176,18 @@ void DispatcherBase<ReturnType(Arguments...)>::Subscribe(Receiver<ReturnType(Arg
     if(receiver.m_dispatcher != nullptr)
         return;
 
-    assert(receiver.m_next == nullptr);
+    Assert(receiver.m_next == nullptr);
     
     // Add receiver to the linked list.
     if(m_begin == nullptr)
     {
-        assert(m_end == nullptr);
+        Assert(m_end == nullptr);
         m_begin = &receiver;
         m_end = &receiver;
     }
     else
     {
-        assert(m_end != nullptr);
+        Assert(m_end != nullptr);
         m_end->m_next = &receiver;
         m_end = &receiver;
     }
@@ -221,7 +221,7 @@ void DispatcherBase<ReturnType(Arguments...)>::Unsubscribe(Receiver<ReturnType(A
     {
         // Removing from anywhere else in the list.
         Receiver<ReturnType(Arguments...)>* previous = this->GetPrevious(receiver);
-        assert(previous != nullptr);
+        Assert(previous != nullptr);
 
         previous->m_next = receiver.m_next;
 

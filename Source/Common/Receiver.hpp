@@ -59,8 +59,8 @@ public:
         if(m_dispatcher != nullptr)
         {
             m_dispatcher->Unsubscribe(*this);
-            assert(m_dispatcher == nullptr);
-            assert(m_next == nullptr);
+            Assert(m_dispatcher == nullptr);
+            Assert(m_next == nullptr);
         }
     }
 

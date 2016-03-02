@@ -88,8 +88,8 @@ bool ComponentSystem::Initialize(Context& context)
 
 bool ComponentSystem::OnEntityFinalize(EntityHandle handle)
 {
-    assert(m_initialized);
-    assert(m_context != nullptr);
+    Assert(m_initialized);
+    Assert(m_context != nullptr);
 
     // Finalize entity components from every pool.
     for(auto& pair : m_pools)
@@ -105,7 +105,7 @@ bool ComponentSystem::OnEntityFinalize(EntityHandle handle)
 
 void ComponentSystem::OnEntityDestroyed(EntityHandle handle)
 {
-    assert(m_initialized);
+    Assert(m_initialized);
 
     // Remove entity components from every pool.
     for(auto& pair : m_pools)

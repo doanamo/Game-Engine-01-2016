@@ -20,9 +20,12 @@ namespace
 
     void MoveCallback(GLFWwindow* window, int x, int y)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::Move event;
@@ -34,9 +37,12 @@ namespace
 
     void ResizeCallback(GLFWwindow* window, int width, int height)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::Resize event;
@@ -48,9 +54,12 @@ namespace
 
     void FocusCallback(GLFWwindow* window, int focused)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send and event.
         Window::Events::Focus event;
@@ -61,9 +70,12 @@ namespace
 
     void CloseCallback(GLFWwindow* window)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send and event.
         Window::Events::Close event;
@@ -73,9 +85,12 @@ namespace
 
     void KeyboardKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::KeyboardKey event;
@@ -89,9 +104,12 @@ namespace
 
     void TextInputCallback(GLFWwindow* window, unsigned int character)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::TextInput event;
@@ -102,9 +120,12 @@ namespace
 
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::MouseButton event;
@@ -117,9 +138,12 @@ namespace
 
     void MouseScrollCallback(GLFWwindow* window, double offsetx, double offsety)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::MouseScroll event;
@@ -130,9 +154,12 @@ namespace
 
     void CursorPositionCallback(GLFWwindow* window, double x, double y)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::CursorPosition event;
@@ -144,9 +171,12 @@ namespace
 
     void CursorEnterCallback(GLFWwindow* window, int entered)
     {
+        Assert(window != nullptr);
+
         // Get event dispatchers.
         Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
-        assert(dispatchers != nullptr);
+        
+        Assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::CursorEnter event;

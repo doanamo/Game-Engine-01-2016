@@ -113,7 +113,7 @@ namespace Game
             return nullptr;
 
         // Make sure handles match.
-        assert(result->first == handle);
+        Assert(result->first == handle);
 
         // Return a pointer to the component.
         return &result->second;
