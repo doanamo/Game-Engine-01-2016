@@ -122,6 +122,14 @@ bool State::Load(std::string filename)
     return true;
 }
 
+void State::Pop(int count)
+{
+    if(!m_initialized)
+        return;
+
+    lua_pop(m_state, count);
+}
+
 void State::Push(const std::nullptr_t)
 {
     if(!m_initialized)

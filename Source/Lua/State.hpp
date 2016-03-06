@@ -26,6 +26,9 @@ namespace Lua
         // Loads a script file.
         bool Load(std::string filename);
 
+        // Pops a value from the top of the stack.
+        void Pop(int count = 1);
+
         // Pushes a value onto the stack.
         void Push(const std::nullptr_t);
         void Push(const bool value);
