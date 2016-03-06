@@ -15,12 +15,11 @@
 class NonCopyable
 {
 protected:
-    // Use empty constructor and destructor.
-    NonCopyable() { }
-    ~NonCopyable() { }
+    // Default constructor and destructor.
+    NonCopyable() = default;
+    ~NonCopyable() = default;
 
-private:
-    // Make default copy constructor and operator private.
-    NonCopyable(const NonCopyable&);
-    NonCopyable& operator=(const NonCopyable&);
+    // Delete copy constructor and operator.
+    NonCopyable(const NonCopyable&) = delete;
+    NonCopyable& operator=(const NonCopyable&) = delete;
 };
