@@ -30,11 +30,11 @@ namespace Lua
         void Pop(int count = 1);
 
         // Pushes a value onto the stack.
-        void Push(const std::nullptr_t);
-        void Push(const bool value);
-        void Push(const int value);
-        void Push(const float value);
-        void Push(const std::string value);
+        template<typename Type>
+        void Push(const Type& value);
+
+        template<size_t Size>
+        void Push(const char (&value)[Size]);
 
         // Pushes global table on the stack.
         void PushGlobal();
@@ -80,6 +80,60 @@ namespace Lua
     };
 
     // Template definitions.
+    template<>
+    inline void State::Push(const std::nullptr_t&)
+    {
+        if(!m_initialized)
+            return;
+
+        lua_pushnil(m_state);
+    }
+
+    template<>
+    inline void State::Push(const bool& value)
+    {
+        if(!m_initialized)
+            return;
+
+        lua_pushboolean(m_state, value);
+    }
+
+    template<>
+    inline void State::Push(const int& value)
+    {
+        if(!m_initialized)
+            return;
+
+        lua_pushnumber(m_state, value);
+    }
+
+    template<>
+    inline void State::Push(const float& value)
+    {
+        if(!m_initialized)
+            return;
+
+        lua_pushnumber(m_state, value);
+    }
+
+    template<>
+    inline void State::Push(const std::string& value)
+    {
+        if(!m_initialized)
+            return;
+
+        lua_pushstring(m_state, value.c_str());
+    }
+
+    template<size_t Size>
+    inline void State::Push(const char(&value)[Size])
+    {
+        if(!m_initialized)
+            return;
+
+        lua_pushstring(m_state, value);
+    }
+
     template<typename Type>
     inline Type State::CastValue(const Type& default)
     {
