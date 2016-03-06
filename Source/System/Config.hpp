@@ -81,6 +81,9 @@ namespace System
         if(!m_initialized)
             return default;
 
+        // Create a stack guard.
+        Lua::StackGuard guard(&m_lua);
+
         // Push the global table.
         m_lua.PushGlobal();
 
@@ -98,7 +101,14 @@ namespace System
         // Push the variable value.
         m_lua.PushVariable(expanded);
 
-        // Cast and return the value.
-        return m_lua.CastValue(default);
+        // Return the pushed value.
+        if(m_lua.Is<Type>())
+        {
+            return m_lua.Read<Type>();
+        }
+        else
+        {
+            return default;
+        }
     }
 };

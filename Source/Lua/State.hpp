@@ -26,9 +26,6 @@ namespace Lua
         // Loads a script file.
         bool Load(std::string filename);
 
-        // Pops a value from the top of the stack.
-        void Pop(int count = 1);
-
         // Pushes a value onto the stack.
         template<typename Type>
         void Push(const Type& value);
@@ -36,9 +33,16 @@ namespace Lua
         template<size_t Size>
         void Push(const char (&value)[Size]);
 
+        // Checks if value is of a gived type.
+        template<typename Type>
+        bool Is(int index = -1);
+
         // Reads a value from the stack.
         template<typename Type>
         Type Read(int index = -1);
+
+        // Pops a value from the top of the stack.
+        void Pop(int count = 1);
 
         // Pushes global table on the stack.
         void PushGlobal();
@@ -46,10 +50,6 @@ namespace Lua
         // Pushes variable on the stack.
         // Consumes a table from which value will be pushed.
         void PushVariable(std::string name);
-
-        // Casts a value and consumes it in the process.
-        template<typename Type>
-        Type CastValue(const Type& default);
 
         // Collects all memory garbage.
         void CollectGarbage();
@@ -192,78 +192,57 @@ namespace Lua
         return lua_tostring(m_state, index);
     }
 
-    template<typename Type>
-    inline Type State::CastValue(const Type& default)
+    template<>
+    inline bool State::Is<std::nullptr_t>(int index)
     {
         if(!m_initialized)
-            return default;
+            return false;
 
-        // Remove from the stack.
-        lua_pop(m_state, 1);
-
-        return default;
+        return lua_isnil(m_state, index) != 0;
     }
 
     template<>
-    inline bool State::CastValue<bool>(const bool& default)
+    inline bool State::Is<bool>(int index)
     {
         if(!m_initialized)
-            return default;
+            return false;
 
-        // Cast the value.
-        bool value = default;
-
-        if(lua_isboolean(m_state, -1))
-        {
-            value = lua_toboolean(m_state, -1) != 0;
-        }
-
-        // Remove from the stack.
-        lua_pop(m_state, 1);
-
-        // Return the value.
-        return value;
+        return lua_isboolean(m_state, index) != 0;
     }
 
     template<>
-    inline int State::CastValue<int>(const int& default)
+    inline bool State::Is<int>(int index)
     {
         if(!m_initialized)
-            return default;
+            return false;
 
-        // Cast the value.
-        int value = default;
-
-        if(lua_isnumber(m_state, -1))
-        {
-            value = (int)std::round(lua_tonumber(m_state, -1));
-        }
-
-        // Remove from the stack.
-        lua_pop(m_state, 1);
-
-        // Return the value.
-        return value;
+        return lua_isnumber(m_state, index) != 0;
     }
 
     template<>
-    inline std::string State::CastValue<std::string>(const std::string& default)
+    inline bool State::Is<float>(int index)
     {
         if(!m_initialized)
-            return default;
+            return false;
 
-        // Cast the value.
-        std::string value = default;
+        return lua_isnumber(m_state, index) != 0;
+    }
 
-        if(lua_isstring(m_state, -1))
-        {
-            value = lua_tostring(m_state, -1);
-        }
+    template<>
+    inline bool State::Is<double>(int index)
+    {
+        if(!m_initialized)
+            return false;
 
-        // Remove from the stack.
-        lua_pop(m_state, 1);
+        return lua_isnumber(m_state, index) != 0;
+    }
 
-        // Return the value.
-        return value;
+    template<>
+    inline bool State::Is<std::string>(int index)
+    {
+        if(!m_initialized)
+            return false;
+
+        return lua_isstring(m_state, index) != 0;
     }
 }
