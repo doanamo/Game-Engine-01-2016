@@ -36,6 +36,10 @@ namespace Lua
         template<size_t Size>
         void Push(const char (&value)[Size]);
 
+        // Reads a value from the stack.
+        template<typename Type>
+        Type Read(int index = -1);
+
         // Pushes global table on the stack.
         void PushGlobal();
        
@@ -117,6 +121,15 @@ namespace Lua
     }
 
     template<>
+    inline void State::Push(const double& value)
+    {
+        if(!m_initialized)
+            return;
+
+        lua_pushnumber(m_state, value);
+    }
+
+    template<>
     inline void State::Push(const std::string& value)
     {
         if(!m_initialized)
@@ -132,6 +145,51 @@ namespace Lua
             return;
 
         lua_pushstring(m_state, value);
+    }
+
+    template<>
+    inline bool State::Read(int index)
+    {
+        if(!m_initialized)
+            return false;
+
+        return lua_toboolean(m_state, index) != 0;
+    }
+
+    template<>
+    inline int State::Read(int index)
+    {
+        if(!m_initialized)
+            return 0;
+
+        return lua_tointeger(m_state, index);
+    }
+
+    template<>
+    inline float State::Read(int index)
+    {
+        if(!m_initialized)
+            return 0.0f;
+
+        return (float)lua_tonumber(m_state, index);
+    }
+
+    template<>
+    inline double State::Read(int index)
+    {
+        if(!m_initialized)
+            return 0.0;
+
+        return lua_tonumber(m_state, index);
+    }
+
+    template<>
+    inline std::string State::Read(int index)
+    {
+        if(!m_initialized)
+            return "";
+
+        return lua_tostring(m_state, index);
     }
 
     template<typename Type>
