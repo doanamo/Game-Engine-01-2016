@@ -29,9 +29,9 @@ namespace Lua
         // Pushes global table on the stack.
         void PushGlobal();
        
-        // Pushes value on the stack.
+        // Pushes variable on the stack.
         // Consumes a table from which value will be pushed.
-        void PushValue(std::string name);
+        void PushVariable(std::string name);
 
         // Casts a value and consumes it in the process.
         template<typename Type>

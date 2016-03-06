@@ -96,7 +96,7 @@ namespace System
         expanded += name;
 
         // Push the variable value.
-        m_lua.PushValue(expanded);
+        m_lua.PushVariable(expanded);
 
         // Cast and return the value.
         return m_lua.CastValue(default);

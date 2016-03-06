@@ -130,7 +130,7 @@ void State::PushGlobal()
     lua_pushvalue(m_state, LUA_GLOBALSINDEX);
 }
 
-void State::PushValue(std::string name)
+void State::PushVariable(std::string name)
 {
     if(!m_initialized)
         return;
