@@ -84,9 +84,6 @@ namespace System
         // Create a stack guard.
         Lua::StackGuard guard(&m_lua);
 
-        // Push the global table.
-        m_lua.PushGlobal();
-
         // Expand string value.
         std::string expanded;
 
@@ -98,10 +95,13 @@ namespace System
 
         expanded += name;
 
+        // Push the global table.
+        m_lua.PushGlobal();
+
         // Push the variable value.
         m_lua.PushVariable(expanded);
 
-        // Return the pushed value.
+        // Read the pushed value.
         if(m_lua.Is<Type>())
         {
             return m_lua.Read<Type>();
