@@ -10,10 +10,11 @@
 namespace Lua
 {
     // State class.
-    class State
+    class State : private NonCopyable
     {
     public:
         State();
+        State(State&& other);
         ~State();
 
         // Restores instance to it's original state.

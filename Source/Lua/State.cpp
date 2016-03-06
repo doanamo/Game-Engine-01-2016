@@ -29,6 +29,15 @@ State::State() :
 {
 }
 
+State::State(State&& other)
+{
+    m_state = other.m_state;
+    other.m_state = nullptr;
+
+    m_initialized = other.m_initialized;
+    other.m_initialized = false;
+}
+
 State::~State()
 {
     this->Cleanup();
