@@ -26,6 +26,13 @@ namespace Lua
         // Loads a script file.
         bool Load(std::string filename);
 
+        // Pushes a value onto the stack.
+        void Push(const std::nullptr_t);
+        void Push(const bool value);
+        void Push(const int value);
+        void Push(const float value);
+        void Push(const std::string value);
+
         // Pushes global table on the stack.
         void PushGlobal();
        

@@ -122,6 +122,46 @@ bool State::Load(std::string filename)
     return true;
 }
 
+void State::Push(const std::nullptr_t)
+{
+    if(!m_initialized)
+        return;
+
+    lua_pushnil(m_state);
+}
+
+void State::Push(const bool value)
+{
+    if(!m_initialized)
+        return;
+
+    lua_pushboolean(m_state, value);
+}
+
+void State::Push(const int value)
+{
+    if(!m_initialized)
+        return;
+
+    lua_pushnumber(m_state, value);
+}
+
+void State::Push(const float value)
+{
+    if(!m_initialized)
+        return;
+
+    lua_pushnumber(m_state, value);
+}
+
+void State::Push(const std::string value)
+{
+    if(!m_initialized)
+        return;
+
+    lua_pushstring(m_state, value.c_str());
+}
+
 void State::PushGlobal()
 {
     if(!m_initialized)
