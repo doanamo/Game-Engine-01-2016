@@ -38,14 +38,14 @@ namespace Lua
 
         // Checks if value is of a gived type.
         template<typename Type>
-        bool Is(int index = -1);
+        bool Is(const int index = -1);
 
         // Reads a value from the stack.
         template<typename Type>
-        Type Read(int index = -1);
+        Type Read(const int index = -1);
 
         // Pops a value from the top of the stack.
-        void Pop(int count = 1);
+        void Pop(const int count = 1);
 
         // Pushes global table on the stack.
         void PushGlobal();
@@ -158,7 +158,7 @@ namespace Lua
     }
 
     template<>
-    inline bool State::Is<std::nullptr_t>(int index)
+    inline bool State::Is<std::nullptr_t>(const int index)
     {
         if(!m_initialized)
             return false;
@@ -167,7 +167,7 @@ namespace Lua
     }
 
     template<>
-    inline bool State::Is<bool>(int index)
+    inline bool State::Is<bool>(const int index)
     {
         if(!m_initialized)
             return false;
@@ -176,7 +176,7 @@ namespace Lua
     }
 
     template<>
-    inline bool State::Is<int>(int index)
+    inline bool State::Is<int>(const int index)
     {
         if(!m_initialized)
             return false;
@@ -185,7 +185,7 @@ namespace Lua
     }
 
     template<>
-    inline bool State::Is<float>(int index)
+    inline bool State::Is<float>(const int index)
     {
         if(!m_initialized)
             return false;
@@ -194,7 +194,7 @@ namespace Lua
     }
 
     template<>
-    inline bool State::Is<double>(int index)
+    inline bool State::Is<double>(const int index)
     {
         if(!m_initialized)
             return false;
@@ -203,7 +203,7 @@ namespace Lua
     }
 
     template<>
-    inline bool State::Is<std::string>(int index)
+    inline bool State::Is<std::string>(const int index)
     {
         if(!m_initialized)
             return false;
@@ -212,7 +212,7 @@ namespace Lua
     }
 
     template<>
-    inline bool State::Read(int index)
+    inline bool State::Read(const int index)
     {
         if(!m_initialized)
             return false;
@@ -221,7 +221,7 @@ namespace Lua
     }
 
     template<>
-    inline int State::Read(int index)
+    inline int State::Read(const int index)
     {
         if(!m_initialized)
             return 0;
@@ -230,7 +230,7 @@ namespace Lua
     }
 
     template<>
-    inline float State::Read(int index)
+    inline float State::Read(const int index)
     {
         if(!m_initialized)
             return 0.0f;
@@ -239,7 +239,7 @@ namespace Lua
     }
 
     template<>
-    inline double State::Read(int index)
+    inline double State::Read(const int index)
     {
         if(!m_initialized)
             return 0.0;
@@ -248,7 +248,7 @@ namespace Lua
     }
 
     template<>
-    inline std::string State::Read(int index)
+    inline std::string State::Read(const int index)
     {
         if(!m_initialized)
             return "";
