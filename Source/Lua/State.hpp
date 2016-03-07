@@ -158,51 +158,6 @@ namespace Lua
     }
 
     template<>
-    inline bool State::Read(int index)
-    {
-        if(!m_initialized)
-            return false;
-
-        return lua_toboolean(m_state, index) != 0;
-    }
-
-    template<>
-    inline int State::Read(int index)
-    {
-        if(!m_initialized)
-            return 0;
-
-        return lua_tointeger(m_state, index);
-    }
-
-    template<>
-    inline float State::Read(int index)
-    {
-        if(!m_initialized)
-            return 0.0f;
-
-        return (float)lua_tonumber(m_state, index);
-    }
-
-    template<>
-    inline double State::Read(int index)
-    {
-        if(!m_initialized)
-            return 0.0;
-
-        return lua_tonumber(m_state, index);
-    }
-
-    template<>
-    inline std::string State::Read(int index)
-    {
-        if(!m_initialized)
-            return "";
-
-        return lua_tostring(m_state, index);
-    }
-
-    template<>
     inline bool State::Is<std::nullptr_t>(int index)
     {
         if(!m_initialized)
@@ -254,5 +209,50 @@ namespace Lua
             return false;
 
         return lua_isstring(m_state, index) != 0;
+    }
+
+    template<>
+    inline bool State::Read(int index)
+    {
+        if(!m_initialized)
+            return false;
+
+        return lua_toboolean(m_state, index) != 0;
+    }
+
+    template<>
+    inline int State::Read(int index)
+    {
+        if(!m_initialized)
+            return 0;
+
+        return lua_tointeger(m_state, index);
+    }
+
+    template<>
+    inline float State::Read(int index)
+    {
+        if(!m_initialized)
+            return 0.0f;
+
+        return (float)lua_tonumber(m_state, index);
+    }
+
+    template<>
+    inline double State::Read(int index)
+    {
+        if(!m_initialized)
+            return 0.0;
+
+        return lua_tonumber(m_state, index);
+    }
+
+    template<>
+    inline std::string State::Read(int index)
+    {
+        if(!m_initialized)
+            return "";
+
+        return lua_tostring(m_state, index);
     }
 }
