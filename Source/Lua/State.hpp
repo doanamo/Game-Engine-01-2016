@@ -33,6 +33,9 @@ namespace Lua
         template<size_t Size>
         void Push(const char (&value)[Size]);
 
+        template<typename Type, typename... Types>
+        void Push(const Type& value, const Types& ...values);
+
         // Checks if value is of a gived type.
         template<typename Type>
         bool Is(int index = -1);
@@ -145,6 +148,13 @@ namespace Lua
             return;
 
         lua_pushstring(m_state, value);
+    }
+
+    template<typename Type, typename... Types>
+    inline void Push(const Type& value, const Types& ...values)
+    {
+        this->Push(value);
+        this->Push(values...);
     }
 
     template<>
