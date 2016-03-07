@@ -47,6 +47,12 @@ namespace Lua
         // Pops a value from the top of the stack.
         void Pop(const int count = 1);
 
+        template<typename Type>
+        Type Pop();
+
+        template<typename... Types>
+        std::tuple<Types...> Pop();
+
         // Pushes global table on the stack.
         void PushGlobal();
        
@@ -77,6 +83,14 @@ namespace Lua
 
         // Conversion operator.
         operator lua_State*();
+
+    private:
+        // Creates a tuple containing stack elements.
+        template<typename Type>
+        std::tuple<Type> CreateTuple(const int index);
+
+        template<typename Type1, typename Type2, typename... Types>
+        std::tuple<Type1, Type2, Types...> CreateTuple(const int index);
 
     private:
         // Virtual machine state.
@@ -254,5 +268,34 @@ namespace Lua
             return "";
 
         return lua_tostring(m_state, index);
+    }
+
+    template<typename Type>
+    inline Type State::Pop()
+    {
+        Type value = this->Read<Type>(-1);
+        lua_pop(m_state, 1);
+        return value;
+    }
+
+    template<typename Type>
+    inline std::tuple<Type> State::CreateTuple(const int index)
+    {
+        return std::make_tuple(this->Read<Type>(index));
+    }
+
+    template<typename Type1, typename Type2, typename... Types>
+    inline std::tuple<Type1, Type2, Types...> State::CreateTuple(const int index)
+    {
+        std::tuple<Type1> head = std::make_tuple(this->Read<Type1>(index));
+        return std::tuple_cat(head, this->CreateTuple<Type2, Types...>(index + 1));
+    }
+
+    template<typename... Types>
+    inline std::tuple<Types...> State::Pop()
+    {
+        auto value = this->CreateTuple<Types...>(-(int)(sizeof...(Types)));
+        lua_pop(m_state, (int)(sizeof...(Types)));
+        return value;
     }
 }
