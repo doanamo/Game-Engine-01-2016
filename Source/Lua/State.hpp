@@ -170,7 +170,7 @@ namespace Lua
     }
 
     template<typename Type, typename... Types>
-    inline void Push(const Type& value, const Types& ...values)
+    inline void State::Push(const Type& value, const Types& ...values)
     {
         this->Push(value);
         this->Push(values...);
