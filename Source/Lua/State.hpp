@@ -30,6 +30,8 @@ namespace Lua
         bool Parse(std::string text);
 
         // Pushes a value onto the stack.
+        void Push(const std::nullptr_t&, int count);
+
         template<typename Type>
         void Push(const Type& value);
 

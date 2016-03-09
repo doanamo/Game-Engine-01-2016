@@ -141,6 +141,17 @@ bool State::Parse(std::string text)
     return true;
 }
 
+void State::Push(const std::nullptr_t&, int count)
+{
+    if(!m_initialized)
+        return;
+
+    for(int i = 0; i < count; ++i)
+    {
+        lua_pushnil(m_state);
+    }
+}
+
 void State::Pop(int count)
 {
     if(!m_initialized)
