@@ -122,6 +122,25 @@ bool State::Load(std::string filename)
     return true;
 }
 
+bool State::Parse(std::string text)
+{
+    // Initialize if needed.
+    if(!m_initialized)
+    {
+        if(!this->Initialize())
+            return false;
+    }
+
+    // Parse the string.
+    if(luaL_dostring(m_state, text.c_str()) != 0)
+    {
+        this->PrintError();
+        return false;
+    }
+
+    return true;
+}
+
 void State::Pop(int count)
 {
     if(!m_initialized)

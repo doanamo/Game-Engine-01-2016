@@ -26,6 +26,9 @@ namespace Lua
         // Loads a script file.
         bool Load(std::string filename);
 
+        // Parses a script string.
+        bool Parse(std::string text);
+
         // Pushes a value onto the stack.
         template<typename Type>
         void Push(const Type& value);
