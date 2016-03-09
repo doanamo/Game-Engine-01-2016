@@ -273,14 +273,7 @@ namespace Lua
             return "";
 
         return lua_tostring(m_state, index);
-    }
 
-    template<typename Type>
-    inline Type State::Pop()
-    {
-        Type value = this->Read<Type>(-1);
-        lua_pop(m_state, 1);
-        return value;
     }
 
     template<typename Type>
@@ -294,6 +287,14 @@ namespace Lua
     {
         std::tuple<Type1> head = std::make_tuple(this->Read<Type1>(index));
         return std::tuple_cat(head, this->CreateTuple<Type2, Types...>(index + 1));
+    }
+
+    template<typename Type>
+    inline Type State::Pop()
+    {
+        Type value = this->Read<Type>(-1);
+        lua_pop(m_state, 1);
+        return value;
     }
 
     template<typename... Types>
