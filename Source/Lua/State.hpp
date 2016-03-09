@@ -272,8 +272,10 @@ namespace Lua
         if(!m_initialized)
             return "";
 
-        return lua_tostring(m_state, index);
+        if(lua_isnil(m_state, index))
+            return "nil";
 
+        return lua_tostring(m_state, index);
     }
 
     template<typename Type>
