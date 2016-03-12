@@ -47,22 +47,6 @@ Reference::~Reference()
     this->Release();
 }
 
-void Reference::CreateFromStack()
-{
-    if(!this->IsValid())
-        return;
-
-    m_reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
-}
-
-void Reference::PushOntoStack() const
-{
-    if(!this->IsValid())
-        return;
-
-    lua_rawgeti(*m_state, LUA_REGISTRYINDEX, m_reference);
-}
-
 void Reference::Release()
 {
     // Release registered reference.
@@ -149,6 +133,22 @@ bool Reference::Load(std::string filename)
     Log() << "Loaded a reference from \"" << filename << "\" file.";
 
     return true;
+}
+
+void Reference::CreateFromStack()
+{
+    if(!this->IsValid())
+        return;
+
+    m_reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
+}
+
+void Reference::PushOntoStack() const
+{
+    if(!this->IsValid())
+        return;
+
+    lua_rawgeti(*m_state, LUA_REGISTRYINDEX, m_reference);
 }
 
 std::shared_ptr<Lua::State> Reference::GetState() const

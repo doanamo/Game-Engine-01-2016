@@ -27,18 +27,18 @@ namespace Lua
         Reference(Reference&& other);
         ~Reference();
 
+        // Releases the referenced value.
+        void Release();
+
+        // Loads the reference from a file.
+        bool Load(std::string filename);
+
         // Creates a reference for an object on top of the stack.
         // Pops the object from the stack in the process.
         void CreateFromStack();
 
         // Pushes the referenced value on top of the stack.
         void PushOntoStack() const;
-
-        // Releases the referenced value.
-        void Release();
-
-        // Loads the reference from a file.
-        bool Load(std::string filename);
 
         // Gets the hosting Lua state.
         std::shared_ptr<Lua::State> GetState() const;
