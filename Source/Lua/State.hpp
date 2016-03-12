@@ -58,6 +58,10 @@ namespace Lua
         template<typename... Types>
         std::tuple<Types...> Pop();
 
+        // Calls a function from a table.
+        template<typename... Types, typename... Arguments>
+        std::tuple<Types...> Call(std::string function, const Arguments&... arguments);
+
         // Pushes global table on the stack.
         void PushGlobal();
        
@@ -305,5 +309,49 @@ namespace Lua
         auto value = this->CreateTuple<Types...>(-(int)(sizeof...(Types)));
         lua_pop(m_state, (int)(sizeof...(Types)));
         return value;
+    }
+
+    template<typename... Types, typename... Arguments>
+    inline std::tuple<Types...> State::Call(std::string function, const Arguments&... arguments)
+    {
+        StackGuard guard(this);
+
+        // Check if we got a table.
+        if(!lua_istable(m_state, -1))
+        {
+            this->Push(nullptr, (int)(sizeof...(Types)));
+            return this->Pop<Types...>();
+        }
+
+        // Get the function from a table.
+        lua_getfield(m_state, -1, function.c_str());
+
+        if(!lua_isfunction(m_state, -1))
+        {
+            this->Push(nullptr, (int)(sizeof...(Types)));
+            return this->Pop<Types...>();
+        }
+
+        // Push function arguments.
+        this->Push(arguments...);
+
+        // Call the function.
+        const int types = (int)(sizeof...(Types));
+        const int arguments = (int)(sizeof...(Arguments));
+
+        if(lua_pcall(m_state, arguments, types, 0) != 0)
+        {
+            this->PrintError();
+
+            for(int i = 1; i <= types; ++i)
+            {
+                Assert(this->Is<std::nullptr_t>(-i));
+            }
+
+            return this->Pop<Types...>();
+        }
+
+        // Return function results.
+        return this->Pop<Types...>();
     }
 }
