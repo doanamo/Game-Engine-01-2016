@@ -141,6 +141,10 @@ bool State::Parse(std::string text)
     return true;
 }
 
+void State::Push()
+{
+}
+
 void State::Push(const std::nullptr_t&, int count)
 {
     if(!m_initialized)
