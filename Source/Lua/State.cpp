@@ -156,7 +156,7 @@ void State::Push(const std::nullptr_t&, int count)
     }
 }
 
-void State::Pop(int count)
+void State::Pop(const int count)
 {
     if(!m_initialized)
         return;
