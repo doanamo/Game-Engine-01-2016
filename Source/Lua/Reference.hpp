@@ -2,7 +2,6 @@
 
 #include "Precompiled.hpp"
 #include "System/Resource.hpp"
-#include "Lua/State.hpp"
 
 //
 // Reference
@@ -13,6 +12,9 @@
 
 namespace Lua
 {
+    // Forward declarations.
+    class State;
+
     // Reference class.
     class Reference : public System::Resource
     {
@@ -48,6 +50,10 @@ namespace Lua
 
         // Checks if the reference is valid.
         bool IsValid() const;
+
+        // Comparison operators.
+        bool operator==(const std::nullptr_t) const;
+        bool operator!=(const std::nullptr_t) const;
 
     private:
         // Lua state reference.

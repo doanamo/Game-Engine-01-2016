@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "Reference.hpp"
+#include "State.hpp"
 #include "System/ResourceManager.hpp"
 #include "Game/ScriptSystem.hpp"
 using namespace Lua;
@@ -164,4 +165,14 @@ Reference::ReferenceID Reference::GetReference() const
 bool Reference::IsValid() const
 {
     return m_state != nullptr && m_state->IsValid();
+}
+
+bool Reference::operator==(const std::nullptr_t) const
+{
+    return !this->IsValid() || m_reference == LUA_REFNIL;
+}
+
+bool Reference::operator!=(const std::nullptr_t) const
+{
+    return this->IsValid() && m_reference != LUA_REFNIL;
 }
