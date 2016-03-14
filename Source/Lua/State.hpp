@@ -2,6 +2,7 @@
 
 #include "Precompiled.hpp"
 #include "StackGuard.hpp"
+#include "Reference.hpp"
 
 //
 // Lua State
@@ -10,7 +11,7 @@
 namespace Lua
 {
     // State class.
-    class State : private NonCopyable
+    class State : private NonCopyable, public std::enable_shared_from_this<State>
     {
     public:
         // Stack popper helper class.
@@ -321,6 +322,22 @@ namespace Lua
             return "nil";
 
         return lua_tostring(m_state, index);
+    }
+
+    template<>
+    inline Lua::Reference State::Read(const int index)
+    {
+        if(!m_initialized)
+            return Lua::Reference();
+
+        // Copy the value we want referenced.
+        // Creating a reference of the value will pop it, but we want the stack intact.
+        lua_pushvalue(m_state, index);
+
+        // Create a reference.
+        Lua::Reference reference(this->shared_from_this());
+        reference.CreateFromStack();
+        return reference;
     }
 
     template<typename... Types>

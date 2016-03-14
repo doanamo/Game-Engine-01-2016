@@ -23,7 +23,7 @@ namespace Lua
         typedef int ReferenceID;
 
     public:
-        Reference(System::ResourceManager* resourceManager);
+        Reference(System::ResourceManager* resourceManager = nullptr);
         Reference(const std::shared_ptr<Lua::State>& state);
         Reference(const Reference& other);
         Reference(Reference&& other);
