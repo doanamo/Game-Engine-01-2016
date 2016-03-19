@@ -28,11 +28,30 @@ namespace Game
             bool Finalize(EntityHandle self, const Context& context);
 
             // Calls added scripts.
-            void Call(std::string method);
+            template<typename... Types, typename... Arguments>
+            typename Lua::StackPopper<sizeof...(Types), Types...>::ReturnType Call(std::string method, const Arguments&&... arguments);
 
         private:
             // List of script references.
             std::vector<Lua::Reference> m_scripts;
         };
+
+        // Template definitions.
+        template<typename... Types, typename... Arguments>
+        typename Lua::StackPopper<sizeof...(Types), Types...>::ReturnType Script::Call(std::string method, const Arguments&&... arguments)
+        {
+            for(auto& script : m_scripts)
+            {
+                // Get the scripting state.
+                Lua::State& state = *script.GetState();
+                Lua::StackGuard guard(&state);
+
+                // Push a script instance on the stack.
+                script.PushOntoStack();
+
+                // Call the script method.
+                state.Call(method.c_str(), Lua::StackValue(-1), std::forward<Arguments>(arguments)...);
+            }
+        }
     }
 }

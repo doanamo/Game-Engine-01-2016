@@ -45,60 +45,59 @@ namespace Lua
         mutable int m_index;
     };
 
+    // Stack popper class.
+    template<size_t, typename... Types>
+    struct StackPopper
+    {
+        typedef std::tuple<Types...> ReturnType;
+
+        template<typename Type>
+        static std::tuple<Type> CreateTuple(Lua::State& state, const int index)
+        {
+            return std::make_tuple(state.Read<Type>(index));
+        }
+
+        template<typename Type1, typename Type2, typename... Rest>
+        static std::tuple<Type1, Type2, Rest...> CreateTuple(Lua::State& state, const int index)
+        {
+            std::tuple<Type1> head = std::make_tuple(state.Read<Type1>(index));
+            return std::tuple_cat(head, CreateTuple<Type2, Rest...>(state, index + 1));
+        }
+
+        static ReturnType Apply(Lua::State& state)
+        {
+            auto value = CreateTuple<Types...>(state, -(int)(sizeof...(Types)));
+            lua_pop(state, (int)(sizeof...(Types)));
+            return value;
+        }
+    };
+
+    template<typename Type>
+    struct StackPopper<1, Type>
+    {
+        typedef Type ReturnType;
+
+        static ReturnType Apply(Lua::State& state)
+        {
+            auto value = state.Read<Type>(-1);
+            lua_pop(state, 1);
+            return value;
+        }
+    };
+
+    template<typename... Types>
+    struct StackPopper<0, Types...>
+    {
+        typedef void ReturnType;
+
+        static ReturnType Apply(Lua::State& state)
+        {
+        }
+    };
+
     // State class.
     class State : private NonCopyable, public std::enable_shared_from_this<State>
     {
-    public:
-        // Stack popper helper class.
-        template<size_t, typename... Types>
-        struct Popper
-        {
-            typedef std::tuple<Types...> ReturnType;
-
-            template<typename Type>
-            static std::tuple<Type> CreateTuple(Lua::State& state, const int index)
-            {
-                return std::make_tuple(state.Read<Type>(index));
-            }
-
-            template<typename Type1, typename Type2, typename... Rest>
-            static std::tuple<Type1, Type2, Rest...> CreateTuple(Lua::State& state, const int index)
-            {
-                std::tuple<Type1> head = std::make_tuple(state.Read<Type1>(index));
-                return std::tuple_cat(head, CreateTuple<Type2, Rest...>(state, index + 1));
-            }
-
-            static ReturnType Apply(Lua::State& state)
-            {
-                auto value = CreateTuple<Types...>(state, -(int)(sizeof...(Types)));
-                lua_pop(state, (int)(sizeof...(Types)));
-                return value;
-            }
-        };
-
-        template<typename Type>
-        struct Popper<1, Type>
-        {
-            typedef Type ReturnType;
-
-            static ReturnType Apply(Lua::State& state)
-            {
-                auto value = state.Read<Type>(-1);
-                lua_pop(state, 1);
-                return value;
-            }
-        };
-
-        template<typename... Types>
-        struct Popper<0, Types...>
-        {
-            typedef void ReturnType;
-
-            static ReturnType Apply(Lua::State& state)
-            {
-            }
-        };
-
     public:
         State();
         State(State&& other);
@@ -141,11 +140,11 @@ namespace Lua
         void Pop(const int count = 1);
 
         template<typename... Types>
-        typename Popper<sizeof...(Types), Types...>::ReturnType Pop();
+        typename StackPopper<sizeof...(Types), Types...>::ReturnType Pop();
 
         // Calls a function from a table.
         template<typename... Types, typename... Arguments>
-        typename Popper<sizeof...(Types), Types...>::ReturnType Call(std::string function, const Arguments&... arguments);
+        typename StackPopper<sizeof...(Types), Types...>::ReturnType Call(std::string function, const Arguments&... arguments);
 
         // Pushes global table on the stack.
         void PushGlobal();
@@ -399,13 +398,13 @@ namespace Lua
     }
 
     template<typename... Types>
-    inline typename State::Popper<sizeof...(Types), Types...>::ReturnType State::Pop()
+    inline typename StackPopper<sizeof...(Types), Types...>::ReturnType State::Pop()
     {
-        return Popper<sizeof...(Types), Types...>::Apply(*this);
+        return StackPopper<sizeof...(Types), Types...>::Apply(*this);
     }
 
     template<typename... Types, typename... Arguments>
-    inline typename State::Popper<sizeof...(Types), Types...>::ReturnType State::Call(std::string function, const Arguments&... arguments)
+    inline typename StackPopper<sizeof...(Types), Types...>::ReturnType State::Call(std::string function, const Arguments&... arguments)
     {
         StackGuard guard(this);
 

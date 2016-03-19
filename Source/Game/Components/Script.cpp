@@ -33,19 +33,3 @@ void Script::AddScript(std::shared_ptr<const Lua::Reference> script)
     // Add new script to the list.
     m_scripts.push_back(std::move(instance));
 }
-
-void Script::Call(std::string method)
-{
-    for(auto& script : m_scripts)
-    {
-        // Get the scripting state.
-        Lua::State& state = *script.GetState();
-        Lua::StackGuard guard(&state);
-
-        // Push a script instance on the stack.
-        script.PushOntoStack();
-
-        // Call the script method.
-        state.Call(method.c_str(), Lua::StackValue(-1));
-    }
-}
