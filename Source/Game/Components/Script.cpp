@@ -24,7 +24,7 @@ void Script::AddScript(std::shared_ptr<const Lua::Reference> script)
     Lua::State& state = *script->GetState();
     Lua::StackGuard guard(&state);
 
-    // Push script table on the stack.
+    // Push the script table on the stack.
     script->PushOntoStack();
 
     // Create a new script instance.
@@ -42,26 +42,10 @@ void Script::Call(std::string method)
         Lua::State& state = *script.GetState();
         Lua::StackGuard guard(&state);
 
-        // Push a script instance.
+        // Push a script instance on the stack.
         script.PushOntoStack();
 
-        if(!lua_istable(state, -1))
-            continue;
-
-        // Push the script method.
-        lua_getfield(state, -1, method.c_str());
-
-        if(!lua_isfunction(state, -1))
-            continue;
-
-        // Swap the function with the script instance on the stack.
-        lua_insert(state, -2);
-
         // Call the script method.
-        if(lua_pcall(state, 1, 0, 0) != 0)
-        {
-            state.PrintError();
-            continue;
-        }
+        state.Call(method.c_str(), Lua::StackValue(-1));
     }
 }

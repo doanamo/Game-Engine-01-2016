@@ -141,7 +141,6 @@ void Reference::CreateFromStack()
     if(!this->IsValid())
         return;
 
-    // Create a reference.
     m_reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
 }
 

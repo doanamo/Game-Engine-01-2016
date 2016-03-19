@@ -10,6 +10,41 @@
 
 namespace Lua
 {
+    // Forward declarations.
+    class State;
+
+    // Stack value class.
+    struct StackValue
+    {
+    public:
+        StackValue(const int index) :
+            m_index(index)
+        {
+        }
+
+        static void AbsoluteIndex(Lua::State& state)
+        {
+        }
+
+        template<typename Type>
+        static void AbsoluteIndex(Lua::State& state, const Type& value);
+
+        template<typename Type, typename... Types>
+        static void AbsoluteIndex(Lua::State& state, const Type& value, const Types&... values)
+        {
+            AbsoluteIndex(value);
+            AbsoluteIndex(values...);
+        }
+
+        int GetIndex() const
+        {
+            return m_index;
+        }
+
+    private:
+        mutable int m_index;
+    };
+
     // State class.
     class State : private NonCopyable, public std::enable_shared_from_this<State>
     {
@@ -92,7 +127,7 @@ namespace Lua
         void Push(const char (&value)[Size]);
 
         template<typename Type, typename... Types>
-        void Push(const Type& value, const Types& ...values);
+        void Push(const Type& value, const Types&... values);
 
         // Checks if value is of a gived type.
         template<typename Type>
@@ -152,6 +187,20 @@ namespace Lua
     };
 
     // Template definitions.
+    template<typename Type>
+    inline void StackValue::AbsoluteIndex(Lua::State& state, const Type& value)
+    {
+    }
+
+    template<>
+    inline void StackValue::AbsoluteIndex(Lua::State& state, const StackValue& value)
+    {
+        if(value.m_index < 0)
+        {
+            value.m_index = lua_gettop(state) + (value.m_index + 1);
+        }
+    }
+
     template<>
     inline void State::Push(const std::nullptr_t&)
     {
@@ -159,6 +208,15 @@ namespace Lua
             return;
 
         lua_pushnil(m_state);
+    }
+
+    template<>
+    inline void State::Push(const StackValue& value)
+    {
+        if(!m_initialized)
+            return;
+
+        lua_pushvalue(m_state, value.GetIndex());
     }
 
     template<>
@@ -216,7 +274,7 @@ namespace Lua
     }
 
     template<typename Type, typename... Types>
-    inline void State::Push(const Type& value, const Types& ...values)
+    inline void State::Push(const Type& value, const Types&... values)
     {
         this->Push(value);
         this->Push(values...);
@@ -350,6 +408,9 @@ namespace Lua
     inline typename State::Popper<sizeof...(Types), Types...>::ReturnType State::Call(std::string function, const Arguments&... arguments)
     {
         StackGuard guard(this);
+
+        // Caulcate absolute stack indices for StackValue objects.
+        StackValue::AbsoluteIndex(*this, arguments...);
 
         // Check if we got a table.
         if(!lua_istable(m_state, -1))
