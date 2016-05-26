@@ -3,6 +3,9 @@
 #include "Precompiled.hpp"
 #include "Window.hpp"
 
+// Forward declarations.
+struct Context;
+
 //
 // Input State
 //

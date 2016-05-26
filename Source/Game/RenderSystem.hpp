@@ -5,6 +5,8 @@
 #include "Graphics/BasicRenderer.hpp"
 
 // Forward declarations.
+struct Context;
+
 namespace System
 {
     class Window;

@@ -1,4 +1,6 @@
 #include "Precompiled.hpp"
+#include "Context.hpp"
+
 #include "System/Config.hpp"
 #include "System/Timer.hpp"
 #include "System/Window.hpp"
@@ -27,7 +29,7 @@ int main(int argc, char* argv[])
     Build::Initialize();
     Logger::Initialize();
 
-    // Create the main context.
+    // Create the context.
     Context context;
 
     // Initialize the config.
@@ -35,13 +37,13 @@ int main(int argc, char* argv[])
     config.Load("Game.cfg");
     config.SetTable("Config");
 
-    context.Set(&config);
+    context.config = &config;
 
     // Initialize the timer.
     System::Timer timer;
     timer.SetMaxDelta(1.0f / 10.0f);
 
-    context.Set(&timer);
+    context.timer = &timer;
 
     // Initialize the window.
     System::Window window;

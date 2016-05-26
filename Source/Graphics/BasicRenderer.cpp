@@ -2,6 +2,7 @@
 #include "BasicRenderer.hpp"
 #include "System/ResourceManager.hpp"
 #include "Graphics/Texture.hpp"
+#include "Context.hpp"
 using namespace Graphics;
 
 namespace
@@ -70,6 +71,10 @@ void BasicRenderer::Cleanup()
 
 bool BasicRenderer::Initialize(Context& context)
 {
+    Verify(context.resourceManager != nullptr);
+    Verify(context.basicRenderer == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
@@ -81,24 +86,6 @@ bool BasicRenderer::Initialize(Context& context)
             this->Cleanup();
         }
     );
-
-    // Add instance to the context.
-    if(context.Has<BasicRenderer>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
-    context.Set(this);
-
-    // Get the resource manager.
-    System::ResourceManager* resourceManager = context.Get<System::ResourceManager>();
-
-    if(resourceManager == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing ResourceManager instance.";
-        return false;
-    }
 
     // Create a vertex buffer.
     const Vertex vertices[4] =
@@ -152,7 +139,7 @@ bool BasicRenderer::Initialize(Context& context)
     m_linearSampler.SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Load the shader.
-    m_shader = resourceManager->Load<Shader>("Data/Shaders/Sprite.glsl");
+    m_shader = context.resourceManager->Load<Shader>("Data/Shaders/Sprite.glsl");
 
     if(m_shader == nullptr)
     {
@@ -162,6 +149,9 @@ bool BasicRenderer::Initialize(Context& context)
 
     // Make sure we have a valid sprite batch size.
     static_assert(SpriteBatchSize >= 1, "Invalid sprite batch size.");
+
+    // Set context instance.
+    context.basicRenderer = this;
 
     // Success!
     return m_initialized = true;

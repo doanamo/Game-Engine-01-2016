@@ -4,6 +4,9 @@
 #include "Component.hpp"
 #include "ComponentPool.hpp"
 
+// Forward declarations.
+struct Context;
+
 //
 // Component System
 //

@@ -3,6 +3,9 @@
 #include "Precompiled.hpp"
 #include "ResourcePool.hpp"
 
+// Forward declarations.
+struct Context;
+
 //
 // Resource Manager
 //

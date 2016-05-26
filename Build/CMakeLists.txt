@@ -28,6 +28,7 @@ Set(SourceFiles
     "${PrecompiledHeader}"
     "${PrecompiledSource}"
 
+	"Context.hpp"
     "Main.cpp"
 
     "Common/Debug.hpp"
@@ -41,7 +42,6 @@ Set(SourceFiles
     "Common/Collector.hpp"
     "Common/Dispatcher.hpp"
     "Common/Receiver.hpp"
-    "Common/Context.hpp"
 
     "Logger/Logger.hpp"
     "Logger/Logger.cpp"

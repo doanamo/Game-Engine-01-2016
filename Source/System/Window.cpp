@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "Window.hpp"
+#include "Context.hpp"
 #include "Config.hpp"
 using namespace System;
 
@@ -258,6 +259,10 @@ void Window::Cleanup()
 
 bool Window::Initialize(Context& context)
 {
+    Assert(context.config != nullptr);
+    Assert(context.window == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
@@ -269,22 +274,6 @@ bool Window::Initialize(Context& context)
             this->Cleanup();
         }
     );
-
-    // Check if the instance already exists.
-    if(context.Has<System::Window>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
-    // Get required instances.
-    Config* config = context.Get<System::Config>();
-
-    if(config == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing Config instance.";
-        return false;
-    }
 
     // Initialize GLFW library.
     if(!LibraryInitialized)
@@ -301,10 +290,10 @@ bool Window::Initialize(Context& context)
     }
 
     // Read config variables.
-    auto name = config->Get<std::string>("Window.Name", "Game");
-    auto width = config->Get<int>("Window.Width", 1024);
-    auto height = config->Get<int>("Window.Height", 576);
-    auto vsync = config->Get<bool>("Window.VSync", true);
+    auto name = context.config->Get<std::string>("Window.Name", "Game");
+    auto width = context.config->Get<int>("Window.Width", 1024);
+    auto height = context.config->Get<int>("Window.Height", 576);
+    auto vsync = context.config->Get<bool>("Window.VSync", true);
 
     // Create the window.
     glfwWindowHint(GLFW_RED_BITS, 8);
@@ -365,8 +354,8 @@ bool Window::Initialize(Context& context)
 
     Log() << "Created OpenGL " << glMajor << "." << glMinor << " context.";
 
-    // Add instance to the context.
-    context.Set(this);
+    // Set context instance.
+    context.window = this;
 
     // Success!
     return m_initialized = true;

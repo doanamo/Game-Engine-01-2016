@@ -3,6 +3,9 @@
 #include "Precompiled.hpp"
 #include "Lua/State.hpp"
 
+// Forward declarations.
+struct Context;
+
 namespace Game
 {
     class EntitySystem;

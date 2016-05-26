@@ -3,6 +3,9 @@
 #include "Precompiled.hpp"
 #include "EntityHandle.hpp"
 
+// Forward declarations.
+struct Context;
+
 //
 // Entity System
 //

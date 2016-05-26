@@ -8,6 +8,9 @@
 #include "Texture.hpp"
 #include "Shader.hpp"
 
+// Forward declarations.
+struct Context;
+
 //
 // Basic Renderer
 //

@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "ResourceManager.hpp"
+#include "Context.hpp"
 using namespace System;
 
 namespace
@@ -36,6 +37,9 @@ void ResourceManager::Cleanup()
 
 bool ResourceManager::Initialize(Context& context)
 {
+    Assert(context.resourceManager == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
@@ -48,15 +52,8 @@ bool ResourceManager::Initialize(Context& context)
         }
     );
 
-    // Check if the instance already exists.
-    if(context.Has<ResourceManager>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
-    // Add instance to the context.
-    context.Set(this);
+    // Set context instance.
+    context.resourceManager = this;
 
     // Save context reference.
     m_context = &context;

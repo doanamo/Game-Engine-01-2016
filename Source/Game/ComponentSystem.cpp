@@ -1,6 +1,7 @@
 #include "Precompiled.hpp"
 #include "ComponentSystem.hpp"
 #include "EntitySystem.hpp"
+#include "Context.hpp"
 using namespace Game;
 
 namespace
@@ -44,6 +45,10 @@ void ComponentSystem::Cleanup()
 
 bool ComponentSystem::Initialize(Context& context)
 {
+    Assert(context.entitySystem != nullptr);
+    Assert(context.componentSystem == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
@@ -56,28 +61,12 @@ bool ComponentSystem::Initialize(Context& context)
         }
     );
 
-    // Check if the instance already exists.
-    if(context.Has<ComponentSystem>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
-    // Get required instances.
-    EntitySystem* entitySystem = context.Get<EntitySystem>();
-
-    if(entitySystem == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing EntitySystem instance.";
-        return false;
-    }
-
     // Subscribe event receivers.
-    entitySystem->events.entityFinalize.Subscribe(m_entityFinalize);
-    entitySystem->events.entityDestroyed.Subscribe(m_entityDestroyed);
+    context.entitySystem->events.entityFinalize.Subscribe(m_entityFinalize);
+    context.entitySystem->events.entityDestroyed.Subscribe(m_entityDestroyed);
 
-    // Add instance to the context.
-    context.Set(this);
+    // Set context instance.
+    context.componentSystem = this;
 
     // Save context reference.
     m_context = &context;

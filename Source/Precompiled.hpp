@@ -65,5 +65,4 @@
 #include "Common/Delegate.hpp"
 #include "Common/Dispatcher.hpp"
 #include "Common/Receiver.hpp"
-#include "Common/Context.hpp"
 #include "Logger/Logger.hpp"

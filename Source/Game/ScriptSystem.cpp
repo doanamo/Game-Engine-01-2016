@@ -3,6 +3,7 @@
 #include "EntitySystem.hpp"
 #include "ComponentSystem.hpp"
 #include "Components/Script.hpp"
+#include "Context.hpp"
 using namespace Game;
 
 namespace
@@ -41,6 +42,11 @@ void ScriptSystem::Cleanup()
 
 bool ScriptSystem::Initialize(Context& context)
 {
+    Assert(context.entitySystem != nullptr);
+    Assert(context.componentSystem != nullptr);
+    Assert(context.scriptSystem == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
@@ -53,29 +59,9 @@ bool ScriptSystem::Initialize(Context& context)
         }
     );
 
-    // Check if the instance already exists.
-    if(context.Has<ScriptSystem>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
     // Get required context references.
-    m_entitySystem = context.Get<Game::EntitySystem>();
-
-    if(m_entitySystem == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing EntitySystem instance.";
-        return false;
-    }
-
-    m_componentSystem = context.Get<Game::ComponentSystem>();
-
-    if(m_componentSystem == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing ComponentSystem instance.";
-        return false;
-    }
+    m_entitySystem = context.entitySystem;
+    m_componentSystem = context.componentSystem;
 
     // Initialize Lua state.
     m_state = std::make_shared<Lua::State>();
@@ -86,8 +72,8 @@ bool ScriptSystem::Initialize(Context& context)
         return false;
     }
 
-    // Add instance to the context.
-    context.Set(this);
+    // Set context instance.
+    context.scriptSystem = this;
 
     // Success!
     return m_initialized = true;

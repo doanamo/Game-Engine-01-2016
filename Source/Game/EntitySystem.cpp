@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "EntitySystem.hpp"
+#include "Context.hpp"
 using namespace Game;
 
 namespace
@@ -70,27 +71,23 @@ void EntitySystem::Cleanup()
 
 bool EntitySystem::Initialize(Context& context)
 {
+    Assert(context.entitySystem == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
     SCOPE_GUARD
-        (
-            if(!m_initialized)
-            {
-                m_initialized = true;
-                this->Cleanup();
-            }
+    (
+        if(!m_initialized)
+        {
+            m_initialized = true;
+            this->Cleanup();
+        }
     );
 
-    // Check if the instance already exists.
-    if(context.Has<EntitySystem>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
-    // Add instance to the context.
-    context.Set(this);
+    // Set context instance.
+    context.entitySystem = this;
 
     // Success!
     return m_initialized = true;

@@ -2,6 +2,9 @@
 
 #include "Precompiled.hpp"
 
+// Forward declarations.
+struct Context;
+
 //
 // Window
 //

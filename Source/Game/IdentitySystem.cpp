@@ -1,6 +1,7 @@
 #include "Precompiled.hpp"
 #include "IdentitySystem.hpp"
 #include "EntitySystem.hpp"
+#include "Context.hpp"
 using namespace Game;
 
 namespace
@@ -45,6 +46,10 @@ void IdentitySystem::Cleanup()
 
 bool IdentitySystem::Initialize(Context& context)
 {
+    Assert(context.entitySystem != nullptr);
+    Assert(context.identitySystem == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
@@ -57,27 +62,11 @@ bool IdentitySystem::Initialize(Context& context)
         }
     );
 
-    // Check if the instance already exists.
-    if(context.Has<IdentitySystem>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
-    // Get the entity system.
-    EntitySystem* entitySystem = context.Get<EntitySystem>();
-
-    if(entitySystem == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing EntitySystem instance.";
-        return false;
-    }
-
     // Subscribe receivers.
-    entitySystem->events.entityDestroyed.Subscribe(m_entityDestroyed);
+    context.entitySystem->events.entityDestroyed.Subscribe(m_entityDestroyed);
 
-    // Add instance to the context.
-    context.Set(this);
+    // Set context instance.
+    context.identitySystem = this;
 
     // Success!
     return m_initialized = true;

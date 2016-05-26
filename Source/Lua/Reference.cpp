@@ -3,6 +3,7 @@
 #include "State.hpp"
 #include "System/ResourceManager.hpp"
 #include "Game/ScriptSystem.hpp"
+#include "Context.hpp"
 using namespace Lua;
 
 namespace
@@ -62,6 +63,7 @@ void Reference::Release()
 
 bool Reference::Load(std::string filename)
 {
+    // Release current reference.
     this->Release();
 
     // Acquire state reference if missing.
@@ -78,30 +80,15 @@ bool Reference::Load(std::string filename)
 
         // Get the context.
         Context* context = resourceManager->GetContext();
-
-        if(context == nullptr)
-        {
-            Log() << LogLoadError(filename) << "Resource manager is missing the context.";
-            return false;
-        }
+        Assert(context != nullptr);
 
         // Get the script system.
-        Game::ScriptSystem* scriptSystem = context->Get<Game::ScriptSystem>();
-
-        if(scriptSystem == nullptr)
-        {
-            Log() << LogLoadError(filename) << "Context is missing ScriptSystem instance.";
-            return false;
-        }
+        Game::ScriptSystem* scriptSystem = context->scriptSystem;
+        Assert(scriptSystem != nullptr);
 
         // Get the scripting state.
         m_state = scriptSystem->GetState();
-
-        if(m_state == nullptr)
-        {
-            Log() << LogLoadError(filename) << "Lua state reference is invalid.";
-            return false;
-        }
+        Assert(m_state != nullptr);
     }
 
     // Check if state is valid.

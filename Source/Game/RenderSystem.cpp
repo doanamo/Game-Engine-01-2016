@@ -4,6 +4,7 @@
 #include "Components/Transform.hpp"
 #include "Components/Render.hpp"
 #include "System/Window.hpp"
+#include "Context.hpp"
 using namespace Game;
 
 namespace
@@ -52,6 +53,12 @@ void RenderSystem::Cleanup()
 
 bool RenderSystem::Initialize(Context& context)
 {
+    Assert(context.window != nullptr);
+    Assert(context.basicRenderer != nullptr);
+    Assert(context.componentSystem != nullptr);
+    Assert(context.renderSystem == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
@@ -64,37 +71,10 @@ bool RenderSystem::Initialize(Context& context)
         }
     );
 
-    // Check if the instance already exists.
-    if(context.Has<RenderSystem>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
-    // Get required instances.
-    m_window = context.Get<System::Window>();
-
-    if(m_window == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing Window instance.";
-        return false;
-    }
-
-    m_basicRenderer = context.Get<Graphics::BasicRenderer>();
-
-    if(m_basicRenderer == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing BasicRenderer instance.";
-        return false;
-    }
-
-    m_componentSystem = context.Get<Game::ComponentSystem>();
-
-    if(m_componentSystem == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing ComponentSystem instance.";
-        return false;
-    }
+    // Get required context instances.
+    m_window = context.window;
+    m_basicRenderer = context.basicRenderer;
+    m_componentSystem = context.componentSystem;
 
     // Set screen space target size.
     m_screenSpace.SetTargetSize(10.0f, 10.0f);
@@ -105,8 +85,8 @@ bool RenderSystem::Initialize(Context& context)
     m_spriteData.reserve(SpriteListSize);
     m_spriteSort.reserve(SpriteListSize);
 
-    // Add instance to the context.
-    context.Set(this);
+    // Set context instance.
+    context.renderSystem = this;
 
     // Success!
     return m_initialized = true;

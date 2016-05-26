@@ -3,6 +3,7 @@
 #include "Transform.hpp"
 #include "Game/ComponentSystem.hpp"
 #include "Graphics/Texture.hpp"
+#include "Context.hpp"
 using namespace Game;
 using namespace Components;
 
@@ -23,12 +24,10 @@ Render::~Render()
 
 bool Render::Finalize(EntityHandle self, const Context& context)
 {
-    // Get required systems.
-    ComponentSystem* componentSystem = context.Get<ComponentSystem>();
-    if(componentSystem == nullptr) return false;
+    Assert(context.componentSystem != nullptr);
 
     // Get required components.
-    m_transform = componentSystem->Lookup<Transform>(self);
+    m_transform = context.componentSystem->Lookup<Transform>(self);
     if(m_transform == nullptr) return false;
 
     return true;

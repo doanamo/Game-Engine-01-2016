@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "InputState.hpp"
+#include "Context.hpp"
 #include "Window.hpp"
 using namespace System;
 
@@ -42,6 +43,10 @@ void InputState::Cleanup()
 
 bool InputState::Initialize(Context& context)
 {
+    Assert(context.window != nullptr);
+    Assert(context.inputState == nullptr);
+
+    // Cleanup this instance.
     this->Cleanup();
 
     // Setup a cleanup guard.
@@ -54,28 +59,12 @@ bool InputState::Initialize(Context& context)
         }
     );
 
-    // Check if the instance already exists.
-    if(context.Has<System::InputState>())
-    {
-        Log() << LogInitializeError() << "Context is invalid.";
-        return false;
-    }
-
-    // Get required instances.
-    Window* window = context.Get<System::Window>();
-
-    if(window == nullptr)
-    {
-        Log() << LogInitializeError() << "Context is missing Window instance.";
-        return false;
-    }
-
     // Subscribe event receivers.
-    window->events.keyboardKey.Subscribe(m_keyboardKey);
-    window->events.focus.Subscribe(m_windowFocus);
+    context.window->events.keyboardKey.Subscribe(m_keyboardKey);
+    context.window->events.focus.Subscribe(m_windowFocus);
 
-    // Add instance to the context.
-    context.Set(this);
+    // Set context instance.
+    context.inputState = this;
 
     // Success!
     return m_initialized = true;
