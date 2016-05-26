@@ -54,6 +54,10 @@ namespace Debug
 //  - Debug: Triggers a breakpoint
 //  - Release: Triggers a breakpoint
 //
+//  Usage:
+//      Assert(m_initialized);
+//      Assert(instance != nullptr, "Invalid instance.");
+//
 
 #ifndef NDEBUG
     #define VERIFY_SIMPLE(expression)                                           \
@@ -97,6 +101,10 @@ namespace Debug
 //  Behaviour in different build types:
 //  - Debug: Triggers a breakpoint
 //  - Release: Check is stripped
+//
+//  Usage:
+//      Verify(m_initialized);
+//      Verify(instance != nullptr, "Invalid instance.");
 //
 
 #ifndef NDEBUG
