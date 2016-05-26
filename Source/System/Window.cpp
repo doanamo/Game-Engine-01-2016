@@ -301,10 +301,10 @@ bool Window::Initialize(Context& context)
     }
 
     // Read config variables.
-    std::string name = config->Get<std::string>("Window.Name", "Game");
-    int width = config->Get<int>("Window.Width", 1024);
-    int height = config->Get<int>("Window.Height", 576);
-    bool vsync = config->Get<bool>("Window.VSync", true);
+    auto name = config->Get<std::string>("Window.Name", "Game");
+    auto width = config->Get<int>("Window.Width", 1024);
+    auto height = config->Get<int>("Window.Height", 576);
+    auto vsync = config->Get<bool>("Window.VSync", true);
 
     // Create the window.
     glfwWindowHint(GLFW_RED_BITS, 8);
