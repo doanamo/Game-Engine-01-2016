@@ -29,7 +29,7 @@ namespace Game
 
             // Calls added scripts.
             template<typename... Types, typename... Arguments>
-            typename Lua::StackPopper<sizeof...(Types), Types...>::ReturnType Call(std::string method, Arguments... arguments);
+            typename Lua::StackPopper<sizeof...(Types), Types...>::ReturnType Call(std::string method, Arguments&&... arguments);
 
         private:
             // List of script references.
@@ -38,7 +38,7 @@ namespace Game
 
         // Template definitions.
         template<typename... Types, typename... Arguments>
-        typename Lua::StackPopper<sizeof...(Types), Types...>::ReturnType Script::Call(std::string method, Arguments... arguments)
+        typename Lua::StackPopper<sizeof...(Types), Types...>::ReturnType Script::Call(std::string method, Arguments&&... arguments)
         {
             for(auto& script : m_scripts)
             {
