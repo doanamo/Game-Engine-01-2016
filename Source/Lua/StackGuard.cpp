@@ -35,6 +35,10 @@ StackGuard::~StackGuard()
 {
     if(m_state != nullptr)
     {
+        // Check current stack size.
+        Assert(lua_gettop(m_state) >= m_size, "Current stack size smaller than the guard");
+
+        // Restore previous stack size.
         lua_settop(m_state, m_size);
     }
 }
