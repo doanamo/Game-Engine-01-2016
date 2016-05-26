@@ -32,8 +32,8 @@ namespace Lua
         template<typename Type, typename... Types>
         static void AbsoluteIndex(Lua::State& state, const Type& value, const Types&... values)
         {
-            AbsoluteIndex(value);
-            AbsoluteIndex(values...);
+            AbsoluteIndex(state, value);
+            AbsoluteIndex(state, values...);
         }
 
         int GetIndex() const

@@ -3,7 +3,7 @@ Player.__index = Player
 
 function Player:New()
     local self = {}
-    self.text = "Hello world!"
+    self.time = 9.0
     
     return setmetatable(self, Player)
 end
@@ -11,9 +11,11 @@ end
 setmetatable(Player, { __call = Player.New })
 
 function Player:Update(entitySelf, timeDelta)
-    if self.text then
-        Log(self.text)
-        self.text = nil
+	self.time = self.time + timeDelta
+
+    if self.time >= 10.0 then
+		Log("Time Delta: " .. timeDelta)
+        self.time = 0.0
     end
 end
 
