@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
 
     // Create entities.
     {
-        auto playerScript = resourceManager.Load<Lua::Reference>("Data/Scripts/Player.lua");
+        auto playerScript = resourceManager.Load<Lua::ManagedReference>("Data/Scripts/Player.lua");
 
         auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
 

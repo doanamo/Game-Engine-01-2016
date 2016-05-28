@@ -16,14 +16,14 @@ namespace Lua
     class State;
 
     // Reference class.
-    class Reference : public System::Resource
+    class Reference
     {
     public:
         // Type declarations.
         typedef int ReferenceID;
 
     public:
-        Reference(System::ResourceManager* resourceManager = nullptr);
+        Reference();
         Reference(const std::shared_ptr<Lua::State>& state);
         Reference(const Reference& other);
         Reference(Reference&& other);
@@ -31,9 +31,6 @@ namespace Lua
 
         // Releases the referenced value.
         void Release();
-
-        // Loads the reference from a file.
-        bool Load(std::string filename);
 
         // Creates a reference for an object on top of the stack.
         // Pops the object from the stack in the process.
@@ -55,11 +52,30 @@ namespace Lua
         bool operator==(const std::nullptr_t) const;
         bool operator!=(const std::nullptr_t) const;
 
-    private:
+    protected:
         // Lua state reference.
         std::shared_ptr<Lua::State> m_state;
 
         // Lua value reference.
         ReferenceID m_reference;
+    };
+}
+
+//
+// Managed Reference
+//
+//  Wrapper allowing reference to be managed by the resource system.
+//
+
+namespace Lua
+{
+    // Managed reference class.
+    class ManagedReference : public Reference, public System::Resource
+    {
+    public:
+        ManagedReference(System::ResourceManager* resourceManager);
+
+        // Loads the reference from a file.
+        bool Load(std::string filename);
     };
 }

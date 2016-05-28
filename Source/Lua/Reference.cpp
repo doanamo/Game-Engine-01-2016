@@ -12,8 +12,7 @@ namespace
     #define LogLoadError(filename) "Failed to load a reference from \"" << filename << "\" file! "
 }
 
-Reference::Reference(System::ResourceManager* resourceManager) :
-    System::Resource(resourceManager),
+Reference::Reference() :
     m_state(nullptr),
     m_reference(LUA_REFNIL)
 {
@@ -61,7 +60,53 @@ void Reference::Release()
     }
 }
 
-bool Reference::Load(std::string filename)
+void Reference::CreateFromStack()
+{
+    if(!this->IsValid())
+        return;
+
+    m_reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
+}
+
+void Reference::PushOntoStack() const
+{
+    if(!this->IsValid())
+        return;
+
+    lua_rawgeti(*m_state, LUA_REGISTRYINDEX, m_reference);
+}
+
+std::shared_ptr<Lua::State> Reference::GetState() const
+{
+    return m_state;
+}
+
+Reference::ReferenceID Reference::GetReference() const
+{
+    return m_reference;
+}
+
+bool Reference::IsValid() const
+{
+    return m_state != nullptr && m_state->IsValid();
+}
+
+bool Reference::operator==(const std::nullptr_t) const
+{
+    return !this->IsValid() || m_reference == LUA_REFNIL;
+}
+
+bool Reference::operator!=(const std::nullptr_t) const
+{
+    return this->IsValid() && m_reference != LUA_REFNIL;
+}
+
+ManagedReference::ManagedReference(System::ResourceManager* resourceManager) :
+    System::Resource(resourceManager)
+{
+}
+
+bool ManagedReference::Load(std::string filename)
 {
     // Release current reference.
     this->Release();
@@ -121,45 +166,4 @@ bool Reference::Load(std::string filename)
     Log() << "Loaded a reference from \"" << filename << "\" file.";
 
     return true;
-}
-
-void Reference::CreateFromStack()
-{
-    if(!this->IsValid())
-        return;
-
-    m_reference = luaL_ref(*m_state, LUA_REGISTRYINDEX);
-}
-
-void Reference::PushOntoStack() const
-{
-    if(!this->IsValid())
-        return;
-
-    lua_rawgeti(*m_state, LUA_REGISTRYINDEX, m_reference);
-}
-
-std::shared_ptr<Lua::State> Reference::GetState() const
-{
-    return m_state;
-}
-
-Reference::ReferenceID Reference::GetReference() const
-{
-    return m_reference;
-}
-
-bool Reference::IsValid() const
-{
-    return m_state != nullptr && m_state->IsValid();
-}
-
-bool Reference::operator==(const std::nullptr_t) const
-{
-    return !this->IsValid() || m_reference == LUA_REFNIL;
-}
-
-bool Reference::operator!=(const std::nullptr_t) const
-{
-    return this->IsValid() && m_reference != LUA_REFNIL;
 }
