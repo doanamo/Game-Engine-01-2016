@@ -4,10 +4,11 @@
 
 //
 // Stack Guard
-//  A scope guard object that reverts stack
+//
+//  Scoped guard object that reverts the stack
 //  to it's previous size when destroyed.
 //
-//  Example usage:
+//  Example:
 //      int size = state.GetStackSize();
 //      
 //      {
@@ -25,12 +26,11 @@ namespace Lua
     class State;
 
     // Stack guard class.
-    class StackGuard
+    class StackGuard : private NonCopyable
     {
     public:
         StackGuard(const std::shared_ptr<Lua::State>& state);
         StackGuard(Lua::State* state);
-        StackGuard(StackGuard&& other);
         ~StackGuard();
 
     private:

@@ -8,37 +8,24 @@ StackGuard::StackGuard(const std::shared_ptr<Lua::State>& state) :
 {
 }
 
-StackGuard::StackGuard(Lua::State* state)
+StackGuard::StackGuard(Lua::State* state) :
+    m_state(*state),
+    m_size(0)
 {
     if(state != nullptr)
     {
-        m_state = *state;
         m_size = lua_gettop(*state);
     }
-    else
-    {
-        m_state = nullptr;
-        m_size = 0;
-    }
-}
-
-StackGuard::StackGuard(StackGuard&& other)
-{
-    m_state = other.m_state;
-    other.m_state = nullptr;
-
-    m_size = other.m_size;
-    other.m_size = 0;
 }
 
 StackGuard::~StackGuard()
 {
     if(m_state != nullptr)
     {
-        // Check current stack size.
-        Assert(lua_gettop(m_state) >= m_size, "Current stack size smaller than the guard");
+        // Check the current stack size.
+        Assert(lua_gettop(m_state) >= m_size, "Stack is smaller than the declared guard size.");
 
-        // Restore previous stack size.
+        // Restore the previous stack size.
         lua_settop(m_state, m_size);
     }
 }
