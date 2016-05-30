@@ -3,6 +3,7 @@
 #include "Precompiled.hpp"
 #include "StackGuard.hpp"
 #include "Reference.hpp"
+#include "Lua.hpp"
 
 //
 // Lua State
@@ -115,19 +116,6 @@ namespace Lua
         // Parses a script string.
         bool Parse(std::string text);
 
-        // Pushes a value onto the stack.
-        void Push();
-        void Push(const std::nullptr_t&, int count);
-
-        template<typename Type>
-        void Push(const Type& value);
-
-        template<size_t Size>
-        void Push(const char (&value)[Size]);
-
-        template<typename Type, typename... Types>
-        void Push(const Type& value, const Types&... values);
-
         // Checks if value is of a gived type.
         template<typename Type>
         bool Is(const int index = -1);
@@ -186,6 +174,13 @@ namespace Lua
     };
 
     // Template definitions.
+    template<>
+    inline void Push(lua_State* state, const StackValue& value)
+    {
+        Assert(state != nullptr);
+        lua_pushvalue(state, value.GetIndex());
+    }
+
     template<typename Type>
     inline void StackValue::AbsoluteIndex(Lua::State& state, const Type& value)
     {
@@ -198,85 +193,6 @@ namespace Lua
         {
             value.m_index = lua_gettop(state) + (value.m_index + 1);
         }
-    }
-
-    template<>
-    inline void State::Push(const std::nullptr_t&)
-    {
-        if(!m_initialized)
-            return;
-
-        lua_pushnil(m_state);
-    }
-
-    template<>
-    inline void State::Push(const StackValue& value)
-    {
-        if(!m_initialized)
-            return;
-
-        lua_pushvalue(m_state, value.GetIndex());
-    }
-
-    template<>
-    inline void State::Push(const bool& value)
-    {
-        if(!m_initialized)
-            return;
-
-        lua_pushboolean(m_state, value);
-    }
-
-    template<>
-    inline void State::Push(const int& value)
-    {
-        if(!m_initialized)
-            return;
-
-        lua_pushnumber(m_state, value);
-    }
-
-    template<>
-    inline void State::Push(const float& value)
-    {
-        if(!m_initialized)
-            return;
-
-        lua_pushnumber(m_state, value);
-    }
-
-    template<>
-    inline void State::Push(const double& value)
-    {
-        if(!m_initialized)
-            return;
-
-        lua_pushnumber(m_state, value);
-    }
-
-    template<>
-    inline void State::Push(const std::string& value)
-    {
-        if(!m_initialized)
-            return;
-
-        lua_pushstring(m_state, value.c_str());
-    }
-
-    template<size_t Size>
-    inline void State::Push(const char(&value)[Size])
-    {
-        if(!m_initialized)
-            return;
-
-        lua_pushstring(m_state, value);
-    }
-
-    template<typename Type, typename... Types>
-    inline void State::Push(const Type& value, const Types&... values)
-    {
-        this->Push(value);
-        this->Push(values...);
     }
 
     template<>
@@ -406,6 +322,7 @@ namespace Lua
     template<typename... Types, typename... Arguments>
     inline typename StackPopper<sizeof...(Types), Types...>::ReturnType State::Call(std::string function, const Arguments&... arguments)
     {
+        // Create a scope guard.
         StackGuard guard(this);
 
         // Caulcate absolute stack indices for StackValue objects.
@@ -414,7 +331,7 @@ namespace Lua
         // Check if we got a table.
         if(!lua_istable(m_state, -1))
         {
-            this->Push(nullptr, (int)(sizeof...(Types)));
+            Lua::Push(m_state, nullptr, (int)(sizeof...(Types)));
             return this->Pop<Types...>();
         }
 
@@ -423,12 +340,12 @@ namespace Lua
 
         if(!lua_isfunction(m_state, -1))
         {
-            this->Push(nullptr, (int)(sizeof...(Types)));
+            Lua::Push(m_state, nullptr, (int)(sizeof...(Types)));
             return this->Pop<Types...>();
         }
 
         // Push function arguments.
-        this->Push(arguments...);
+        Lua::Push(m_state, arguments...);
 
         // Call the function.
         const int types = (int)(sizeof...(Types));
