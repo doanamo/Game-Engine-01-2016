@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "StackGuard.hpp"
+#include "Reference.hpp"
 
 //
 // State Interface
@@ -8,6 +10,9 @@
 
 namespace Lua
 {
+    // Forward declarations.
+    class State;
+
     // State interface class.
     class StateInterface : public std::enable_shared_from_this<State>
     {

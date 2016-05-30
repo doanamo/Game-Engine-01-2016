@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Precompiled.hpp"
-#include "StackGuard.hpp"
-#include "Reference.hpp"
 #include "Lua.hpp"
 
 //
