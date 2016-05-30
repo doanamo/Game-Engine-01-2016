@@ -16,6 +16,10 @@ namespace Lua
 
     template<typename Type, typename... Types>
     void Push(lua_State* state, const Type& value, const Types&... values);
+
+    // Checks if value is of a gived type.
+    template<typename Type>
+    bool Is(lua_State* state, const int index = -1);
 }
 
 // Template definitions.
@@ -74,4 +78,46 @@ inline void Lua::Push(lua_State* state, const Type& value, const Types&... value
     Assert(state != nullptr);
     Lua::Push(state, value);
     Lua::Push(state, values...);
+}
+
+template<>
+inline bool Lua::Is<std::nullptr_t>(lua_State* state, const int index)
+{
+    Assert(state != nullptr);
+    return lua_isnil(state, index) != 0;
+}
+
+template<>
+inline bool Lua::Is<bool>(lua_State* state, const int index)
+{
+    Assert(state != nullptr);
+    return lua_isboolean(state, index) != 0;
+}
+
+template<>
+inline bool Lua::Is<int>(lua_State* state, const int index)
+{
+    Assert(state != nullptr);
+    return lua_isnumber(state, index) != 0;
+}
+
+template<>
+inline bool Lua::Is<float>(lua_State* state, const int index)
+{
+    Assert(state != nullptr);
+    return lua_isnumber(state, index) != 0;
+}
+
+template<>
+inline bool Lua::Is<double>(lua_State* state, const int index)
+{
+    Assert(state != nullptr);
+    return lua_isnumber(state, index) != 0;
+}
+
+template<>
+inline bool Lua::Is<std::string>(lua_State* state, const int index)
+{
+    Assert(state != nullptr);
+    return lua_isstring(state, index) != 0;
 }

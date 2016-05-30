@@ -102,7 +102,7 @@ namespace System
         m_lua.PushVariable(expanded);
 
         // Read the pushed value.
-        if(m_lua.Is<Type>())
+        if(Lua::Is<Type>(m_lua))
         {
             return m_lua.Read<Type>();
         }

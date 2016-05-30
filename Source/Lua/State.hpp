@@ -116,10 +116,6 @@ namespace Lua
         // Parses a script string.
         bool Parse(std::string text);
 
-        // Checks if value is of a gived type.
-        template<typename Type>
-        bool Is(const int index = -1);
-
         // Reads a value from the stack.
         template<typename Type>
         Type Read(const int index = -1);
@@ -193,60 +189,6 @@ namespace Lua
         {
             value.m_index = lua_gettop(state) + (value.m_index + 1);
         }
-    }
-
-    template<>
-    inline bool State::Is<std::nullptr_t>(const int index)
-    {
-        if(!m_initialized)
-            return false;
-
-        return lua_isnil(m_state, index) != 0;
-    }
-
-    template<>
-    inline bool State::Is<bool>(const int index)
-    {
-        if(!m_initialized)
-            return false;
-
-        return lua_isboolean(m_state, index) != 0;
-    }
-
-    template<>
-    inline bool State::Is<int>(const int index)
-    {
-        if(!m_initialized)
-            return false;
-
-        return lua_isnumber(m_state, index) != 0;
-    }
-
-    template<>
-    inline bool State::Is<float>(const int index)
-    {
-        if(!m_initialized)
-            return false;
-
-        return lua_isnumber(m_state, index) != 0;
-    }
-
-    template<>
-    inline bool State::Is<double>(const int index)
-    {
-        if(!m_initialized)
-            return false;
-
-        return lua_isnumber(m_state, index) != 0;
-    }
-
-    template<>
-    inline bool State::Is<std::string>(const int index)
-    {
-        if(!m_initialized)
-            return false;
-
-        return lua_isstring(m_state, index) != 0;
     }
 
     template<>
@@ -357,7 +299,7 @@ namespace Lua
 
             for(int i = 1; i <= types; ++i)
             {
-                Assert(this->Is<std::nullptr_t>(-i));
+                Assert(Lua::Is<std::nullptr_t>(m_state, -i));
             }
 
             return this->Pop<Types...>();
