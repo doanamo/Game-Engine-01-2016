@@ -104,7 +104,7 @@ namespace System
         // Read the pushed value.
         if(Lua::Is<Type>(m_lua))
         {
-            return m_lua.Read<Type>();
+            return Lua::Read<Type>(m_lua);
         }
         else
         {

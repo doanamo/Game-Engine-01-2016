@@ -141,14 +141,6 @@ bool State::Parse(std::string text)
     return true;
 }
 
-void State::Pop(const int count)
-{
-    if(!m_initialized)
-        return;
-
-    lua_pop(m_state, count);
-}
-
 void State::PushGlobal()
 {
     if(!m_initialized)

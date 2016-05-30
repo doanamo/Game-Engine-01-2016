@@ -58,7 +58,6 @@ Set(SourceFiles
     "Logger/DebuggerOutput.cpp"
 
     "Lua/Lua.hpp"
-    "Lua/Lua.cpp"
     "Lua/State.hpp"
     "Lua/State.cpp"
     "Lua/StackGuard.hpp"

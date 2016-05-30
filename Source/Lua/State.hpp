@@ -14,90 +14,8 @@ namespace Lua
     // Forward declarations.
     class State;
 
-    // Stack value class.
-    struct StackValue
-    {
-    public:
-        StackValue(const int index) :
-            m_index(index)
-        {
-        }
-
-        static void AbsoluteIndex(Lua::State& state)
-        {
-        }
-
-        template<typename Type>
-        static void AbsoluteIndex(Lua::State& state, const Type& value);
-
-        template<typename Type, typename... Types>
-        static void AbsoluteIndex(Lua::State& state, const Type& value, const Types&... values)
-        {
-            AbsoluteIndex(state, value);
-            AbsoluteIndex(state, values...);
-        }
-
-        int GetIndex() const
-        {
-            return m_index;
-        }
-
-    private:
-        mutable int m_index;
-    };
-
-    // Stack popper class.
-    template<size_t, typename... Types>
-    struct StackPopper
-    {
-        typedef std::tuple<Types...> ReturnType;
-
-        template<typename Type>
-        static std::tuple<Type> CreateTuple(Lua::State& state, const int index)
-        {
-            return std::make_tuple(state.Read<Type>(index));
-        }
-
-        template<typename Type1, typename Type2, typename... Rest>
-        static std::tuple<Type1, Type2, Rest...> CreateTuple(Lua::State& state, const int index)
-        {
-            std::tuple<Type1> head = std::make_tuple(state.Read<Type1>(index));
-            return std::tuple_cat(head, CreateTuple<Type2, Rest...>(state, index + 1));
-        }
-
-        static ReturnType Apply(Lua::State& state)
-        {
-            auto value = CreateTuple<Types...>(state, -(int)(sizeof...(Types)));
-            lua_pop(state, (int)(sizeof...(Types)));
-            return value;
-        }
-    };
-
-    template<typename Type>
-    struct StackPopper<1, Type>
-    {
-        typedef Type ReturnType;
-
-        static ReturnType Apply(Lua::State& state)
-        {
-            auto value = state.Read<Type>(-1);
-            lua_pop(state, 1);
-            return value;
-        }
-    };
-
-    template<typename... Types>
-    struct StackPopper<0, Types...>
-    {
-        typedef void ReturnType;
-
-        static ReturnType Apply(Lua::State& state)
-        {
-        }
-    };
-
     // State class.
-    class State : private NonCopyable, public std::enable_shared_from_this<State>
+    class State : private NonCopyable, public StateInterface
     {
     public:
         State();
@@ -115,16 +33,6 @@ namespace Lua
 
         // Parses a script string.
         bool Parse(std::string text);
-
-        // Reads a value from the stack.
-        template<typename Type>
-        Type Read(const int index = -1);
-
-        // Pops a value from the top of the stack.
-        void Pop(const int count = 1);
-
-        template<typename... Types>
-        typename StackPopper<sizeof...(Types), Types...>::ReturnType Pop();
 
         // Calls a function from a table.
         template<typename... Types, typename... Arguments>
@@ -170,97 +78,6 @@ namespace Lua
     };
 
     // Template definitions.
-    template<>
-    inline void Push(lua_State* state, const StackValue& value)
-    {
-        Assert(state != nullptr);
-        lua_pushvalue(state, value.GetIndex());
-    }
-
-    template<typename Type>
-    inline void StackValue::AbsoluteIndex(Lua::State& state, const Type& value)
-    {
-    }
-
-    template<>
-    inline void StackValue::AbsoluteIndex(Lua::State& state, const StackValue& value)
-    {
-        if(value.m_index < 0)
-        {
-            value.m_index = lua_gettop(state) + (value.m_index + 1);
-        }
-    }
-
-    template<>
-    inline bool State::Read(const int index)
-    {
-        if(!m_initialized)
-            return false;
-
-        return lua_toboolean(m_state, index) != 0;
-    }
-
-    template<>
-    inline int State::Read(const int index)
-    {
-        if(!m_initialized)
-            return 0;
-
-        return lua_tointeger(m_state, index);
-    }
-
-    template<>
-    inline float State::Read(const int index)
-    {
-        if(!m_initialized)
-            return 0.0f;
-
-        return (float)lua_tonumber(m_state, index);
-    }
-
-    template<>
-    inline double State::Read(const int index)
-    {
-        if(!m_initialized)
-            return 0.0;
-
-        return lua_tonumber(m_state, index);
-    }
-
-    template<>
-    inline std::string State::Read(const int index)
-    {
-        if(!m_initialized)
-            return "";
-
-        if(lua_isnil(m_state, index))
-            return "nil";
-
-        return lua_tostring(m_state, index);
-    }
-
-    template<>
-    inline Lua::Reference State::Read(const int index)
-    {
-        if(!m_initialized)
-            return Lua::Reference();
-
-        // Copy the value we want referenced.
-        // Creating a reference of the value will pop it, but we want the stack intact.
-        lua_pushvalue(m_state, index);
-
-        // Create a reference.
-        Lua::Reference reference(this->shared_from_this());
-        reference.CreateFromStack();
-        return reference;
-    }
-
-    template<typename... Types>
-    inline typename StackPopper<sizeof...(Types), Types...>::ReturnType State::Pop()
-    {
-        return StackPopper<sizeof...(Types), Types...>::Apply(*this);
-    }
-
     template<typename... Types, typename... Arguments>
     inline typename StackPopper<sizeof...(Types), Types...>::ReturnType State::Call(std::string function, const Arguments&... arguments)
     {
@@ -273,8 +90,8 @@ namespace Lua
         // Check if we got a table.
         if(!lua_istable(m_state, -1))
         {
-            Lua::Push(m_state, nullptr, (int)(sizeof...(Types)));
-            return this->Pop<Types...>();
+            Lua::Push<sizeof...(Types)>(*this, nullptr);
+            return Lua::Pop<Types...>(*this);
         }
 
         // Get the function from a table.
@@ -282,12 +99,12 @@ namespace Lua
 
         if(!lua_isfunction(m_state, -1))
         {
-            Lua::Push(m_state, nullptr, (int)(sizeof...(Types)));
-            return this->Pop<Types...>();
+            Lua::Push<sizeof...(Types)>(*this, nullptr);
+            return Lua::Pop<Types...>(*this);
         }
 
         // Push function arguments.
-        Lua::Push(m_state, arguments...);
+        Lua::Push(*this, arguments...);
 
         // Call the function.
         const int types = (int)(sizeof...(Types));
@@ -299,13 +116,13 @@ namespace Lua
 
             for(int i = 1; i <= types; ++i)
             {
-                Assert(Lua::Is<std::nullptr_t>(m_state, -i));
+                Assert(Lua::Is<std::nullptr_t>(*this, -i));
             }
 
-            return this->Pop<Types...>();
+            return Lua::Pop<Types...>(*this);
         }
 
         // Return function results.
-        return this->Pop<Types...>();
+        return Lua::Pop<Types...>(*this);
     }
 }
