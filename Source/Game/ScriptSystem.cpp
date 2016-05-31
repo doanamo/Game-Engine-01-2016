@@ -101,7 +101,7 @@ void ScriptSystem::Update(float timeDelta)
             continue;
 
         // Update script component.
-        script.Call("Update", 0, timeDelta);
+        script.Call("Update", entity, timeDelta);
     }
 }
 
