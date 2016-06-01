@@ -210,6 +210,23 @@ namespace Lua
         lua_pushstring(state, value.c_str());
     }
 
+    template<>
+    inline void Push(StateInterface& state, const Reference& reference)
+    {
+        Assert(state.IsValid());
+        Assert(&state == (StateInterface*)reference.GetState().get());
+        reference.PushOntoStack();
+    }
+
+    template<>
+    inline void Push(StateInterface& state, const std::shared_ptr<const Reference>& reference)
+    {
+        Assert(state.IsValid());
+        Assert(reference != nullptr);
+        Assert(&state == (StateInterface*)reference->GetState().get());
+        reference->PushOntoStack();
+    }
+
     template<size_t Size>
     inline void Push(StateInterface& state, const std::nullptr_t&)
     {

@@ -25,7 +25,7 @@ void Script::AddScript(std::shared_ptr<const Lua::Reference> script)
     Lua::StackGuard guard(&state);
 
     // Push the script table on the stack.
-    script->PushOntoStack();
+    Lua::Push(state, script);
 
     // Create a new script instance.
     auto instance = state.Call<Lua::Reference>("New");

@@ -47,7 +47,7 @@ namespace Game
                 Lua::StackGuard guard(&state);
 
                 // Push a script instance on the stack.
-                script.PushOntoStack();
+                Lua::Push(state, script);
 
                 // Call the script method.
                 state.Call(method.c_str(), Lua::StackValue(-1), std::forward<Arguments>(arguments)...);
