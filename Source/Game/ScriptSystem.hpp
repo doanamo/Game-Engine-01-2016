@@ -40,6 +40,10 @@ namespace Game
         std::shared_ptr<Lua::State> GetState();
 
     private:
+        // Registers the context in Lua state.
+        bool RegisterContext(Context& context);
+
+    private:
         // Context references.
         EntitySystem*    m_entitySystem;
         ComponentSystem* m_componentSystem;

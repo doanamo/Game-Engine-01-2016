@@ -72,6 +72,13 @@ bool ScriptSystem::Initialize(Context& context)
         return false;
     }
 
+    // Register the context for use in Lua.
+    if(!this->RegisterContext(context))
+    {
+        Log() << LogInitializeError() << "Couldn't register the context.";
+        return false;
+    }
+
     // Set context instance.
     context.scriptSystem = this;
 
