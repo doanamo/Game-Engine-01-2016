@@ -3,148 +3,8 @@
 #include "Precompiled.hpp"
 #include "StackGuard.hpp"
 #include "Reference.hpp"
-
-//
-// State Interface
-//
-
-namespace Lua
-{
-    // Forward declarations.
-    class State;
-
-    // State interface class.
-    class StateInterface : public std::enable_shared_from_this<State>
-    {
-    public:
-        // Checks if the instance is valid.
-        virtual bool IsValid() const = 0;
-
-        // Gets the private implementation.
-        virtual lua_State* GetPrivate() = 0;
-
-        // Conversion operator.
-        virtual operator lua_State*() = 0;
-    };
-}
-
-//
-// Stack Value
-//
-//  Objects used to reference a value on the stack by an index.
-//
-
-namespace Lua
-{
-    // Stack value class.
-    struct StackValue
-    {
-    public:
-        StackValue(const int index) :
-            m_index(index)
-        {
-        }
-
-        static void AbsoluteIndex(StateInterface& state)
-        {
-        }
-
-        template<typename Type>
-        static void AbsoluteIndex(StateInterface& state, const Type& value)
-        {
-        }
-
-        template<>
-        static void AbsoluteIndex(StateInterface& state, const StackValue& value)
-        {
-            Assert(state.IsValid());
-
-            if(value.m_index < 0)
-            {
-                value.m_index = lua_gettop(state) + (value.m_index + 1);
-            }
-        }
-
-        template<typename Type, typename... Types>
-        static void AbsoluteIndex(StateInterface& state, const Type& value, const Types&... values)
-        {
-            Assert(state.IsValid());
-            AbsoluteIndex(state, value);
-            AbsoluteIndex(state, values...);
-        }
-
-        int GetIndex() const
-        {
-            return m_index;
-        }
-
-    private:
-        mutable int m_index;
-    };
-}
-
-//
-// Stack Popper
-//
-//  Pops multiple values from the stacks and returns them as a tuple.
-//
-
-namespace Lua
-{
-    // Stack popper class.
-    template<size_t, typename... Types>
-    struct StackPopper
-    {
-        typedef std::tuple<Types...> ReturnType;
-
-        template<typename Type>
-        static std::tuple<Type> CreateTuple(StateInterface& state, const int index)
-        {
-            Assert(state.IsValid());
-            return std::make_tuple(Read<Type>(state, index));
-        }
-
-        template<typename Type1, typename Type2, typename... Rest>
-        static std::tuple<Type1, Type2, Rest...> CreateTuple(StateInterface& state, const int index)
-        {
-            Assert(state.IsValid());
-            std::tuple<Type1> head = std::make_tuple(Read<Type1>(state, index));
-            return std::tuple_cat(head, CreateTuple<Type2, Rest...>(state, index + 1));
-        }
-
-        static ReturnType Apply(StateInterface& state)
-        {
-            Assert(state.IsValid());
-            auto value = CreateTuple<Types...>(state, -(int)(sizeof...(Types)));
-            lua_pop(state, (int)(sizeof...(Types)));
-            return value;
-        }
-    };
-
-    template<typename Type>
-    struct StackPopper<1, Type>
-    {
-        typedef Type ReturnType;
-
-        static ReturnType Apply(StateInterface& state)
-        {
-            Assert(state.IsValid());
-            auto value = Read<Type>(state, -1);
-            lua_pop(state, 1);
-            return value;
-        }
-    };
-
-    template<typename... Types>
-    struct StackPopper<0, Types...>
-    {
-        typedef void ReturnType;
-
-        static ReturnType Apply(StateInterface& state)
-        {
-        }
-    };
-}
+#include "Helpers.hpp"
+#include "State.hpp"
 
 //
 // Push()
@@ -154,81 +14,84 @@ namespace Lua
 
 namespace Lua
 {
-    inline void Push(StateInterface& state)
+    inline void Push(State& state)
     {
     }
 
     template<typename Type>
-    void Push(StateInterface& state, const Type& value);
+    void Push(State& state, const Type& value)
+    {
+        static_assert(false, "Not implemented for a given type.");
+    }
 
     template<>
-    inline void Push(StateInterface& state, const StackValue& value)
+    inline void Push(State& state, const StackValue& value)
     {
         Assert(state.IsValid());
         lua_pushvalue(state, value.GetIndex());
     }
 
     template<>
-    inline void Push(StateInterface& state, const std::nullptr_t&)
+    inline void Push(State& state, const std::nullptr_t&)
     {
         Assert(state.IsValid());
         lua_pushnil(state);
     }
 
     template<>
-    inline void Push(StateInterface& state, const bool& value)
+    inline void Push(State& state, const bool& value)
     {
         Assert(state.IsValid());
         lua_pushboolean(state, value);
     }
 
     template<>
-    inline void Push(StateInterface& state, const int& value)
+    inline void Push(State& state, const int& value)
     {
         Assert(state.IsValid());
         lua_pushnumber(state, value);
     }
 
     template<>
-    inline void Push(StateInterface& state, const float& value)
+    inline void Push(State& state, const float& value)
     {
         Assert(state.IsValid());
         lua_pushnumber(state, value);
     }
 
     template<>
-    inline void Push(StateInterface& state, const double& value)
+    inline void Push(State& state, const double& value)
     {
         Assert(state.IsValid());
         lua_pushnumber(state, value);
     }
 
     template<>
-    inline void Push(StateInterface& state, const std::string& value)
+    inline void Push(State& state, const std::string& value)
     {
         Assert(state.IsValid());
         lua_pushstring(state, value.c_str());
     }
 
     template<>
-    inline void Push(StateInterface& state, const Reference& reference)
+    inline void Push(State& state, const Reference& reference)
     {
         Assert(state.IsValid());
-        Assert(&state == (StateInterface*)reference.GetState().get());
+        Assert(&state == reference.GetState().get());
         reference.PushOntoStack();
     }
 
     template<>
-    inline void Push(StateInterface& state, const std::shared_ptr<const Reference>& reference)
+    inline void Push(State& state, const std::shared_ptr<const Reference>& reference)
     {
         Assert(state.IsValid());
         Assert(reference != nullptr);
-        Assert(&state == (StateInterface*)reference->GetState().get());
+        Assert(&state == reference->GetState().get());
         reference->PushOntoStack();
     }
 
     template<size_t Size>
-    inline void Push(StateInterface& state, const std::nullptr_t&)
+    void Push(State& state, const std::nullptr_t&)
     {
         Assert(state.IsValid());
 
@@ -239,14 +102,14 @@ namespace Lua
     }
 
     template<size_t Size>
-    inline void Push(StateInterface& state, const char(&value)[Size])
+    void Push(State& state, const char(&value)[Size])
     {
         Assert(state.IsValid());
         lua_pushstring(state, value);
     }
 
     template<typename Type, typename... Types>
-    inline void Push(StateInterface& state, const Type& value, const Types&... values)
+    void Push(State& state, const Type& value, const Types&... values)
     {
         Assert(state.IsValid());
         Lua::Push(state, value);
@@ -262,14 +125,14 @@ namespace Lua
 
 namespace Lua
 {
-    inline void Pop(StateInterface& state, const int count = 1)
+    inline void Pop(State& state, const int count = 1)
     {
         Assert(state.IsValid());
         lua_pop(state, count);
     }
 
     template<typename... Types>
-    inline typename StackPopper<sizeof...(Types), Types...>::ReturnType Pop(StateInterface& state)
+    typename StackPopper<sizeof...(Types), Types...>::ReturnType Pop(State& state)
     {
         return StackPopper<sizeof...(Types), Types...>::Apply(state);
     }
@@ -284,38 +147,41 @@ namespace Lua
 namespace Lua
 {
     template<typename Type>
-    Type Read(StateInterface& state, const int index = -1);
+    Type Read(State& state, const int index = -1)
+    {
+        static_assert(false, "Not implemented for a given type.");
+    }
 
     template<>
-    inline bool Read(StateInterface& state, const int index)
+    inline bool Read(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_toboolean(state, index) != 0;
     }
 
     template<>
-    inline int Read(StateInterface& state, const int index)
+    inline int Read(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_tointeger(state, index);
     }
 
     template<>
-    inline float Read(StateInterface& state, const int index)
+    inline float Read(State& state, const int index)
     {
         Assert(state.IsValid());
         return (float)lua_tonumber(state, index);
     }
 
     template<>
-    inline double Read(StateInterface& state, const int index)
+    inline double Read(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_tonumber(state, index);
     }
 
     template<>
-    inline std::string Read(StateInterface& state, const int index)
+    inline std::string Read(State& state, const int index)
     {
         Assert(state.IsValid());
 
@@ -326,7 +192,7 @@ namespace Lua
     }
 
     template<>
-    inline Reference Read<Lua::Reference>(StateInterface& state, const int index)
+    inline Reference Read<Lua::Reference>(State& state, const int index)
     {
         Assert(state.IsValid());
 
@@ -350,45 +216,48 @@ namespace Lua
 namespace Lua
 {
     template<typename Type>
-    bool Is(StateInterface& state, const int index = -1);
+    bool Is(State& state, const int index = -1)
+    {
+        static_assert(false, "Not implemented for a given type.");
+    }
 
     template<>
-    inline bool Is<std::nullptr_t>(StateInterface& state, const int index)
+    inline bool Is<std::nullptr_t>(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_isnil(state, index) != 0;
     }
 
     template<>
-    inline bool Is<bool>(StateInterface& state, const int index)
+    inline bool Is<bool>(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_isboolean(state, index) != 0;
     }
 
     template<>
-    inline bool Is<int>(StateInterface& state, const int index)
+    inline bool Is<int>(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_isnumber(state, index) != 0;
     }
 
     template<>
-    inline bool Is<float>(StateInterface& state, const int index)
+    inline bool Is<float>(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_isnumber(state, index) != 0;
     }
 
     template<>
-    inline bool Is<double>(StateInterface& state, const int index)
+    inline bool Is<double>(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_isnumber(state, index) != 0;
     }
 
     template<>
-    inline bool Is<std::string>(StateInterface& state, const int index)
+    inline bool Is<std::string>(State& state, const int index)
     {
         Assert(state.IsValid());
         return lua_isstring(state, index) != 0;

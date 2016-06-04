@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Precompiled.hpp"
-#include "Lua.hpp"
 
 //
 // Lua State
@@ -12,8 +11,11 @@ namespace Lua
     // Forward declarations.
     class State;
 
+    template<size_t, typename... Types>
+    struct StackPopper;
+
     // State class.
-    class State : private NonCopyable, public StateInterface
+    class State : private NonCopyable, public std::enable_shared_from_this<State>
     {
     public:
         State();

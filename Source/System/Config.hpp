@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
-#include "Lua/State.hpp"
+#include "Lua/Lua.hpp"
 
 //
 // Config

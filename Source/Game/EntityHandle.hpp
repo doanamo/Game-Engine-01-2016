@@ -60,7 +60,7 @@ namespace Lua
 {
     // Entity handle push function.
     template<>
-    inline void Push(StateInterface& state, const Game::EntityHandle& handle)
+    inline void Push(State& state, const Game::EntityHandle& handle)
     {
         Assert(state.IsValid());
 
