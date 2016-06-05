@@ -32,8 +32,10 @@ bool luaL_optboolean(lua_State* state, int index, bool default)
 int InputState_IsKeyDown(lua_State* state)
 {
     // Get the userdata pointer.
-    System::InputState** inputState = reinterpret_cast<System::InputState**>(luaL_checkudata(state, 1, "InputState"));
-    Assert(inputState != nullptr && *inputState != nullptr);
+    void* memory = luaL_checkudata(state, 1, "InputState");
+    auto** inputState = reinterpret_cast<System::InputState**>(memory);
+
+    Assert(*inputState != nullptr);
 
     // Call the method and push the result.
     int key = luaL_checkint(state, 2);
@@ -47,8 +49,10 @@ int InputState_IsKeyDown(lua_State* state)
 int InputState_IsKeyUp(lua_State* state)
 {
     // Get the userdata pointer.
-    System::InputState** inputState = reinterpret_cast<System::InputState**>(luaL_checkudata(state, 1, "InputState"));
-    Assert(inputState != nullptr && *inputState != nullptr);
+    void* memory = luaL_checkudata(state, 1, "InputState");
+    auto** inputState = reinterpret_cast<System::InputState**>(memory);
+
+    Assert(*inputState != nullptr);
 
     // Call the method and push the result.
     int key = luaL_checkint(state, 2);
@@ -65,9 +69,10 @@ void InputState_Register(Lua::State& state, Context& context)
     Assert(context.inputState != nullptr);
 
     // Create an userdata pointer.
-    System::InputState** inputState = reinterpret_cast<System::InputState**>(lua_newuserdata(state, sizeof(System::InputState*)));
-    *inputState = context.inputState;
-    
+    void* memory = lua_newuserdata(state, sizeof(System::InputState*));
+    auto** pointer = reinterpret_cast<System::InputState**>(memory);
+    *pointer = context.inputState;
+
     // Create and set the metatable.
     luaL_newmetatable(state, "InputState");
 
