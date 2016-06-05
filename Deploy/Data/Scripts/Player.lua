@@ -10,10 +10,15 @@ end
 
 setmetatable(Player, { __call = Player.New })
 
+function Player:Finalize(entitySelf)
+    Log("Finalize called!")
+    return true
+end
+
 function Player:Update(entitySelf, timeDelta)
     self.time = self.time + timeDelta
 
-    if InputState:IsKeyDown(Keys.F1) then
+    if InputState:IsKeyDown(Keys.F1, false) then
         Log("Key pressed!")
     end
     

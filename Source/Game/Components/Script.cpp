@@ -12,6 +12,20 @@ Script::~Script()
 
 bool Script::Finalize(Game::EntityHandle self, const Context& context)
 {
+    for(auto& script : m_scripts)
+    {
+        // Get the scripting state.
+        Lua::State& state = *script.GetState();
+        Lua::StackGuard guard(&state);
+
+        // Push a script instance on the stack.
+        Lua::Push(state, script);
+
+        // Call the script finalize method.
+        if(!state.Call<bool>("Finalize", Lua::StackValue(-1), self))
+            return false;
+    }
+
     return true;
 }
 
