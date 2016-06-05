@@ -30,6 +30,7 @@ namespace Lua
     {
     public:
         StackGuard(const std::shared_ptr<Lua::State>& state);
+        StackGuard(Lua::State& state);
         StackGuard(Lua::State* state);
         ~StackGuard();
 

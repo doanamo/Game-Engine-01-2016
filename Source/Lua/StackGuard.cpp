@@ -8,6 +8,11 @@ StackGuard::StackGuard(const std::shared_ptr<Lua::State>& state) :
 {
 }
 
+StackGuard::StackGuard(Lua::State& state) :
+    StackGuard(&state)
+{
+}
+
 StackGuard::StackGuard(Lua::State* state) :
     m_state(*state),
     m_size(0)
