@@ -26,6 +26,112 @@ bool luaL_optboolean(lua_State* state, int index, bool default)
 }
 
 //
+// Vector 2D
+//
+
+int Vec2_New(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Create an userdata.
+    void* memory = lua_newuserdata(state, sizeof(glm::vec2));
+    auto* object = new (memory) glm::vec2();
+
+    // Set the metatable.
+    luaL_getmetatable(state, "Vec2");
+    lua_setmetatable(state, -2);
+
+    return 1;
+}
+
+int Vec2_Index(lua_State* state)
+{
+    Assert(state != nullptr);
+    
+    // Get the userdata.
+    void* memory = luaL_checkudata(state, 1, "Vec2");
+    auto* object = reinterpret_cast<glm::vec2*>(memory);
+
+    Assert(object != nullptr);
+
+    // Return the property.
+    std::string key = luaL_checkstring(state, 2);
+    
+    if(key == "x")
+    {
+        lua_pushnumber(state, object->x);
+        return 1;
+    }
+    else
+    if(key == "y")
+    {
+        lua_pushnumber(state, object->y);
+        return 1;
+    }
+    else
+    {
+        lua_pushnil(state);
+        return 1;
+    }
+}
+
+int Vec2_NewIndex(lua_State* state)
+{
+    Assert(state != nullptr);
+    
+    // Get the userdata.
+    void* memory = luaL_checkudata(state, 1, "Vec2");
+    auto* object = reinterpret_cast<glm::vec2*>(memory);
+
+    Assert(object != nullptr);
+
+    // Set the property.
+    std::string key = luaL_checkstring(state, 2);
+
+    if(key == "x")
+    {
+        object->x = (float)luaL_checknumber(state, 3);
+        return 0;
+    }
+    else
+    if(key == "y")
+    {
+        object->y = (float)luaL_checknumber(state, 3);
+        return 0;
+    }
+
+    return 0;
+}
+
+void Vec2_Register(Lua::State& state, Context& context)
+{
+    Assert(state.IsValid());
+
+    // Create a class metatable.
+    luaL_newmetatable(state, "Vec2");
+
+    lua_pushcfunction(state, Vec2_New);
+    lua_setfield(state, -2, "New");
+
+    lua_pushcfunction(state, Vec2_Index);
+    lua_setfield(state, -2, "__index");
+
+    lua_pushcfunction(state, Vec2_NewIndex);
+    lua_setfield(state, -2, "__newindex");
+
+    // Create a secondary metatable.
+    lua_newtable(state);
+
+    lua_pushcfunction(state, Vec2_New);
+    lua_setfield(state, -2, "__call");
+
+    lua_setmetatable(state, -2);
+
+    // Register as a global variable.
+    lua_setfield(state, LUA_GLOBALSINDEX, "Vec2");
+}
+
+//
 // Input System
 //
 
@@ -416,6 +522,21 @@ void InputState_Register(Lua::State& state, Context& context)
 // Entity Handle
 //
 
+int EntityHandle_New(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Create an userdata.
+    void* memory = lua_newuserdata(state, sizeof(Game::EntityHandle));
+    auto* object = new (memory) Game::EntityHandle();
+
+    // Set the metatable.
+    luaL_getmetatable(state, "EntityHandle");
+    lua_setmetatable(state, -2);
+
+    return 1;
+}
+
 int EntityHandle_Index(lua_State* state)
 {
     Assert(state != nullptr);
@@ -475,28 +596,15 @@ int EntityHandle_NewIndex(lua_State* state)
     return 0;
 }
 
-int EntityHandle_Destructor(lua_State* state)
-{
-    Assert(state != nullptr);
-
-    // Get the userdata.
-    void* memory = luaL_checkudata(state, 1, "EntityHandle");
-    auto* object = reinterpret_cast<Game::EntityHandle*>(memory);
-
-    Assert(object != nullptr);
-
-    // Call the destructor.
-    object->~EntityHandle();
-
-    return 0;
-}
-
 void EntityHandle_Register(Lua::State& state, Context& context)
 {
     Assert(state.IsValid());
 
-    // Create and register the metatable.
+    // Create a class metatable.
     luaL_newmetatable(state, "EntityHandle");
+
+    lua_pushcfunction(state, EntityHandle_New);
+    lua_setfield(state, -2, "New");
 
     lua_pushcfunction(state, EntityHandle_Index);
     lua_setfield(state, -2, "__index");
@@ -504,10 +612,16 @@ void EntityHandle_Register(Lua::State& state, Context& context)
     lua_pushcfunction(state, EntityHandle_NewIndex);
     lua_setfield(state, -2, "__newindex");
 
-    lua_pushcfunction(state, EntityHandle_Destructor);
-    lua_setfield(state, -2, "__gc");
+    // Create a secondary table.
+    lua_newtable(state);
 
-    lua_pop(state, 1);
+    lua_pushcfunction(state, EntityHandle_New);
+    lua_setfield(state, -2, "__call");
+
+    lua_setmetatable(state, -2);
+
+    // Register as a global variable.
+    lua_setfield(state, LUA_GLOBALSINDEX, "EntityHandle");
 }
 
 //
@@ -522,6 +636,7 @@ bool Game::RegisterScriptBindings(Lua::State& state, Context& context)
     Lua::StackGuard guard(state);
 
     // Register classes.
+    Vec2_Register(state, context);
     InputState_Register(state, context);
     EntityHandle_Register(state, context);
 

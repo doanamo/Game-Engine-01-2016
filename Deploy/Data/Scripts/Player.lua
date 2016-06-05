@@ -18,6 +18,10 @@ end
 function Player:Update(entitySelf, timeDelta)
     self.time = self.time + timeDelta
 
+    local position = Vec2()
+    position.x = 101.1
+    position.y = 42.43
+
     if InputState:IsKeyDown(Keys.F1, false) then
         Log("Key pressed!")
     end
