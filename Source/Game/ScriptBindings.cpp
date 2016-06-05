@@ -65,7 +65,7 @@ void InputState_Register(Lua::State& state, Context& context)
     Assert(context.inputState != nullptr);
 
     // Create an userdata pointer.
-    System::InputState** inputState = reinterpret_cast<System::InputState**>(lua_newuserdata(state, sizeof(System::InputState)));
+    System::InputState** inputState = reinterpret_cast<System::InputState**>(lua_newuserdata(state, sizeof(System::InputState*)));
     *inputState = context.inputState;
     
     // Create and set the metatable.
