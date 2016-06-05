@@ -17,9 +17,9 @@ namespace Lua
     {
         Assert(state.IsValid());
 
-        // Create an userdata for the copy of the object.
-        Game::EntityHandle* entityHandle = reinterpret_cast<Game::EntityHandle*>(lua_newuserdata(state, sizeof(Game::EntityHandle)));
-        *entityHandle = handle;
+        // Create an userdata for the object copy.
+        void* memory = lua_newuserdata(state, sizeof(Game::EntityHandle));
+        auto* object = new (memory) Game::EntityHandle(handle);
 
         // Set the metatable.
         luaL_getmetatable(state, "EntityHandle");

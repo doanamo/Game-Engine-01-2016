@@ -416,22 +416,23 @@ int EntityHandle_Index(lua_State* state)
     Assert(state != nullptr);
     
     // Get the userdata.
-    Game::EntityHandle* entityHandle = reinterpret_cast<Game::EntityHandle*>(luaL_checkudata(state, 1, "EntityHandle"));
-    Assert(entityHandle != nullptr);
+    void* memory = luaL_checkudata(state, 1, "EntityHandle");
+    auto* object = reinterpret_cast<Game::EntityHandle*>(memory);
 
-    // Get the key string.
-    std::string key = luaL_checkstring(state, 2);
+    Assert(object != nullptr);
 
     // Return the property.
+    std::string key = luaL_checkstring(state, 2);
+
     if(key == "identifier")
     {
-        lua_pushinteger(state, entityHandle->identifier);
+        lua_pushinteger(state, object->identifier);
         return 1;
     }
     else
     if(key == "version")
     {
-        lua_pushinteger(state, entityHandle->version);
+        lua_pushinteger(state, object->version);
         return 1;
     }
     else
@@ -446,24 +447,41 @@ int EntityHandle_NewIndex(lua_State* state)
     Assert(state != nullptr);
     
     // Get the userdata.
-    Game::EntityHandle* entityHandle = reinterpret_cast<Game::EntityHandle*>(luaL_checkudata(state, 1, "EntityHandle"));
-    Assert(entityHandle != nullptr);
+    void* memory = luaL_checkudata(state, 1, "EntityHandle");
+    auto* object = reinterpret_cast<Game::EntityHandle*>(memory);
 
-    // Get the key string.
+    Assert(object != nullptr);
+
+    // Set the property.
     std::string key = luaL_checkstring(state, 2);
 
-    // Return the property.
     if(key == "identifier")
     {
-        entityHandle->identifier = luaL_checkinteger(state, 3);
+        object->identifier = luaL_checkinteger(state, 3);
         return 0;
     }
     else
     if(key == "version")
     {
-        entityHandle->version = luaL_checkinteger(state, 3);
+        object->version = luaL_checkinteger(state, 3);
         return 0;
     }
+
+    return 0;
+}
+
+int EntityHandle_Destructor(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get the userdata.
+    void* memory = luaL_checkudata(state, 1, "EntityHandle");
+    auto* object = reinterpret_cast<Game::EntityHandle*>(memory);
+
+    Assert(object != nullptr);
+
+    // Call the destructor.
+    object->~EntityHandle();
 
     return 0;
 }
@@ -480,6 +498,9 @@ void EntityHandle_Register(Lua::State& state, Context& context)
 
     lua_pushcfunction(state, EntityHandle_NewIndex);
     lua_setfield(state, -2, "__newindex");
+
+    lua_pushcfunction(state, EntityHandle_Destructor);
+    lua_setfield(state, -2, "__gc");
 
     lua_pop(state, 1);
 }
