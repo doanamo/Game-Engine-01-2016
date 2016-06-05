@@ -57,7 +57,7 @@ int InputState_IsKeyUp(lua_State* state)
     bool result = (*inputState)->IsKeyUp(key, repeat);
     lua_pushboolean(state, result);
 
-    return 0;
+    return 1;
 }
 
 void InputState_Register(Lua::State& state, Context& context)
