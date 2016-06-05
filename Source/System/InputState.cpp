@@ -119,9 +119,6 @@ void InputState::Update()
 
 void InputState::Reset()
 {
-    if(!m_initialized)
-        return;
-
     for(int i = 0; i < KeyboardKeyCount; ++i)
     {
         m_keyboardState[i] = KeyboardKeyStates::ReleasedRepeat;
