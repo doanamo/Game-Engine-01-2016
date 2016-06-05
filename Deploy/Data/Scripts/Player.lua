@@ -4,7 +4,7 @@ Player.__index = Player
 function Player.New()
     local self = {}
     self.time = 9.0
-    
+
     return setmetatable(self, Player)
 end
 
