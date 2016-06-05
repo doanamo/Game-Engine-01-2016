@@ -3,8 +3,7 @@
 #include "Precompiled.hpp"
 #include "Game/EntityHandle.hpp"
 #include "Game/Component.hpp"
-#include "Lua/State.hpp"
-#include "Lua/Reference.hpp"
+#include "Lua/Lua.hpp"
 
 //
 // Script Component

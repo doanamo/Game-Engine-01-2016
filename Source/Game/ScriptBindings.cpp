@@ -1,8 +1,7 @@
 #include "Precompiled.hpp"
-#include "ScriptSystem.hpp"
-#include "Lua/StackGuard.hpp"
+#include "ScriptBindings.hpp"
 #include "System/InputState.hpp"
-#include "Context.hpp"
+#include "Game/EntityHandle.hpp"
 
 //
 // Lua Helpers
@@ -409,19 +408,96 @@ void InputState_Register(Lua::State& state, Context& context)
 }
 
 //
+// Entity Handle
+//
+
+int EntityHandle_Index(lua_State* state)
+{
+    Assert(state != nullptr);
+    
+    // Get the userdata.
+    Game::EntityHandle* entityHandle = reinterpret_cast<Game::EntityHandle*>(luaL_checkudata(state, 1, "EntityHandle"));
+    Assert(entityHandle != nullptr);
+
+    // Get the key string.
+    std::string key = luaL_checkstring(state, 2);
+
+    // Return the property.
+    if(key == "identifier")
+    {
+        lua_pushinteger(state, entityHandle->identifier);
+        return 1;
+    }
+    else
+    if(key == "version")
+    {
+        lua_pushinteger(state, entityHandle->version);
+        return 1;
+    }
+    else
+    {
+        lua_pushnil(state);
+        return 1;
+    }
+}
+
+int EntityHandle_NewIndex(lua_State* state)
+{
+    Assert(state != nullptr);
+    
+    // Get the userdata.
+    Game::EntityHandle* entityHandle = reinterpret_cast<Game::EntityHandle*>(luaL_checkudata(state, 1, "EntityHandle"));
+    Assert(entityHandle != nullptr);
+
+    // Get the key string.
+    std::string key = luaL_checkstring(state, 2);
+
+    // Return the property.
+    if(key == "identifier")
+    {
+        entityHandle->identifier = luaL_checkinteger(state, 3);
+        return 0;
+    }
+    else
+    if(key == "version")
+    {
+        entityHandle->version = luaL_checkinteger(state, 3);
+        return 0;
+    }
+
+    return 0;
+}
+
+void EntityHandle_Register(Lua::State& state, Context& context)
+{
+    Assert(state.IsValid());
+
+    // Create and register the metatable.
+    luaL_newmetatable(state, "EntityHandle");
+
+    lua_pushcfunction(state, EntityHandle_Index);
+    lua_setfield(state, -2, "__index");
+
+    lua_pushcfunction(state, EntityHandle_NewIndex);
+    lua_setfield(state, -2, "__newindex");
+
+    lua_pop(state, 1);
+}
+
+//
 // Registering Method
 //
 
-bool Game::ScriptSystem::RegisterContext(Context& context)
+bool Game::RegisterScriptBindings(Lua::State& state, Context& context)
 {
-    Assert(m_state != nullptr);
-    Assert(m_state->IsValid());
+    Assert(state.IsValid());
 
     // Create a stack guard.
-    Lua::StackGuard guard(m_state);
+    Lua::StackGuard guard(state);
 
     // Register classes.
-    InputState_Register(*m_state, context);
+    InputState_Register(state, context);
+    EntityHandle_Register(state, context);
 
     return true;
 }

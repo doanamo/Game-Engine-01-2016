@@ -105,9 +105,10 @@ Set(SourceFiles
     "Game/ComponentSystem.cpp"
     "Game/IdentitySystem.hpp"
     "Game/IdentitySystem.cpp"
+    "Game/ScriptBindings.hpp"
+    "Game/ScriptBindings.cpp"
     "Game/ScriptSystem.hpp"
     "Game/ScriptSystem.cpp"
-    "Game/ScriptBindings.cpp"
     "Game/RenderSystem.hpp"
     "Game/RenderSystem.cpp"
 

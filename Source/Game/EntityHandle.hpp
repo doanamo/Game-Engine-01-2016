@@ -51,28 +51,6 @@ namespace Game
 }
 
 //
-// Lua
-//
-
-#include "Lua/Lua.hpp"
-
-namespace Lua
-{
-    // Entity handle push function.
-    template<>
-    inline void Push(State& state, const Game::EntityHandle& handle)
-    {
-        Assert(state.IsValid());
-
-        lua_newtable(state);
-        lua_pushnumber(state, handle.identifier);
-        lua_setfield(state, -2, "identifier");
-        lua_pushnumber(state, handle.version);
-        lua_setfield(state, -2, "version");
-    }
-}
-
-//
 // Handle Hash
 //
 

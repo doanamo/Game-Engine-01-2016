@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "ScriptSystem.hpp"
+#include "ScriptBindings.hpp"
 #include "EntitySystem.hpp"
 #include "ComponentSystem.hpp"
 #include "Components/Script.hpp"
@@ -73,9 +74,9 @@ bool ScriptSystem::Initialize(Context& context)
     }
 
     // Register the context for use in Lua.
-    if(!this->RegisterContext(context))
+    if(!RegisterScriptBindings(*m_state, context))
     {
-        Log() << LogInitializeError() << "Couldn't register the context.";
+        Log() << LogInitializeError() << "Couldn't register the context for use in script state.";
         return false;
     }
 

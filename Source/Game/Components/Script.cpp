@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "Script.hpp"
+#include "Game/ScriptBindings.hpp"
 using namespace Game::Components;
 
 Script::Script()
