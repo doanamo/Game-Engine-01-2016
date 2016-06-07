@@ -29,6 +29,16 @@ bool luaL_optboolean(lua_State* state, int index, bool default)
 // Vector 2D
 //
 
+glm::vec2* Vec2_Check(lua_State* state, int index)
+{
+    // Get the userdata.
+    void* memory = luaL_checkudata(state, index, "Vec2");
+    auto* object = reinterpret_cast<glm::vec2*>(memory);
+    Assert(memory != nullptr && object != nullptr);
+
+    return object;
+}
+
 int Vec2_New(lua_State* state)
 {
     Assert(state != nullptr);
@@ -48,24 +58,19 @@ int Vec2_Index(lua_State* state)
 {
     Assert(state != nullptr);
     
-    // Get the userdata.
-    void* memory = luaL_checkudata(state, 1, "Vec2");
-    auto* object = reinterpret_cast<glm::vec2*>(memory);
-
-    Assert(object != nullptr);
-
     // Return the property.
+    glm::vec2* vector = Vec2_Check(state, 1);
     std::string key = luaL_checkstring(state, 2);
     
     if(key == "x")
     {
-        lua_pushnumber(state, object->x);
+        lua_pushnumber(state, vector->x);
         return 1;
     }
     else
     if(key == "y")
     {
-        lua_pushnumber(state, object->y);
+        lua_pushnumber(state, vector->y);
         return 1;
     }
     else
@@ -79,24 +84,19 @@ int Vec2_NewIndex(lua_State* state)
 {
     Assert(state != nullptr);
     
-    // Get the userdata.
-    void* memory = luaL_checkudata(state, 1, "Vec2");
-    auto* object = reinterpret_cast<glm::vec2*>(memory);
-
-    Assert(object != nullptr);
-
     // Set the property.
+    glm::vec2* vector = Vec2_Check(state, 1);
     std::string key = luaL_checkstring(state, 2);
 
     if(key == "x")
     {
-        object->x = (float)luaL_checknumber(state, 3);
+        vector->x = (float)luaL_checknumber(state, 3);
         return 0;
     }
     else
     if(key == "y")
     {
-        object->y = (float)luaL_checknumber(state, 3);
+        vector->y = (float)luaL_checknumber(state, 3);
         return 0;
     }
 
@@ -135,18 +135,25 @@ void Vec2_Register(Lua::State& state, Context& context)
 // Input System
 //
 
-int InputState_IsKeyDown(lua_State* state)
+System::InputState* InputState_Check(lua_State* state, int index)
 {
     // Get the userdata pointer.
-    void* memory = luaL_checkudata(state, 1, "InputState");
-    auto** inputState = reinterpret_cast<System::InputState**>(memory);
+    void* memory = luaL_checkudata(state, index, "InputState");
+    auto* object = *reinterpret_cast<System::InputState**>(memory);
+    Assert(memory != nullptr && object != nullptr);
 
-    Assert(*inputState != nullptr);
+    return object;
+}
 
+int InputState_IsKeyDown(lua_State* state)
+{
+    // Get arguments from the stack.
+    auto* inputState = InputState_Check(state, 1);
+    int   key        = luaL_checkint(state, 2);
+    bool  repeat     = luaL_optboolean(state, 3, true);
+    
     // Call the method and push the result.
-    int key = luaL_checkint(state, 2);
-    bool repeat = luaL_optboolean(state, 3, true);
-    bool result = (*inputState)->IsKeyDown(key, repeat);
+    bool result = inputState->IsKeyDown(key, repeat);
     lua_pushboolean(state, result);
 
     return 1;
@@ -154,16 +161,13 @@ int InputState_IsKeyDown(lua_State* state)
 
 int InputState_IsKeyUp(lua_State* state)
 {
-    // Get the userdata pointer.
-    void* memory = luaL_checkudata(state, 1, "InputState");
-    auto** inputState = reinterpret_cast<System::InputState**>(memory);
-
-    Assert(*inputState != nullptr);
+    // Get arguments from the stack.
+    auto* inputState = InputState_Check(state, 1);
+    int   key        = luaL_checkint(state, 2);
+    bool  repeat     = luaL_optboolean(state, 3, true);
 
     // Call the method and push the result.
-    int key = luaL_checkint(state, 2);
-    bool repeat = luaL_optboolean(state, 3, true);
-    bool result = (*inputState)->IsKeyUp(key, repeat);
+    bool result = inputState->IsKeyUp(key, repeat);
     lua_pushboolean(state, result);
 
     return 1;
@@ -522,6 +526,16 @@ void InputState_Register(Lua::State& state, Context& context)
 // Entity Handle
 //
 
+Game::EntityHandle* EntityHandle_Check(lua_State* state, int index)
+{
+    // Get the userdata object.
+    void* memory = luaL_checkudata(state, index, "EntityHandle");
+    auto* object = reinterpret_cast<Game::EntityHandle*>(memory);
+    Assert(memory != nullptr && object != nullptr);
+
+    return object;
+}
+
 int EntityHandle_New(lua_State* state)
 {
     Assert(state != nullptr);
@@ -541,24 +555,20 @@ int EntityHandle_Index(lua_State* state)
 {
     Assert(state != nullptr);
     
-    // Get the userdata.
-    void* memory = luaL_checkudata(state, 1, "EntityHandle");
-    auto* object = reinterpret_cast<Game::EntityHandle*>(memory);
-
-    Assert(object != nullptr);
-
-    // Return the property.
+    // Get arguments from the stack.
+    auto* handle = EntityHandle_Check(state, 1);
     std::string key = luaL_checkstring(state, 2);
 
+    // Return the property.
     if(key == "identifier")
     {
-        lua_pushinteger(state, object->identifier);
+        lua_pushinteger(state, handle->identifier);
         return 1;
     }
     else
     if(key == "version")
     {
-        lua_pushinteger(state, object->version);
+        lua_pushinteger(state, handle->version);
         return 1;
     }
     else
@@ -572,24 +582,20 @@ int EntityHandle_NewIndex(lua_State* state)
 {
     Assert(state != nullptr);
     
-    // Get the userdata.
-    void* memory = luaL_checkudata(state, 1, "EntityHandle");
-    auto* object = reinterpret_cast<Game::EntityHandle*>(memory);
-
-    Assert(object != nullptr);
-
-    // Set the property.
+    // Get arguments from the stack.
+    auto* handle = EntityHandle_Check(state, 1);
     std::string key = luaL_checkstring(state, 2);
 
+    // Set the property.
     if(key == "identifier")
     {
-        object->identifier = luaL_checkinteger(state, 3);
+        handle->identifier = luaL_checkinteger(state, 3);
         return 0;
     }
     else
     if(key == "version")
     {
-        object->version = luaL_checkinteger(state, 3);
+        handle->version = luaL_checkinteger(state, 3);
         return 0;
     }
 
