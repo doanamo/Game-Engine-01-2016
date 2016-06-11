@@ -1,6 +1,7 @@
 #include "Precompiled.hpp"
 #include "ScriptBindings.hpp"
 #include "System/InputState.hpp"
+#include "Game/Components/Transform.hpp"
 #include "Game/EntityHandle.hpp"
 
 //
@@ -29,8 +30,28 @@ bool luaL_optboolean(lua_State* state, int index, bool default)
 // Vector 2D
 //
 
+glm::vec2* Vec2_Push(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Create an userdata.
+    void* memory = lua_newuserdata(state, sizeof(glm::vec2));
+    auto* object = new (memory) glm::vec2();
+
+    Assert(memory != nullptr);
+    Assert(object != nullptr);
+
+    // Set the metatable.
+    luaL_getmetatable(state, "Vec2");
+    lua_setmetatable(state, -2);
+
+    return object;
+}
+
 glm::vec2* Vec2_Check(lua_State* state, int index)
 {
+    Assert(state != nullptr);
+
     // Get the userdata.
     void* memory = luaL_checkudata(state, index, "Vec2");
     auto* object = reinterpret_cast<glm::vec2*>(memory);
@@ -43,13 +64,8 @@ int Vec2_New(lua_State* state)
 {
     Assert(state != nullptr);
 
-    // Create an userdata.
-    void* memory = lua_newuserdata(state, sizeof(glm::vec2));
-    auto* object = new (memory) glm::vec2();
-
-    // Set the metatable.
-    luaL_getmetatable(state, "Vec2");
-    lua_setmetatable(state, -2);
+    // Push a new instance.
+    Vec2_Push(state);
 
     return 1;
 }
@@ -137,6 +153,8 @@ void Vec2_Register(Lua::State& state, Context& context)
 
 System::InputState* InputState_Check(lua_State* state, int index)
 {
+    Assert(state != nullptr);
+
     // Get the userdata pointer.
     void* memory = luaL_checkudata(state, index, "InputState");
     auto* object = *reinterpret_cast<System::InputState**>(memory);
@@ -147,6 +165,8 @@ System::InputState* InputState_Check(lua_State* state, int index)
 
 int InputState_IsKeyDown(lua_State* state)
 {
+    Assert(state != nullptr);
+
     // Get arguments from the stack.
     auto* inputState = InputState_Check(state, 1);
     int   key        = luaL_checkint(state, 2);
@@ -161,6 +181,8 @@ int InputState_IsKeyDown(lua_State* state)
 
 int InputState_IsKeyUp(lua_State* state)
 {
+    Assert(state != nullptr);
+
     // Get arguments from the stack.
     auto* inputState = InputState_Check(state, 1);
     int   key        = luaL_checkint(state, 2);
@@ -526,8 +548,28 @@ void InputState_Register(Lua::State& state, Context& context)
 // Entity Handle
 //
 
+Game::EntityHandle* EntityHandle_Push(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Create an userdata.
+    void* memory = lua_newuserdata(state, sizeof(Game::EntityHandle));
+    auto* object = new (memory) Game::EntityHandle();
+
+    Assert(memory != nullptr);
+    Assert(object != nullptr);
+
+    // Set the metatable.
+    luaL_getmetatable(state, "EntityHandle");
+    lua_setmetatable(state, -2);
+
+    return object;
+}
+
 Game::EntityHandle* EntityHandle_Check(lua_State* state, int index)
 {
+    Assert(state != nullptr);
+
     // Get the userdata object.
     void* memory = luaL_checkudata(state, index, "EntityHandle");
     auto* object = reinterpret_cast<Game::EntityHandle*>(memory);
@@ -540,13 +582,8 @@ int EntityHandle_New(lua_State* state)
 {
     Assert(state != nullptr);
 
-    // Create an userdata.
-    void* memory = lua_newuserdata(state, sizeof(Game::EntityHandle));
-    auto* object = new (memory) Game::EntityHandle();
-
-    // Set the metatable.
-    luaL_getmetatable(state, "EntityHandle");
-    lua_setmetatable(state, -2);
+    // Push the instance.
+    EntityHandle_Push(state);
 
     return 1;
 }
@@ -631,6 +668,88 @@ void EntityHandle_Register(Lua::State& state, Context& context)
 }
 
 //
+// Transform Component
+//
+
+Game::Components::Transform* TransformComponent_Push(lua_State* state, Game::Components::Transform* transform)
+{
+    Assert(state != nullptr);
+
+    // Create an userdata pointer.
+    void* memory = lua_newuserdata(state, sizeof(Game::Components::Transform*));
+    auto** pointer = reinterpret_cast<Game::Components::Transform**>(memory);
+    *pointer = transform;
+
+    Assert(memory != nullptr);
+    Assert(pointer != nullptr);
+
+    // Set the metatable.
+    luaL_getmetatable(state, "TransformComponent");
+    lua_setmetatable(state, -2);
+
+    return *pointer;
+}
+
+Game::Components::Transform* TransformComponent_Check(lua_State* state, int index)
+{
+    Assert(state != nullptr);
+
+    // Get the userdata pointer.
+    void* memory = luaL_checkudata(state, index, "TransformComponent");
+    auto* object = *reinterpret_cast<Game::Components::Transform**>(memory);
+    Assert(memory != nullptr && object != nullptr);
+
+    return object;
+}
+
+int TransformComponent_SetPosition(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get arguments from the stack.
+    auto* transform = TransformComponent_Check(state, 1);
+    glm::vec2* position = Vec2_Check(state, 2);
+
+    // Call the method.
+    transform->SetPosition(*position);
+
+    return 0;
+}
+
+int TransformComponent_GetPosition(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get arguments from the stack.
+    auto* transform = TransformComponent_Check(state, 1);
+
+    // Call the method.
+    glm::vec2 position = transform->GetPosition();
+
+    // Push the result.
+    *Vec2_Push(state) = position;
+
+    return 1;
+}
+
+void TransformComponent_Register(Lua::State& state, Context& context)
+{
+    Assert(state.IsValid());
+
+    // Create a class metatable.
+    luaL_newmetatable(state, "TransformComponent");
+
+    lua_pushcfunction(state, TransformComponent_SetPosition);
+    lua_setfield(state, -2, "SetPosition");
+
+    lua_pushcfunction(state, TransformComponent_GetPosition);
+    lua_setfield(state, -2, "GetPosition");
+
+    // Register as a global variable.
+    lua_setfield(state, LUA_GLOBALSINDEX, "TransformComponent");
+}
+
+//
 // Registering Method
 //
 
@@ -645,6 +764,7 @@ bool Game::RegisterScriptBindings(Lua::State& state, Context& context)
     Vec2_Register(state, context);
     InputState_Register(state, context);
     EntityHandle_Register(state, context);
+    TransformComponent_Register(state, context);
 
     return true;
 }
