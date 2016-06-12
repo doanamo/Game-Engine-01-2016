@@ -66,7 +66,21 @@ int Vec2_New(lua_State* state)
     Assert(state != nullptr);
 
     // Push a new instance.
-    Vec2_Push(state);
+    auto* vector = Vec2_Push(state);
+    vector->x = (float)luaL_optnumber(state, 1, 0.0);
+    vector->y = (float)luaL_optnumber(state, 2, 0.0);
+
+    return 1;
+}
+
+int Vec2_Call(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Push a new instance.
+    auto* vector = Vec2_Push(state);
+    vector->x = (float)luaL_optnumber(state, 2, 0.0);
+    vector->y = (float)luaL_optnumber(state, 3, 0.0);
 
     return 1;
 }
@@ -139,7 +153,7 @@ void Vec2_Register(Lua::State& state, Context& context)
     // Create a secondary metatable.
     lua_newtable(state);
 
-    lua_pushcfunction(state, Vec2_New);
+    lua_pushcfunction(state, Vec2_Call);
     lua_setfield(state, -2, "__call");
 
     lua_setmetatable(state, -2);
