@@ -3,6 +3,7 @@
 #include "System/InputState.hpp"
 #include "Game/Components/Transform.hpp"
 #include "Game/EntityHandle.hpp"
+#include "Game/ComponentSystem.hpp"
 
 //
 // Lua Helpers
@@ -739,6 +740,10 @@ void TransformComponent_Register(Lua::State& state, Context& context)
     // Create a class metatable.
     luaL_newmetatable(state, "TransformComponent");
 
+    lua_pushliteral(state, "__index");
+    lua_pushvalue(state, -2);
+    lua_rawset(state, -3);
+
     lua_pushcfunction(state, TransformComponent_SetPosition);
     lua_setfield(state, -2, "SetPosition");
 
@@ -747,6 +752,65 @@ void TransformComponent_Register(Lua::State& state, Context& context)
 
     // Register as a global variable.
     lua_setfield(state, LUA_GLOBALSINDEX, "TransformComponent");
+}
+
+//
+// Component System
+//
+
+Game::ComponentSystem* ComponentSystem_Check(lua_State* state, int index)
+{
+    Assert(state != nullptr);
+
+    // Get the userdata pointer.
+    void* memory = luaL_checkudata(state, index, "ComponentSystem");
+    auto* object = *reinterpret_cast<Game::ComponentSystem**>(memory);
+    Assert(memory != nullptr && object != nullptr);
+
+    return object;
+}
+
+int ComponentSystem_GetTransform(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get arguments from the stack.
+    auto* componentSystem = ComponentSystem_Check(state, 1);
+    Game::EntityHandle* entity = EntityHandle_Check(state, 2);
+
+    // Call the method.
+    auto* transform = componentSystem->Lookup<Game::Components::Transform>(*entity);
+
+    // Push the result.
+    TransformComponent_Push(state, transform);
+
+    return 1;
+}
+
+void ComponentSystem_Register(Lua::State& state, Context& context)
+{
+    Assert(state.IsValid());
+    Assert(context.componentSystem != nullptr);
+
+    // Create an userdata pointer.
+    void* memory = lua_newuserdata(state, sizeof(Game::ComponentSystem*));
+    auto** pointer = reinterpret_cast<Game::ComponentSystem**>(memory);
+    *pointer = context.componentSystem;
+
+    // Create and set the metatable.
+    luaL_newmetatable(state, "ComponentSystem");
+
+    lua_pushliteral(state, "__index");
+    lua_pushvalue(state, -2);
+    lua_rawset(state, -3);
+
+    lua_pushcfunction(state, ComponentSystem_GetTransform);
+    lua_setfield(state, -2, "GetTransform");
+
+    lua_setmetatable(state, -2);
+
+    // Register as a global variable.
+    lua_setfield(state, LUA_GLOBALSINDEX, "ComponentSystem");
 }
 
 //
@@ -765,6 +829,7 @@ bool Game::RegisterScriptBindings(Lua::State& state, Context& context)
     InputState_Register(state, context);
     EntityHandle_Register(state, context);
     TransformComponent_Register(state, context);
+    ComponentSystem_Register(state, context);
 
     return true;
 }

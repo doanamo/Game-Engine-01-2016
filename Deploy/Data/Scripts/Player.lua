@@ -11,26 +11,34 @@ end
 setmetatable(Player, { __call = Player.New })
 
 function Player:Finalize(entitySelf)
-    Log("Finalize called!")
+    -- Get required components.
+    self.transform = ComponentSystem:GetTransform(entitySelf)
+
     return true
 end
 
 function Player:Update(entitySelf, timeDelta)
-    self.time = self.time + timeDelta
+    -- Update character position.
+    local position = self.transform:GetPosition()
+    local speed = 3.0
 
-    local position = Vec2()
-    position.x = 101.1
-    position.y = 42.43
+    if InputState:IsKeyDown(Keys.D) then
+        position.x = position.x + speed * timeDelta
+    end
 
-    if InputState:IsKeyDown(Keys.F1, false) then
-        Log("Key pressed!")
+    if InputState:IsKeyDown(Keys.A) then
+        position.x = position.x - speed * timeDelta
     end
-    
-    if self.time >= 10.0 then
-        Log("Entity Handle: " .. entitySelf.identifier .. ":" .. entitySelf.version)
-        Log("Time Delta: " .. timeDelta)
-        self.time = 0.0
+
+    if InputState:IsKeyDown(Keys.W) then
+        position.y = position.y + speed * timeDelta
     end
+
+    if InputState:IsKeyDown(Keys.S) then
+        position.y = position.y - speed * timeDelta
+    end
+
+    self.transform:SetPosition(position)
 end
 
 return Player
