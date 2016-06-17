@@ -4,6 +4,7 @@ Player.__index = Player
 function Player.New()
     local self = {}
     self.time = 9.0
+    self.speed = 3.0
 
     return setmetatable(self, Player)
 end
@@ -18,27 +19,27 @@ function Player:Finalize(entitySelf)
 end
 
 function Player:Update(entitySelf, timeDelta)
-    -- Update character position.
-    local position = self.transform:GetPosition()
-    local speed = 3.0
+    -- Calculate movement direction.
+    local direction = Vec2(0.0, 0.0)
 
     if InputState:IsKeyDown(Keys.D) then
-        position.x = position.x + speed * timeDelta
+        direction.x = direction.x + 1.0
     end
 
     if InputState:IsKeyDown(Keys.A) then
-        position.x = position.x - speed * timeDelta
+        direction.x = direction.x - 1.0
     end
 
     if InputState:IsKeyDown(Keys.W) then
-        position.y = position.y + speed * timeDelta
+        direction.y = direction.y + 1.0
     end
 
     if InputState:IsKeyDown(Keys.S) then
-        position.y = position.y - speed * timeDelta
+        direction.y = direction.y - 1.0
     end
 
-    self.transform:SetPosition(position)
+    -- Set transform position.
+    self.transform:SetPosition(direction)
 end
 
 return Player

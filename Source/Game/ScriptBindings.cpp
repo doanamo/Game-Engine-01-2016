@@ -106,7 +106,11 @@ int Vec2_Index(lua_State* state)
     }
     else
     {
-        lua_pushnil(state);
+        // Return a metatable method.
+        lua_getmetatable(state, 1);
+        lua_pushvalue(state, 2);
+        lua_rawget(state, -2);
+        lua_remove(state, -2);
         return 1;
     }
 }
@@ -134,6 +138,33 @@ int Vec2_NewIndex(lua_State* state)
     return 0;
 }
 
+int Vec2_Normalize(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get the userdata object.
+    glm::vec2* vector = Vec2_Check(state, 1);
+
+    // Call the method.
+    *vector = glm::normalize(*vector);
+
+    return 0;
+}
+
+int Vec2_Normalized(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get the userdata object.
+    glm::vec2* vector = Vec2_Check(state, 1);
+
+    // Call the method and push the result.
+    glm::vec2* result = Vec2_Push(state);
+    *result = glm::normalize(*vector);
+
+    return 1;
+}
+
 void Vec2_Register(Lua::State& state, Context& context)
 {
     Assert(state.IsValid());
@@ -143,6 +174,12 @@ void Vec2_Register(Lua::State& state, Context& context)
 
     lua_pushcfunction(state, Vec2_New);
     lua_setfield(state, -2, "New");
+
+    lua_pushcfunction(state, Vec2_Normalize);
+    lua_setfield(state, -2, "Normalize");
+
+    lua_pushcfunction(state, Vec2_Normalized);
+    lua_setfield(state, -2, "Normalized");
 
     lua_pushcfunction(state, Vec2_Index);
     lua_setfield(state, -2, "__index");
