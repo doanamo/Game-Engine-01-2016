@@ -138,6 +138,66 @@ int Vec2_NewIndex(lua_State* state)
     return 0;
 }
 
+int Vec2_Add(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get arguments from the stack.
+    glm::vec2* vector = Vec2_Check(state, 1);
+    glm::vec2* argument = Vec2_Check(state, 2);
+
+    // Push the result.
+    glm::vec2* result = Vec2_Push(state);
+    *result = *vector + *argument;
+
+    return 1;
+}
+
+int Vec2_Subtract(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get arguments from the stack.
+    glm::vec2* vector = Vec2_Check(state, 1);
+    glm::vec2* argument = Vec2_Check(state, 2);
+
+    // Push the result.
+    glm::vec2* result = Vec2_Push(state);
+    *result = *vector - *argument;
+
+    return 1;
+}
+
+int Vec2_Multiply(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get arguments from the stack.
+    glm::vec2* vector = Vec2_Check(state, 1);
+    lua_Number argument = luaL_checknumber(state, 2);
+
+    // Push the result.
+    glm::vec2* result = Vec2_Push(state);
+    *result = *vector * (float)argument;
+
+    return 1;
+}
+
+int Vec2_Divide(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get arguments from the stack.
+    glm::vec2* vector = Vec2_Check(state, 1);
+    lua_Number argument = luaL_checknumber(state, 2);
+
+    // Push the result.
+    glm::vec2* result = Vec2_Push(state);
+    *result = *vector / (float)argument;
+
+    return 1;
+}
+
 int Vec2_Equals(lua_State* state)
 {
     Assert(state != nullptr);
@@ -189,6 +249,18 @@ void Vec2_Register(Lua::State& state, Context& context)
 
     lua_pushcfunction(state, Vec2_New);
     lua_setfield(state, -2, "New");
+
+    lua_pushcfunction(state, Vec2_Add);
+    lua_setfield(state, -2, "__add");
+
+    lua_pushcfunction(state, Vec2_Subtract);
+    lua_setfield(state, -2, "__sub");
+
+    lua_pushcfunction(state, Vec2_Multiply);
+    lua_setfield(state, -2, "__mul");
+
+    lua_pushcfunction(state, Vec2_Divide);
+    lua_setfield(state, -2, "__div");
 
     lua_pushcfunction(state, Vec2_Equals);
     lua_setfield(state, -2, "__eq");

@@ -4,7 +4,7 @@ Player.__index = Player
 function Player.New()
     local self = {}
     self.time = 9.0
-    self.speed = 3.0
+    self.speed = 5.0
 
     return setmetatable(self, Player)
 end
@@ -38,10 +38,15 @@ function Player:Update(entitySelf, timeDelta)
         direction.y = direction.y - 1.0
     end
 
-    -- Set transform position.
+    -- Update character position.
     if direction ~= Vec2(0.0, 0.0) then
+        -- Normalize direction vector.
         direction:Normalize()
-        self.transform:SetPosition(direction)
+
+        -- Calculate new position.
+        local position = self.transform:GetPosition()
+        position = position + direction * self.speed * timeDelta
+        self.transform:SetPosition(position)
     end
 end
 
