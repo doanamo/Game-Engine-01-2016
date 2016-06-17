@@ -39,7 +39,10 @@ function Player:Update(entitySelf, timeDelta)
     end
 
     -- Set transform position.
-    self.transform:SetPosition(direction)
+    if direction ~= Vec2(0.0, 0.0) then
+        direction:Normalize()
+        self.transform:SetPosition(direction)
+    end
 end
 
 return Player
