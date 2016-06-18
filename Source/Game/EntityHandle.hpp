@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "Lua/Lua.hpp"
 
 //
 // Entity Handle
@@ -79,4 +80,26 @@ namespace std
             return pair.first.identifier * std::numeric_limits<int>::max() + pair.second.identifier;
         }
     };
+}
+
+//
+// Lua Push
+//
+
+namespace Lua
+{
+    // Entity handle push function.
+    template<>
+    inline void Push(Lua::State& state, const Game::EntityHandle& handle)
+    {
+        Assert(state.IsValid());
+
+        // Create an userdata for the object copy.
+        void* memory = lua_newuserdata(state, sizeof(Game::EntityHandle));
+        auto* object = new (memory) Game::EntityHandle(handle);
+
+        // Set the metatable.
+        luaL_getmetatable(state, "EntityHandle");
+        lua_setmetatable(state, -2);
+    }
 }

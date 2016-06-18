@@ -1,6 +1,6 @@
 #include "Precompiled.hpp"
 #include "Script.hpp"
-#include "Game/ScriptBindings.hpp"
+#include "Lua/Bindings.hpp"
 using namespace Game::Components;
 
 Script::Script()
