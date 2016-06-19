@@ -41,7 +41,7 @@ function Player:Update(entitySelf, timeDelta)
     -- Update character position.
     if direction ~= Vec2(0.0, 0.0) then
         -- Normalize direction vector.
-        direction:Normalize()
+        direction = direction:Normalize()
 
         -- Calculate new position.
         local position = self.transform:GetPosition()

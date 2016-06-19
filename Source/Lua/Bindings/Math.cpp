@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "Math.hpp"
+#include "Lua/Lua.hpp"
 using namespace Lua;
 using namespace Bindings;
 
@@ -189,20 +190,48 @@ int Vec2::Equals(lua_State* state)
     return 1;
 }
 
-int Vec2::Normalize(lua_State* state)
+int Vec2::Length(lua_State* state)
 {
     Assert(state != nullptr);
 
     // Get the userdata object.
     glm::vec2* vector = Vec2::Check(state, 1);
 
-    // Call the method.
-    *vector = glm::normalize(*vector);
+    // Push the result.
+    lua_pushnumber(state, glm::length(*vector));
 
-    return 0;
+    return 1;
 }
 
-int Vec2::Normalized(lua_State* state)
+int Vec2::LengthSqr(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get the userdata object.
+    glm::vec2* vector = Vec2::Check(state, 1);
+
+    // Push the result.
+    lua_pushnumber(state, glm::length2(*vector));
+
+    return 1;
+}
+
+int Vec2::Truncate(lua_State* state)
+{
+    Assert(state != nullptr);
+
+    // Get the userdata object.
+    glm::vec2* vector = Vec2::Check(state, 1);
+    float length = (float)luaL_checknumber(state, 2);
+
+    // Call the method and push the result.
+    glm::vec2* result = Vec2::Push(state);
+    *result = glm::normalize(*vector) * glm::min(glm::length(*vector), length);
+
+    return 1;
+}
+
+int Vec2::Normalize(lua_State* state)
 {
     Assert(state != nullptr);
 
@@ -247,11 +276,17 @@ void Vec2::Register(Lua::State& state, Context& context)
     lua_pushcfunction(state, Vec2::Equals);
     lua_setfield(state, -2, "__eq");
 
+    lua_pushcfunction(state, Vec2::Length);
+    lua_setfield(state, -2, "Length");
+
+    lua_pushcfunction(state, Vec2::LengthSqr);
+    lua_setfield(state, -2, "LengthSqr");
+
+    lua_pushcfunction(state, Vec2::Truncate);
+    lua_setfield(state, -2, "Truncate");
+
     lua_pushcfunction(state, Vec2::Normalize);
     lua_setfield(state, -2, "Normalize");
-
-    lua_pushcfunction(state, Vec2::Normalized);
-    lua_setfield(state, -2, "Normalized");
 
     // Create a secondary metatable.
     lua_newtable(state);

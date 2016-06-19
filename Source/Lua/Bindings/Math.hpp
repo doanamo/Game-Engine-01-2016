@@ -30,8 +30,10 @@ namespace Lua
             int Equals(lua_State* state);
 
             // Class methods.
+            int Length(lua_State* state);
+            int LengthSqr(lua_State* state);
+            int Truncate(lua_State* state);
             int Normalize(lua_State* state);
-            int Normalized(lua_State* state);
 
             // Registers Lua bindings.
             void Register(Lua::State& state, Context& context);
