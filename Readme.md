@@ -1,5 +1,5 @@
 # Description
-An unnamed 2D game that will mix softcore adventure roleplaying elements (ex. character progression) with unforgiving hardcore roguelike genre (ex. permadeath). The game will utilize procedural generation. Design process is ongoing along with the development progress.
+An unnamed 2D game that will mix softcore adventure roleplaying elements (e.g. character progression) with unforgiving hardcore roguelike genre (e.g. permadeath) and procedural generation.
 
 ![Current progress](Docs/Screenshot.jpg)
 
@@ -7,7 +7,7 @@ An unnamed 2D game that will mix softcore adventure roleplaying elements (ex. ch
 My motivation is to finally complete and publish a commercial game. After so many abandoned projects, I'll either finish this one or most likely move away from game development entirely. I have some time before I (hopefully) start university by the end of this year. This is my last chance to try breaking into the industry as an indie developer. A last good shot at making my life dreams come true this year. Wish me luck!
 
 # Postmortem
-If you are reading this, then it means the project failed. I ended getting up a position as a game tester and stopped working on this engine. I am starting unversity soon and moving to different game projects.
+If you are reading this, then it means the project failed. I ended getting up a position in the game industry and stopped working on this engine. I am starting unversity soon and moving to different game projects.
 
 Notable features that have been implemented:
 - Entity/Component system
